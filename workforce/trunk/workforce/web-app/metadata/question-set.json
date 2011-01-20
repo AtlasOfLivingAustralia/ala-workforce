@@ -1,0 +1,289 @@
+{workforce:[
+	{instruction: 'If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.',
+	 question: [
+	 
+	 	{qtext:"Is curatorial and/or taxonomic work your major responsibility in your organisation?",
+		 qdata: 'YES/NO',
+		 atype: 'yesno',
+		 datatype: 'bool'},
+		 
+	 	{qtext: "Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.",
+	 	 atype: 'none',
+	 	 question: [
+	 	 	{qtext: "Scientist/Taxonomist (permanent)", atype: 'percent', alabel:'%'},
+	 	 	{qtext: "Scientist/Taxonomist (not permanent)", atype: 'percent', alabel:'%'},
+	 	 	{qtext: "Technical (taxonomy) (permanent)", atype: 'percent', alabel:'%'},
+	 	 	{qtext: "Technical (taxonomy) (not permanent)", atype: 'percent', alabel:'%'},
+	 	 	{qtext: "Administrator/Manager", atype: 'percent', alabel:'%'},
+	 	 	{qtext: "Volunteer/Associate (retired)", atype: 'percent', alabel:'%'},
+	 	 	{qtext: "Volunteer/Associate (not retired)", atype: 'percent', alabel:'%'},
+	 	 	{qtext: "Other", atype: 'percent', alabel:'%'}
+	 	 ]},
+	 	 
+	 	 {qtext: "Any additional comments:", atype: 'textarea', adata: {rows:3}, datatype: 'text'}
+	 ]},
+	 
+	 {qtext: "Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?",
+	  atype: 'none',
+	  question: [
+	  		{qtext:"Museum",atype:'yesno',displayHint:'checkbox',layoutHint:'20/80',
+	  		 question: [
+	  		 		{qtext:'State:', qtype: 'pick', atype:'externalRef', adata: ['state'], displayHint:'dropdown'}
+	  		 ]},
+	  		{qtext:"Herbarium",atype:'yesno',displayHint:'checkbox',layoutHint:'20/80',
+	  		 question: [
+	  		 		{qtext:'State:', qtype: 'pick', atype:'externalRef', adata: ['state'], displayHint:'dropdown'}
+	  		 ]},
+	  		{qtext:"University",atype:'yesno',displayHint:'checkbox',layoutHint:'20/80',
+	  		 question: [
+	  		 		{qtext:'State:', qtype: 'pick', atype:'externalRef', adata: ['state'], displayHint:'dropdown'},
+	  		 		{qtext:'Name:', atype:'text', displayHint:'45'},
+	  		 		{qtext:'Dept:', atype:'text', displayHint:'45'}
+	  		 ]},
+	  		{qtext:"CSIRO",atype:'yesno',displayHint:'checkbox',layoutHint:'20/80',
+	  		 question: [
+	  		 		{qtext:'State:', qtype: 'pick', atype:'externalRef', adata: ['state'], displayHint:'dropdown'},
+	  		 		{qtext:'Division:', atype:'text', displayHint:'45'}
+	  		 ]},
+	  		{qtext:"Commonwealth Department", atype:'yesno', displayHint:'checkbox',layoutHint:'20/80',
+	  		 question: [
+	  		 		{qtext:'State:', qtype: 'pick', atype:'externalRef', adata: ['state'], displayHint:'dropdown'},
+	  		 		{qtext:'Dept:', atype:'text', displayHint:'45'}
+	  		 ]},
+	  		{qtext:"State Department", atype:'yesno', displayHint:'checkbox',layoutHint:'20/80',
+	  		 question: [
+	  		 		{qtext:'State:', qtype: 'pick', atype:'externalRef', adata: ['state'], displayHint:'dropdown'},
+	  		 		{qtext:'Dept:', atype:'text', displayHint:'45'}
+	  		 ]},
+	  		{qtext:"Other", atype:'yesno', displayHint:'checkbox',layoutHint:'20/80',
+	  		 question: [
+	  		 		{qtext:'State:', qtype: 'pick', atype:'externalRef', adata: ['state'], displayHint:'dropdown'},
+	  		 		{qtext: 'Please specify:', atype:'text', displayHint:'45'}
+	  		 ]}
+	 ]},
+	  
+	 {qtext:"What is your employment status at this organisation?",
+	  question: [
+		  {qtype: 'pick',
+		   datatype	: 'text',
+		   atype: 'radio',
+		   adata: ['Full-time (permanent), paid by organisation','Full-time (temporary), paid by organisation','Full-time, on grant','Part-time (permanent), paid by organisation','Part-time (temporary), paid by organisation','Part-time, on grant','Associate/Volunteer (retired)','Associate/Volunteer (not retired)','Student','Other (please specify)'],
+		   displayHint: 'radio'},
+		  {qtext:'If other please specify:', atype: 'text'}
+		  ]
+	 },
+	 
+	 {qtext: "In your position, how many hours per week do you work on average?",
+	  atype: 'number',
+	  qdata: {min: 0, max:100},
+	  alabel: 'hours per week'
+	 },
+	  
+	 {qtext: "How long have you been working in the field of taxonomy?",
+  	  qtype: 'range',
+	  datatype: 'text',
+	  atype: 'range',
+	  adata: {interval: 5, start: 0, end: 54, over: 54, unit: 'years'}
+	 },
+	 
+	 {qtext: "And do you intend to be working in this field in 12 months time?",
+	  atype: 'yesno',
+	  qdata: 'YES/NO'
+	 },
+	 
+	 {qtext: "And thinking about your longer-term future, how likely is it that you will continue your career in taxonomy?",
+	  question: [
+			{qtext: "Would you say that it is:",
+			 qtype: 'pick',
+		  	 datatype: 'text',
+		  	 atype: 'radio',
+		  	 adata: ['Very likely','Fairly likely','It may be likely','Probably not','Unsure/haven\'t decided']}
+	  		]
+	 },
+	 
+	 {qtext: "How many days of taxonomic field-work have you undertaken in the last two calendar years and how were they funded?",
+	  question: [
+	  		{qtext: "Method of funding",
+	  		 qtype: 'matrix',
+	  		 datatype: number,
+	  		 atype: number,
+	  		 qdata: {
+	  		 	rows: ['(a) Funded by institution', '(b) Funded by grant', '(c) Unfunded'],
+	  		 	cols: ['No. Days Year #1','No. Days Year #2']
+	  		 }
+	  		}
+	  ]
+	 },
+	 
+	 {qtext: "Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?",
+	  question: [
+	  		{qtext: "Acquisition of taxonomic specimens <em>(including collecting, essential preparation, registration and incorporation into the collection)</em>:",
+	  		 label: 'i',
+	  		 question: [
+	  		 		{qtext: "Field component", atype: 'percent', label: '(a)'},
+	  		 		{qtext: "\"In-house\" component", atype: 'percent', label: '(a)'}
+	  		 ]},
+	  		{qtext: "Specialist identification services", atype: 'percent', label: 'i'},
+	  		{qtext: "Research:",
+	  		 label: 'i',
+	  		 question: [
+	  		 		{qtext: "For own institution <em>(including borrowing material, final preparation of specimens and \"writing up\"</em>)", atype: 'percent', label: '(a)'},
+	  		 		{qtext: "Conducted for others <em>(e.g. other government depts., environmental agencies, including work on and writing of reports not for publication)</em>", atype: 'percent', label: '(a)'}
+	  		 ]},
+	  		{qtext: "Writing descriptive publications", atype: 'percent', label: 'i'},
+	  		{qtext: "Theoretical taxonomic work <em>(e.g. phylogenetic, cladistic)</em>", atype: 'percent', label: 'i'},
+	  		{qtext: "Constructing electronic ID tools", atype: 'percent', label: 'i'},
+	  		{qtext: "Building databases, websites", atype: 'percent', label: 'i'},
+	  		{qtext: "Teaching and lecturing <em>(as part of official work)</em>", atype: 'percent', label: 'i'},
+	  		{qtext: "Official editorial work, work for learned societies etc", atype: 'percent', label: 'i'},
+	  		{qtext: "Administration <em>(including staff supervision, meetings policy and program management)</em>", atype: 'percent', label: 'i'},
+	  		{qtext: "Curatorial duties:",
+	  		 label: 'i',
+	  		 question: [
+	  		 		{qtext: "Maintaining the condition and order of the	% collection", atype: 'percent', label: '(a)'},
+	  		 		{qtext: "Processing outgoing and returned loans	% of material", atype: 'percent', label: '(a)'}
+	  		 ]},
+	  		{qtext: "Answering queries received from:",
+	  		 label: 'i',
+	  		 question: [
+	  		 		{qtext: "General public", atype: 'percent', label: '(a)'},
+	  		 		{qtext: "Public/private sector organizations", atype: 'percent', label: '(a)'}
+	  		 ]},
+	  		{qtext: "Other (please specify)",
+	  		 label: 'i',
+	  		 question: [
+	  		 		{atype: 'text'},
+	  		 		{atype: 'percent'}
+	  		 ]}
+		]},
+		
+		{qtext: "To assist ABRS to identify research and skills gaps please indicate on which taxa of Australian living or fossil organisms you currently conduct taxonomic research.",
+		 question: [
+
+		 	{qtype: 'group',
+		 	 question:[
+		 		{qtext: "Eutherian mammals", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Marsupials", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Monotremes", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Birds", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Reptiles", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Amphibians", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Fish", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Cephalochordates", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Tunicates", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Hemichordates", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Echinoderms", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Minor Coelomate Phyla", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'}
+		 		]
+		    },
+		    
+		 	{qtype: 'group',
+		 	 question:[
+		 		{qtext: "Insects", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Crustaceans", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Other arthropods", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Molluscs", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Annelid worms", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Aschelminths", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Nematodes", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Platyhelminths", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Minor Acoelomate Phyla", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Cnidarians", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Poriferans", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Protozoa", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Other animal groups", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'}
+		 		]
+		    },
+
+		 	{qtype: 'group',
+		 	 question:[
+		 		{qtext: "Dicotyledons", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Monocotyledons", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Gymnosperms", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Pteridophytes", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'}
+		 		]
+		 	},
+		 	
+		 	{qtype: 'group',
+		 	 question:[
+		 		{qtext: "Mosses", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Liverworts", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Lichens", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Fungi", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Algae", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Other plant groups", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'}
+		 		]
+		 	},
+		 	
+		 	{qtype: 'group',
+		 	 question:[
+		 		{qtext: "Cyanobacteria", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Bacteria", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Viruses", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'},
+		 		{qtext: "Other microbial groups", datatype: 'bool', atype: 'yesno', displayHint: 'checkbox'}
+		 		]
+		 	}
+		 ]
+		},
+		
+		{qtext: "Please identify the groups you work on, if possible at Family level, if not then at Order level.",
+		 question: [
+		 	{qtext: 'Family', atype:'textarea', datatype: 'text', adata: {rows:5}},
+		 	{qtext: 'Order', atype:'textarea', datatype: 'text', adata: {rows:5}}
+		 ]
+		},
+		
+		{qtext: "Below is a list of things that previous survey respondents have identified as being important to increasing their taxonomic productivity. Thinking about your current position please indicate, in order of importance, which <strong>five</strong> of the following would increase your productivity if funding were available.<br/><strong>Number 1 to 5</strong> where <strong>1 equals the highest</strong> and <strong>5 equals the lowest</strong> in importance.",
+		 question: [
+		 	{atype: 'rank',
+		 	adata: {required: 5},
+		 	question: [
+		 		{qtext: "More technical support staff", atype: 'number'},
+		 		{qtext: "More fieldwork", atype: 'number'},
+		 		{qtext: "More travel to other institutions or conferences", atype: 'number'},
+		 		{qtext: "More funding for publications", atype: 'number'},
+		 		{qtext: "More post-doctoral research fellowships", atype: 'number'},
+		 		{qtext: "Upgrading existing technology", atype: 'number'},
+		 		{qtext: "Upgrading technical library", atype: 'number'},
+		 		{qtext: "Other (please specify)", atype: 'number'}
+		 	]
+		 	},
+		 	{qtext: "If other please specify", atype: 'textarea'}
+		 ]
+		},
+				
+		{qtext: "As for the previous question, but this time please consider the answer in terms of the needs for taxonomy in Australia (rather than for you personally). Please indicate, in order of importance, which <strong>five</strong> of the following would increase Australia’s taxonomic productivity if funding were available.",
+		 question: [
+		 	{atype: 'rank',
+		 	adata: {required: 5},
+		 	question: [
+		 		{qtext: "More technical support staff", atype: 'number'},
+		 		{qtext: "More fieldwork", atype: 'number'},
+		 		{qtext: "More travel to other institutions or conferences", atype: 'number'},
+		 		{qtext: "More funding for publications", atype: 'number'},
+		 		{qtext: "More post-doctoral research fellowships", atype: 'number'},
+		 		{qtext: "Upgrading existing technology", atype: 'number'},
+		 		{qtext: "Upgrading technical library", atype: 'number'},
+		 		{qtext: "Other (please specify)", atype: 'number'}
+		 	]
+		 	},
+		 	{qtext: "If other please specify", atype: 'textarea'}
+		 ]
+		},
+	 
+	 {qtext: "Below is a list of things related to the costs and opportunities in Taxonomy. Please indicate how much you think these issues impact on the taxonomic workforce.<br/>Do they impact <strong>a lot</strong>, <strong>a little</strong> or <strong>not at all</strong>?",
+	  question: [
+	  		{qtext: "",
+	  		 qtype: 'matrix',
+	  		 datatype: text,
+	  		 atype: radio,
+	  		 qdata: {
+	  		 	rows: ['Lack of career opportunities', 'Lack of security of tenure', 'The overall image of taxonomy', 'The need to strengthen inter-institutional links', 'Ability to attract funding', 'Succession planning', 'Limited opportunities for young people', 'Loss of expertise to overseas institutions', 'Other (please specify)'],
+	  		 	cols: ['A lot','A little', 'Not at all']
+	  		 }
+	  		},
+		 	{qtext: "If other please specify", atype: 'textarea'}
+	  ]
+	 }
+
+]}

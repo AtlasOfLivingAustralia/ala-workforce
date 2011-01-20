@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/workforce.iml" filepath="$PROJECT_DIR$/workforce.iml" />
+      <module fileurl="file://$PROJECT_DIR$/workforce-grailsPlugins.iml" filepath="$PROJECT_DIR$/workforce-grailsPlugins.iml" />
+    </modules>
+  </component>
+</project>
+
