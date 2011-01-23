@@ -1,0 +1,53 @@
+<workforce>
+    <!-- Q1 -->
+    <question instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
+        <question type="yesno" dataType="boolean">
+            <text>Is curatorial and/or taxonomic work your major responsibility in your organisation?</text>
+            <data>YES/NO</data>
+        </question>
+        <question type="none">
+            <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
+            <question type="percent">
+                <text>Scientist/Taxonomist (permanent)</text>
+                <answer type="percent" label="%"/>
+            </question>
+            <question type="percent">
+                <text>Scientist/Taxonomist (not permanent)</text>
+                <answer type="percent" label="%"/>
+            </question>
+            <question type="percent">
+                <text>Technical (taxonomy) (permanent)</text>
+                <answer type="percent" label="%"/>
+            </question>
+            <question type="percent">
+                <text>Technical (taxonomy) (not permanent)</text>
+                <answer type="percent" label="%"/>
+            </question>
+            <question type="percent">
+                <text>Administrator/Manager</text>
+                <answer type="percent" label="%"/>
+            </question>
+            <question type="percent">
+                <text>Volunteer/Associate (retired)</text>
+                <answer type="percent" label="%"/>
+            </question>
+            <question type="percent">
+                <text>Volunteer/Associate (not retired)</text>
+                <answer type="percent" label="%"/>
+            </question>
+            <question type="percent">
+                <text>Other</text>
+                <answer type="percent" label="%"/>
+            </question>
+        </question>
+        <question type="textarea" dataType="text">
+            <text>Any additional comments:</text>
+            <answer>
+                <data>
+                    <rows>3</rows>
+                </data>
+            </answer>
+        </question>
+    </question>
+
+</workforce>

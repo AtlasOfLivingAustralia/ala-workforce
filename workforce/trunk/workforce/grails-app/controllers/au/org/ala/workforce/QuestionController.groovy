@@ -9,14 +9,20 @@ class QuestionController {
     def scaffold = true;
 
     def loadQuestionSet = {
-        dataLoaderService.loadQuestionSet()
+        dataLoaderService.loadQuestionSet(servletContext.getResource('metadata/question-set.json').text)
+        def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
+        render list
+    }
+
+    def loadQuestionSetXML = {
+        dataLoaderService.loadQuestionSetXML(servletContext.getResource('metadata/question-set.xml').text)
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
         render list
     }
 
     def singleQuestion = {
         // during development reload question set each time - remove later
-        dataLoaderService.loadQuestionSet()
+        dataLoaderService.loadQuestionSet(servletContext.getResource('metadata/question-set.json').text)
 
         def level1 = params.no ? params.no : 1
         def model = modelLoaderService.loadQuestion(level1 as int)
@@ -28,7 +34,7 @@ class QuestionController {
 
     def allQuestions = {
         // during development reload question set each time - remove later
-        dataLoaderService.loadQuestionSet()
+        dataLoaderService.loadQuestionSet(servletContext.getResource('metadata/question-set.json').text)
 
         def tops = Question.findAllByLevel2(0)
         [questions: tops.collect {modelLoaderService.loadQuestion(it.level1)}]
