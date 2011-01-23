@@ -83,7 +83,7 @@
   	  qtype: 'range',
 	  datatype: 'text',
 	  atype: 'range',
-	  adata: {interval: 5, start: 0, end: 54, over: 54, unit: 'years'}
+	  adata: {interval: 5, start: 0, end: 54, over: 'over 54 years', unit: 'years'}
 	 },
 	 
 	 {qtext: "And do you intend to be working in this field in 12 months time?",
@@ -282,8 +282,41 @@
 	  		 	cols: ['A lot','A little', 'Not at all']
 	  		 }
 	  		},
-		 	{qtext: "If other please specify", atype: 'textarea'}
+		 	{qtext: "If other please specify", atype: 'textarea', qdata: {align: 'right'}}
 	  ]
+	 },
+	 
+	 {qtext: "What was the highest level you achieved in your formal education?",
+	  question: [
+			{qtext: "Please select one:",
+			 qtype: 'pick',
+			 qdata: {align: 'right'},
+		  	 datatype: 'text',
+		  	 atype: 'radio',
+		  	 adata: ['Diploma','Undergraduate Degree','Honours','Masters','Doctorate','Other (please specify)']
+		  	 },
+		  	 {qtext: "If other please specify", atype: 'textarea', qdata: {align: 'right'}},
+		  	 {qtext: "In what subject areas did you major?", atype: 'textarea'}
+	  		]
+	 },
+	 
+	 {qtext: "Are you male or female?",
+	  atype: 'yesno',
+	  qdata: 'YES/NO'
+	 },
+	 
+ 	 {qtext: "Which of the following age categories are you in?",
+  	  qtype: 'range',
+	  datatype: 'text',
+	  atype: 'range',
+	  adata: {interval: 5, start: 20, end: 59, over: '60 and over', unit: '', alt: 'Prefer not to answer'}
+	 },
+	 
+ 	 {qtext: "Which of the following best describes your approximate annual income before tax?",
+  	  qtype: 'pick',
+	  datatype: 'text',
+	  atype: 'radio',
+	  adata: ['$0 - $4,000','$5,000 - $9,000','$10,000 - $14,000','$15,000 - $19,000','$20,000 - $24,000','$25,000 - $29,000','$30,000 - $34,000','$35,000 - $39,000','$40,000 - $44,000','$45,000 - $49,000','$50,000 - $54,000','$55,000 - $59,000','$60,000 - $64,000','$65,000 - $69,000','$70,000 - $74,000','$75,000 - $79,000','$80,000 and over','Prefer not to answer']
 	 }
 
 ]}
