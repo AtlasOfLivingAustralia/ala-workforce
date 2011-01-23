@@ -84,7 +84,9 @@ class WorkforceTagLib {
             if (content.spanColumns2and3) {
                 out << "<td colspan=2>" + content.secondColumnHtml + "</td>"
             } else {
-                out << "<td>" + content.secondColumnHtml + "</td><td>" + content.thirdColumnHtml + "</td>"
+                //println "secondColumnHtml = ${content.secondColumnHtml}"
+                def style = q.qdata?.align ? " style='text-align:${q.qdata.align};'" : ''
+                out << "<td${style}>" + content.secondColumnHtml + "</td><td>" + content.thirdColumnHtml + "</td>"
             }
 
             // end row
@@ -198,12 +200,28 @@ class WorkforceTagLib {
                 result = textField(name: q.ident(), size: 7) + " %"
                 break
             case AnswerType.range:
-                // calculate range labels - sample adata = {interval: 4, start: 1, end: 54, over: 54, unit: 'years'}
+                // calculate range labels - sample adata = {interval: 4, start: 1, end: 'over 54 years', over: 54, unit: 'years'}
                 def labels = []
                 for (int i = q.adata.start; i < q.adata.end; i += q.adata.interval) {
-                    labels << "${i} - ${i + q.adata.interval - 1} ${q.adata.unit}"
+                    if (q.adata.unit && q.adata.unitPlacement) {
+                        switch (q.adata.unitPlacement) {
+                            case 'beforeEach':
+                                labels << "${q.adata.unit}${i} - ${q.adata.unit}${i + q.adata.interval - 1}"
+                                break
+                            default:
+                                labels << "${i} - ${i + q.adata.interval - 1} ${q.adata.unit}"
+                                break
+                        }
+                    } else {
+                        labels << "${i} - ${i + q.adata.interval - 1} ${q.adata.unit}"
+                    }
                 }
-                labels << "over ${q.adata.over} ${q.adata.unit}"
+                if (q.adata.over) {
+                    labels << q.adata.over
+                }
+                if (q.adata.alt) {
+                    labels << q.adata.alt
+                }
 
                 def items = []
                 labels.eachWithIndex { it, idx ->
