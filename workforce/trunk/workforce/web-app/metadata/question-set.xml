@@ -1,4 +1,4 @@
-<workforce>
+<questionSet>
     <!-- Q1 -->
     <question instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
         <question type="yesno" dataType="boolean">
@@ -50,4 +50,4 @@
         </question>
     </question>
 
-</workforce>
+</questionSet>
