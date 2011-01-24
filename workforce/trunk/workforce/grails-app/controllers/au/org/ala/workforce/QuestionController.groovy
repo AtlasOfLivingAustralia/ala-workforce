@@ -17,7 +17,7 @@ class QuestionController {
     def loadQuestionSetXML = {
         dataLoaderService.loadQuestionSetXML(servletContext.getResource('metadata/question-set.xml').text)
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
-        render list
+        render "XML question set loaded - ${list}"
     }
 
     def singleQuestion = {
