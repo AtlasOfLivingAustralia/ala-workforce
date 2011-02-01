@@ -15,11 +15,13 @@ class QuestionModel {
     int level                       // the level this question has in the hierarchy
     String label                    // type of displayed label, eg none, 3, b), iii)
     String qtext                    // the question text
-    QuestionType qtype              // question type, eg ranked, matrix, pick-one
+    QuestionType qtype              // question type, eg rank, pick, range, matrix, group, none
     Object qdata                    // json string describing data - format depends on the qType
     String instruction              // optional instructions
-    AnswerType atype                // the type of the answer widget, eg range, radio, percent, text, rank, boolean, none
-    AnswerDataType datatype         // the data type of the answer, eg bool, number, percent, text
+    AnswerType atype = AnswerType.text
+                                    // the type of the answer widget, eg range, radio, percent, text, rank, boolean, none
+    AnswerDataType datatype = AnswerDataType.text
+                                    // the data type of the answer, eg bool, number, text, percent, numberRange
     String alabel                   // text that labels the answer widget - may be units eg 'hours per week'
     Object adata                    // data for a answer , eg a pick list - may be a reference to an external list eg states of australia
     String displayHint              // suggested form of display, eg dropdown, radio, checkbox
