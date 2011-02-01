@@ -164,10 +164,10 @@ class WorkforceTagLib {
         String result = ''
 
         //println q.toString()
-        // types = yesno, none, number, text, textarea, percent, rank, externalRef, radio, range
+        // types = bool, none, number, text, textarea, percent, rank, externalRef, radio, range
 
         switch (q.atype) {
-            case AnswerType.yesno:
+            case AnswerType.bool:
                 if (q.displayHint == 'checkbox') {
                     result = "<input type='checkbox' name='${q.ident()}'/>"
                 } else {

@@ -1,48 +1,76 @@
+<!--  Model:
+    All questions have 0 or 1 answers.
+
+    Questions have properties that relate to how the question is asked, eg picking one from a list.
+    All question properties are optional.
+    Questions properties are:
+        text - the question text
+        @type - the class of question - one of rank, pick, range, matrix, group or none
+        data - any data associate with the type, eg. list of options or rows and columns in a matrix
+        label - an outline-style label for the question, eg. (a), i, 1
+        @instruction - an additional instruction such as 'if you answered x to the above go to question 6'
+    Questions may also contain sub-questions - any number of nested questions to a depth of 3 levels overall.
+    Question numbers are determined by their order in the set, and their nesting. This gives questions the following
+     implicit properties:
+        (level) - a calculated integer [1..3] that represents the depth of nesting of the question
+        (ident) - a calculated string based on question number at each of the nested levels eg. 1.3.1 or 1.0.0
+
+Q or A?        displayHint - the type of widget to use, eg radio buttons or drop-down or size of widget, eg. textbox size
+        layoutHint - hints how nested questions should be laid out
+
+    Answers may be booleans, numbers, text or a number range stored as text, eg 4000-9000.
+    Answer properties are:
+        @dataType - the type of the answer itself - one of boolean, number, text or a number range
+        @type - the type answer - one of: bool, none, number, text, textarea, percent, rank, externalRef, radio, range
+        @label - a label to show along with the answer, eg. %, hours per week, $
+        @labelPlacement - before or after the answer - defaults to after
+-->
 <questionSet>
     <!-- Q1 -->
     <question instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
-        <question type="yesno" dataType="boolean">
+        <question>
             <text>Is curatorial and/or taxonomic work your major responsibility in your organisation?</text>
             <data>YES/NO</data>
+            <answer type="bool" dataType="bool"/>
         </question>
         <question type="none">
             <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
-            <question type="percent">
+            <question>
                 <text>Scientist/Taxonomist (permanent)</text>
-                <answer type="percent" label="%"/>
+                <answer type="percent" label="%" dataType="number"/>
             </question>
-            <question type="percent">
+            <question>
                 <text>Scientist/Taxonomist (not permanent)</text>
-                <answer type="percent" label="%"/>
+                <answer type="percent" label="%" dataType="number"/>
             </question>
-            <question type="percent">
+            <question>
                 <text>Technical (taxonomy) (permanent)</text>
-                <answer type="percent" label="%"/>
+                <answer type="percent" label="%" dataType="number"/>
             </question>
-            <question type="percent">
+            <question>
                 <text>Technical (taxonomy) (not permanent)</text>
-                <answer type="percent" label="%"/>
+                <answer type="percent" label="%" dataType="number"/>
             </question>
-            <question type="percent">
+            <question>
                 <text>Administrator/Manager</text>
-                <answer type="percent" label="%"/>
+                <answer type="percent" label="%" dataType="number"/>
             </question>
-            <question type="percent">
+            <question>
                 <text>Volunteer/Associate (retired)</text>
-                <answer type="percent" label="%"/>
+                <answer type="percent" label="%" dataType="number"/>
             </question>
-            <question type="percent">
+            <question>
                 <text>Volunteer/Associate (not retired)</text>
-                <answer type="percent" label="%"/>
+                <answer type="percent" label="%" dataType="number"/>
             </question>
-            <question type="percent">
+            <question>
                 <text>Other</text>
-                <answer type="percent" label="%"/>
+                <answer type="percent" label="%" dataType="number"/>
             </question>
         </question>
-        <question type="textarea" dataType="text">
+        <question>
             <text>Any additional comments:</text>
-            <answer>
+            <answer dataType="text" type="textarea">
                 <data>
                     <rows>3</rows>
                 </data>
@@ -50,4 +78,202 @@
         </question>
     </question>
 
+    <!-- Q2 -->
+    <question>
+        <text>Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?</text>
+        <question>
+            <text>Museum</text>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>20/80</layoutHint>
+            <answer type='bool'/>
+            <question type="pick">
+                <text>State</text>
+                <displayHint>dropdown</displayHint>
+                <answer type="externalRef">
+                    <data>state</data>
+                </answer>
+            </question>
+        </question>
+        <question>
+            <text>Herbarium</text>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>20/80</layoutHint>
+            <answer type='bool'/>
+            <question type="pick">
+                <text>State</text>
+                <displayHint>dropdown</displayHint>
+                <answer type="externalRef">
+                    <data>state</data>
+                </answer>
+            </question>
+        </question>
+        <question>
+            <text>University</text>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>20/80</layoutHint>
+            <answer type='bool'/>
+            <question type="pick">
+                <text>State</text>
+                <displayHint>dropdown</displayHint>
+                <answer type="externalRef">
+                    <data>state</data>
+                </answer>
+            </question>
+            <question>
+                <text>Name</text>
+                <displayHint>45</displayHint>
+                <answer type="text"/>
+            </question>
+            <question>
+                <text>Dept</text>
+                <displayHint>45</displayHint>
+                <answer type="text"/>
+            </question>
+        </question>
+        <question>
+            <text>CSIRO</text>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>20/80</layoutHint>
+            <answer type='bool'/>
+            <question type="pick">
+                <text>State</text>
+                <displayHint>dropdown</displayHint>
+                <answer type="externalRef">
+                    <data>state</data>
+                </answer>
+            </question>
+                <question>
+                    <text>Division</text>
+                    <displayHint>45</displayHint>
+                    <answer type="text"/>
+                </question>
+        </question>
+        <question>
+            <text>Commonwealth Department</text>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>20/80</layoutHint>
+            <answer type='bool'/>
+            <question type="pick">
+                <text>State</text>
+                <displayHint>dropdown</displayHint>
+                <answer type="externalRef">
+                    <data>state</data>
+                </answer>
+            </question>
+                <question>
+                    <text>Dept</text>
+                    <displayHint>45</displayHint>
+                    <answer type="text"/>
+                </question>
+        </question>
+        <question>
+            <text>State Department</text>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>20/80</layoutHint>
+            <answer type='bool'/>
+            <question type="pick">
+                <text>State</text>
+                <displayHint>dropdown</displayHint>
+                <answer type="externalRef">
+                    <data>state</data>
+                </answer>
+            </question>
+                <question>
+                    <text>Dept</text>
+                    <displayHint>45</displayHint>
+                    <answer type="text"/>
+                </question>
+        </question>
+        <question>
+            <text>Other</text>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>20/80</layoutHint>
+            <answer type='bool'/>
+            <question type="pick">
+                <text>State</text>
+                <displayHint>dropdown</displayHint>
+                <answer type="externalRef">
+                    <data>state</data>
+                </answer>
+            </question>
+                <question>
+                    <text>Please specify:</text>
+                    <displayHint>45</displayHint>
+                    <answer type="text"/>
+                </question>
+        </question>
+    </question>
+
+    <!-- Q3 -->
+    <question>
+        <text>What is your employment status at this organisation?</text>
+        <question type="pick" datatype="text">
+            <displayHint>radio</displayHint>
+            <answer type="radio">
+                <data>
+                    <list>
+                        <item>Full-time (permanent), paid by organisation</item>
+                        <item>Full-time (temporary), paid by organisation</item>
+                        <item>Full-time, on grant</item>
+                        <item>Part-time (permanent), paid by organisation</item>
+                        <item>Part-time (temporary), paid by organisation</item>
+                        <item>'Part-time, on grant</item>
+                        <item>Associate/Volunteer (retired)</item>
+                        <item>Associate/Volunteer (not retired)</item>
+                        <item>Student</item>
+                        <item>Other (please specify)</item>
+                    </list>
+                </data>
+            </answer>
+        </question>
+        <question>
+            <text>If other please specify:</text>
+            <answer type="text"/>
+        </question>
+
+    </question>
+
+    <!-- Q4 -->
+    <question>
+        <text>In your position, how many hours per week do you work on average?</text>
+        <answer type="number">
+            <data>
+                <min>0</min>
+                <max>100</max>
+            </data>
+            <label>hours per week</label>
+        </answer>
+    </question>
+
+    <!-- Q5 -->
+    <question type="range">
+        <text>How long have you been working in the field of taxonomy?</text>
+        <answer type="range" dataType="numberRange">
+            <data>
+                <range>
+                    <interval>5</interval>
+                    <start>0</start>
+                    <end>54</end>
+                    <over>over 54 years</over>
+                    <unit>years</unit>
+                </range>
+                <!-- interval="5" start="0" end="54" over="over 54 years" unit="years"/>-->
+            </data>
+        </answer>
+    </question>
+
+    <!-- Q6 -->
+
+    <!-- Q7 -->
+    <!-- Q8 -->
+    <!-- Q9 -->
+    <!-- Q10 -->
+    <!-- Q11 -->
+    <!-- Q12 -->
+    <!-- Q13 -->
+    <!-- Q14 -->
+    <!-- Q15 -->
+    <!-- Q16 -->
+    <!-- Q17 -->
+    <!-- Q18 -->
 </questionSet>

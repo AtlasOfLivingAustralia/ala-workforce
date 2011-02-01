@@ -9,22 +9,23 @@ class QuestionController {
     def scaffold = true;
 
     def loadQuestionSet = {
-        dataLoaderService.loadQuestionSet(servletContext.getResource('metadata/question-set.json').text)
+        loadJSON()
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
         render list
     }
 
     def loadQuestionSetXML = {
-        dataLoaderService.loadQuestionSetXML(servletContext.getResource('metadata/question-set.xml').text)
+        loadXML()
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
         render "XML question set loaded - ${list}"
     }
 
     def singleQuestion = {
         // during development reload question set each time - remove later
-        dataLoaderService.loadQuestionSet(servletContext.getResource('metadata/question-set.json').text)
+        //loadXML()
+        loadJSON()
 
-        def level1 = params.no ? params.no : 1
+        def level1 = params.id ? params.id : 1
         def model = modelLoaderService.loadQuestion(level1 as int)
         if (!model) {
             flash.message = "No such question"
@@ -34,12 +35,19 @@ class QuestionController {
 
     def allQuestions = {
         // during development reload question set each time - remove later
-        dataLoaderService.loadQuestionSet(servletContext.getResource('metadata/question-set.json').text)
+        loadJSON()
 
         def tops = Question.findAllByLevel2(0)
         [questions: tops.collect {modelLoaderService.loadQuestion(it.level1)}]
     }
-    
+
+    def loadJSON() {
+        dataLoaderService.loadQuestionSet(servletContext.getResource('metadata/question-set.json').text)
+    }
+
+    def loadXML() {
+        dataLoaderService.loadQuestionSetXML(servletContext.getResource('metadata/question-set.xml').text)
+    }
     /*def index = {
         redirect(action: "list", params: params)
     }
