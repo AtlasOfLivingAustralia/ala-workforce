@@ -16,7 +16,7 @@
             </g:if>
             <div class="dialog">
                 <table class="questions">
-                    <colgroup><col width="4%"><col width="35%"><col width="61%"></colgroup>
+                    <colgroup><col width="4%"><col width="33%"><col width="70%"></colgroup>
                     <tbody>
 
                     <g:each var='question' in="${questions}">
