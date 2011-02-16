@@ -20,10 +20,15 @@ class QuestionController {
         render "XML question set loaded - ${list}"
     }
 
+    def test = {
+        loadTestXML()
+        render "Done."
+    }
+
     def singleQuestion = {
         // during development reload question set each time - remove later
-        //loadXML()
-        loadJSON()
+        loadXML()
+        //loadJSON()
 
         def level1 = params.id ? params.id : 1
         def model = modelLoaderService.loadQuestion(level1 as int)
@@ -35,7 +40,8 @@ class QuestionController {
 
     def allQuestions = {
         // during development reload question set each time - remove later
-        loadJSON()
+        loadXML()
+        //loadJSON()
 
         def tops = Question.findAllByLevel2(0)
         [questions: tops.collect {modelLoaderService.loadQuestion(it.level1)}]
@@ -47,6 +53,10 @@ class QuestionController {
 
     def loadXML() {
         dataLoaderService.loadQuestionSetXML(servletContext.getResource('metadata/question-set.xml').text)
+    }
+
+    def loadTestXML() {
+        dataLoaderService.loadTestXML(servletContext.getResource('metadata/test.xml').text)
     }
     /*def index = {
         redirect(action: "list", params: params)
