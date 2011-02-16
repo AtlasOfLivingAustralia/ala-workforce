@@ -7,23 +7,20 @@ class WorkforceTagLib {
     def question = { attrs ->
         QuestionModel model = attrs.question
 
-        /*
-         * The top level may:
-         *  - just be a container for subquestions (no qtext and no answer)
-         *  - just be the carrier for the question text (qtext but no answer)
-         *  - be a real question (both qtext and answer)
-         *  - (?) take an answer but have no question text (no qtext but answer)
-         * This determines layout structure.
-         */
-
-        //println "atype = ${model.atype}(${model.atype?.class}), qtype = ${model.qtype}"
-
         List secondLevel = model.questions
         int secondLevelIndex = 0
 
         // pre-calculate whether the first cell needs to span all rows
         int firstCellRowSpan = cell1RowSpan(model)
 
+        /*
+         * The top level may:
+         *  - just be a container for subquestions (no qtext and no answer)
+         *  - just be the carrier for the question text (qtext but no answer)
+         *  - be a real question (both qtext and answer)
+         *  - (?) take an answer but have no question text (no qtext but answer)
+         * This determines top-level layout.
+         */
         if (model.atype == AnswerType.none) {
             // there is no answer but there may be text
             if (model.qtext) {
@@ -66,6 +63,14 @@ class WorkforceTagLib {
         }
 
         // second and third level questions
+        /**
+         * Sub-questions may be repeating.
+         *
+         * A single sub-question can:
+         *  span the entire 2 column space; or
+         *  have text in the left column and a widget in the right; or
+         * 
+         */
         for (secondLevelIndex; secondLevelIndex < secondLevel.size(); secondLevelIndex++) {
 
             QuestionModel q = secondLevel[secondLevelIndex]
@@ -266,8 +271,9 @@ class WorkforceTagLib {
 
         String content = "<table class='shy'>"
 
-        content += "<col align='left'/>"
-        cols.each { content += "<col align='center'/>"}
+        content += "<col align='left' width='25%'/>"
+        def colWidth = 75/cols.size()
+        cols.each { content += "<col width='${colWidth}%'/>"}
 
         content += "<tr><td>${text}</td>"
 
