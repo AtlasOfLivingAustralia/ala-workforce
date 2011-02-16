@@ -9,18 +9,17 @@
         data - any data associate with the type, eg. list of options or rows and columns in a matrix
         label - an outline-style label for the question, eg. (a), i, 1
         @instruction - an additional instruction such as 'if you answered x to the above go to question 6'
+        displayHint - the type of widget to use, eg radio buttons or drop-down or size of widget, eg. textbox size
+        layoutHint - hints how nested questions should be laid out
     Questions may also contain sub-questions - any number of nested questions to a depth of 3 levels overall.
     Question numbers are determined by their order in the set, and their nesting. This gives questions the following
      implicit properties:
         (level) - a calculated integer [1..3] that represents the depth of nesting of the question
         (ident) - a calculated string based on question number at each of the nested levels eg. 1.3.1 or 1.0.0
 
-Q or A?        displayHint - the type of widget to use, eg radio buttons or drop-down or size of widget, eg. textbox size
-        layoutHint - hints how nested questions should be laid out
-
     Answers may be booleans, numbers, text or a number range stored as text, eg 4000-9000.
     Answer properties are:
-        @dataType - the type of the answer itself - one of boolean, number, text or a number range
+        @dataType - the type of the answer itself - one of bool, number, text or a number range
         @type - the type answer - one of: bool, none, number, text, textarea, percent, rank, externalRef, radio, range
         @label - a label to show along with the answer, eg. %, hours per week, $
         @labelPlacement - before or after the answer - defaults to after
@@ -72,7 +71,7 @@ Q or A?        displayHint - the type of widget to use, eg radio buttons or drop
             <text>Any additional comments:</text>
             <answer dataType="text" type="textarea">
                 <data>
-                    <rows>3</rows>
+                    <rows value="int">3</rows>
                 </data>
             </answer>
         </question>
@@ -211,18 +210,16 @@ Q or A?        displayHint - the type of widget to use, eg radio buttons or drop
             <displayHint>radio</displayHint>
             <answer type="radio">
                 <data>
-                    <list>
-                        <item>Full-time (permanent), paid by organisation</item>
-                        <item>Full-time (temporary), paid by organisation</item>
-                        <item>Full-time, on grant</item>
-                        <item>Part-time (permanent), paid by organisation</item>
-                        <item>Part-time (temporary), paid by organisation</item>
-                        <item>'Part-time, on grant</item>
-                        <item>Associate/Volunteer (retired)</item>
-                        <item>Associate/Volunteer (not retired)</item>
-                        <item>Student</item>
-                        <item>Other (please specify)</item>
-                    </list>
+                    <item>Full-time (permanent), paid by organisation</item>
+                    <item>Full-time (temporary), paid by organisation</item>
+                    <item>Full-time, on grant</item>
+                    <item>Part-time (permanent), paid by organisation</item>
+                    <item>Part-time (temporary), paid by organisation</item>
+                    <item>Part-time, on grant</item>
+                    <item>Associate/Volunteer (retired)</item>
+                    <item>Associate/Volunteer (not retired)</item>
+                    <item>Student</item>
+                    <item>Other (please specify)</item>
                 </data>
             </answer>
         </question>
@@ -238,8 +235,8 @@ Q or A?        displayHint - the type of widget to use, eg radio buttons or drop
         <text>In your position, how many hours per week do you work on average?</text>
         <answer type="number">
             <data>
-                <min>0</min>
-                <max>100</max>
+                <min value='int'>0</min>
+                <max value='int'>100</max>
             </data>
             <label>hours per week</label>
         </answer>
@@ -250,30 +247,394 @@ Q or A?        displayHint - the type of widget to use, eg radio buttons or drop
         <text>How long have you been working in the field of taxonomy?</text>
         <answer type="range" dataType="numberRange">
             <data>
-                <range>
-                    <interval>5</interval>
-                    <start>0</start>
-                    <end>54</end>
-                    <over>over 54 years</over>
-                    <unit>years</unit>
-                </range>
+                <interval value='int'>5</interval>
+                <start value='int'>0</start>
+                <end value='int'>54</end>
+                <over>over 54 years</over>
+                <unit>years</unit>
                 <!-- interval="5" start="0" end="54" over="over 54 years" unit="years"/>-->
             </data>
         </answer>
     </question>
 
     <!-- Q6 -->
+    <question>
+        <text>And do you intend to be working in this field in 12 months time?</text>
+        <answer type='bool'/>
+    </question>
 
     <!-- Q7 -->
+    <question>
+        <text>And thinking about your longer-term future, how likely is it that you will continue your career in taxonomy?</text>
+        <question type="pick" datatype="text">
+            <text>Would you say that it is:</text>
+            <answer type="radio">
+                <data>
+                    <item>Very likely</item>
+                    <item>Fairly likely</item>
+                    <item>It may be likely</item>
+                    <item>Probably not</item>
+                    <item>Unsure/haven't decided</item>
+                </data>
+            </answer>
+        </question>
+    </question>
+
     <!-- Q8 -->
+    <question>
+        <text>How many days of taxonomic field-work have you undertaken in the last two calendar years and how were they funded?</text>
+        <question type="matrix" dataType="number">
+            <text>Method of funding</text>
+            <data>
+                <rows>
+                    <item>(a) Funded by institution</item>
+                    <item>(b) Funded by grant</item>
+                    <item>(c) Unfunded</item>
+                </rows>
+                <cols>
+                    <item>No. Days Year #1</item>
+                    <item>No. Days Year #2</item>
+                </cols>
+            </data>
+            <answer type="number"/>
+        </question>
+    </question>
+    
     <!-- Q9 -->
+    <question>
+        <text>Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?</text>
+        <question>
+             <text>Acquisition of taxonomic specimens &lt;em&gt;(including collecting, essential preparation, registration and incorporation into the collection)&lt;/em&gt;:</text>
+             <label>i</label>
+             <question>
+                 <text>Field component</text>
+                 <answer type="percent"/>
+                 <label>(a)</label>
+             </question>
+             <question>
+                 <text>"In-House" component</text>
+                 <answer type="percent"/>
+                 <label>(a)</label>
+             </question>
+        </question>
+        <question>
+            <text>Specialist identification services</text>
+            <answer type="percent"/>
+            <label>i</label>
+        </question>
+        <question>
+             <text>Research:</text>
+             <label>i</label>
+             <question>
+                 <text>For own institution &lt;em&gt;(including borrowing material, final preparation of specimens and "writing up"&lt;/em&gt;)</text>
+                 <answer type="percent"/>
+                 <label>(a)</label>
+             </question>
+             <question>
+                 <text>Conducted for others &lt;em&gt;(e.g. other government depts., environmental agencies, including work on and writing of reports not for publication)&lt;/em&gt;</text>
+                 <answer type="percent"/>
+                 <label>(a)</label>
+             </question>
+        </question>
+        <question>
+            <text>Writing descriptive publications</text>
+            <answer type="percent"/>
+            <label>i</label>
+        </question>
+        <question>
+            <text>Theoretical taxonomic work &lt;em&gt;(e.g. phylogenetic, cladistic)&lt;/em&gt;</text>
+            <answer type="percent"/>
+            <label>i</label>
+        </question>
+        <question>
+            <text>Constructing electronic ID tools</text>
+            <answer type="percent"/>
+            <label>i</label>
+        </question>
+        <question>
+            <text>Building databases, websites</text>
+            <answer type="percent"/>
+            <label>i</label>
+        </question>
+        <question>
+            <text>Teaching and lecturing &lt;em&gt;(as part of official work)&lt;/em&gt;</text>
+            <answer type="percent"/>
+            <label>i</label>
+        </question>
+        <question>
+            <text>Official editorial work, work for learned societies etc</text>
+            <answer type="percent"/>
+            <label>i</label>
+        </question>
+        <question>
+            <text>Administration &lt;em&gt;(including staff supervision, meetings policy and program management)&lt;/em&gt;</text>
+            <answer type="percent"/>
+            <label>i</label>
+        </question>
+        <question>
+             <text>Curatorial duties:</text>
+             <label>i</label>
+             <question>
+                 <text>Maintaining the condition and order of the collection</text>
+                 <answer type="percent"/>
+                 <label>(a)</label>
+             </question>
+             <question>
+                 <text>Processing outgoing and returned loans of material</text>
+                 <answer type="percent"/>
+                 <label>(a)</label>
+             </question>
+        </question>
+        <question>
+             <text>Answering queries received from:</text>
+             <label>i</label>
+             <question>
+                 <text>General public</text>
+                 <answer type="percent"/>
+                 <label>(a)</label>
+             </question>
+             <question>
+                 <text>Public/private sector organizations</text>
+                 <answer type="percent"/>
+                 <label>(a)</label>
+             </question>
+        </question>
+        <question>
+             <text>Other (please specify)</text>
+             <label>i</label>
+             <question>
+                 <answer type="text"/>
+             </question>
+             <question>
+                 <answer type="percent"/>
+             </question>
+        </question>
+    </question>
+
     <!-- Q10 -->
+    <question>
+        <text>To assist ABRS to identify research and skills gaps please indicate on which taxa of Australian living or fossil organisms you currently conduct taxonomic research.</text>
+        <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
+            <question><text>Eutherian mammals</text></question>
+            <question><text>Marsupials</text></question>
+            <question><text>Monotremes</text></question>
+            <question><text>Birds</text></question>
+            <question><text>Reptiles</text></question>
+            <question><text>Amphibians</text></question>
+            <question><text>Fish</text></question>
+            <question><text>Cephalochordates</text></question>
+            <question><text>Tunicates</text></question>
+            <question><text>Hemichordates</text></question>
+            <question><text>Echinoderms</text></question>
+            <question><text>Minor Coelomate Phyla</text></question>
+        </question>
+
+        <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
+            <question><text>Insects</text></question>
+            <question><text>Crustaceans</text></question>
+            <question><text>Other arthropods</text></question>
+            <question><text>Molluscs</text></question>
+            <question><text>Annelid worms</text></question>
+            <question><text>Aschelminths</text></question>
+            <question><text>Nematodes</text></question>
+            <question><text>Platyhelminths</text></question>
+            <question><text>Minor Acoelomate Phyla</text></question>
+            <question><text>Cnidarians</text></question>
+            <question><text>Poriferans</text></question>
+            <question><text>Protozoa</text></question>
+            <question><text>Other animal groups</text></question>
+        </question>
+
+        <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
+            <question><text>Dicotyledons</text></question>
+            <question><text>Monocotyledons</text></question>
+            <question><text>Gymnosperms</text></question>
+            <question><text>Pteridophytes</text></question>
+        </question>
+
+        <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
+            <question><text>Mosses</text></question>
+            <question><text>Liverworts</text></question>
+            <question><text>Lichens</text></question>
+            <question><text>Fungi</text></question>
+            <question><text>Algae</text></question>
+            <question><text>Other plant groups</text></question>
+        </question>
+
+        <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
+            <question><text>Cyanobacteria</text></question>
+            <question><text>Bacteria</text></question>
+            <question><text>Viruses</text></question>
+            <question><text>Other microbial groups</text></question>
+        </question>
+    </question>
+
     <!-- Q11 -->
+    <question>
+        <text>Please identify the groups you work on, if possible at Family level, if not then at Order level.</text>
+        <question>
+            <text>Family</text>
+            <answer type="textarea" dataType="text">
+                <data><rows value="int">5</rows></data>
+            </answer>
+        </question>
+        <question>
+            <text>Order</text>
+            <answer type="textarea" dataType="text">
+                <data><rows value="int">5</rows></data>
+            </answer>
+        </question>
+    </question>
+
     <!-- Q12 -->
+    <question>
+        <text>Below is a list of things that previous survey respondents have identified as being important to increasing their taxonomic productivity. Thinking about your current position please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase your productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
+        <question defaultAnswerType="number">
+            <answer type="rank">
+                <data><required value="int">5</required></data>
+            </answer>
+            <question><text>More technical support staff</text></question>
+            <question><text>More fieldwork</text></question>
+            <question><text>More travel to other institutions or conferences</text></question>
+            <question><text>More funding for publications</text></question>
+            <question><text>More post-doctoral research fellowships</text></question>
+            <question><text>Upgrading existing technology</text></question>
+            <question><text>Upgrading technical library</text></question>
+            <question><text>Other (please specify)</text></question>
+        </question>
+        <question>
+            <text>If other please specify</text>
+            <answer type="textarea"/>
+        </question>
+    </question>
+
     <!-- Q13 -->
+    <question>
+        <text>As for the previous question, but this time please consider the answer in terms of the needs for taxonomy in Australia (rather than for you personally). Please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase Australia's taxonomic productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
+        <question defaultAnswerType="number">
+            <answer type="rank">
+                <data><required value="int">5</required></data>
+            </answer>
+            <question><text>More technical support staff</text></question>
+            <question><text>More fieldwork</text></question>
+            <question><text>More travel to other institutions or conferences</text></question>
+            <question><text>More funding for publications</text></question>
+            <question><text>More post-doctoral research fellowships</text></question>
+            <question><text>Upgrading existing technology</text></question>
+            <question><text>Upgrading technical library</text></question>
+            <question><text>Other (please specify)</text></question>
+        </question>
+        <question>
+            <text>If other please specify</text>
+            <answer type="textarea"/>
+        </question>
+    </question>
+
     <!-- Q14 -->
+    <question>
+        <text>Below is a list of things related to the costs and opportunities in Taxonomy. Please indicate how much you think these issues impact on the taxonomic workforce.&lt;br/&gt;Do they impact &lt;strong&gt;a lot&lt;/strong&gt;, &lt;strong&gt;a little&lt;/strong&gt; or &lt;strong&gt;not at all&lt;/strong&gt;?</text>
+        <question type="matrix">
+            <data>
+                <rows>
+                    <item>Lack of career opportunities</item>
+                    <item>Lack of security of tenure</item>
+                    <item>The overall image of taxonomy</item>
+                    <item>The need to strengthen inter-institutional links</item>
+                    <item>Ability to attract funding</item>
+                    <item>Succession planning</item>
+                    <item>Limited opportunities for young people</item>
+                    <item>Loss of expertise to overseas institutions</item>
+                    <item>Other (please specify)</item>
+                </rows>
+                <cols>
+                    <item>A lot</item>
+                    <item>A little</item>
+                    <item>Not at all</item>
+                </cols>
+            </data>
+            <answer type="radio" dataType="text"/>
+        </question>
+        <question>
+            <text>If other please specify</text>
+            <answer type='textarea'/>
+            <data><align>right</align></data>
+        </question>
+    </question>
+
     <!-- Q15 -->
+    <question>
+        <text>What was the highest level you achieved in your formal education?</text>
+        <question type="pick">
+            <text>Please select one:</text>
+            <data><align>right</align></data>
+            <answer type="radio" datatype='text'>
+                <data>
+                    <item>Diploma</item>
+                    <item>Undergraduate Degree</item>
+                    <item>Honours</item>
+                    <item>Masters</item>
+                    <item>Doctorate</item>
+                    <item>Other (please specify)</item>
+                </data>
+            </answer>
+            </question>
+            <question>
+                <text>If other please specify</text>
+                <answer type="textarea"/>
+                <data><align>right</align></data>
+            </question>
+            <question>
+                <text>In what subject areas did you major?</text>
+                <answer type="textarea"/>
+            </question>
+    </question>
+
     <!-- Q16 -->
+    <question>
+        <text>Are you male or female?</text>
+        <answer type="bool"/>
+    </question>
+
     <!-- Q17 -->
+    <question type="range">
+        <text>Which of the following age categories are you in?</text>
+        <answer type="range" dataType="numberRange">
+            <data>
+                <interval value="int">5</interval>
+                <start value="int">20</start>
+                <end value="int">59</end>
+                <over>60 and over</over>
+                <unit/>
+                <alt>Prefer not to answer</alt>
+            </data>
+        </answer>
+    </question>
+
     <!-- Q18 -->
+    <question type="pick">
+        <text>Which of the following best describes your approximate annual income before tax?</text>
+        <answer type="radio" dataType="numberRange">
+            <data>
+                <item>$0 - $4,000</item>
+                <item>$5,000 - $9,000</item>
+                <item>$10,000 - $14,000</item>
+                <item>$15,000 - $19,000</item>
+                <item>$20,000 - $24,000</item>
+                <item>$25,000 - $29,000</item>
+                <item>$30,000 - $34,000</item>
+                <item>$35,000 - $39,000</item>
+                <item>$40,000 - $44,000</item>
+                <item>$45,000 - $49,000</item>
+                <item>$50,000 - $54,000</item>
+                <item>$55,000 - $59,000</item>
+                <item>$60,000 - $64,000</item>
+                <item>$65,000 - $69,000</item>
+                <item>$70,000 - $74,000</item>
+                <item>$75,000 - $79,000</item>
+                <item>$80,000 and over</item>
+                <item>Prefer not to answer</item>
+            </data>
+        </answer>
+    </question>
+
 </questionSet>
