@@ -4,8 +4,23 @@ class WorkforceTagLib {
 
     static namespace = 'wf'
 
+    def modelLoaderService
+
+    /**
+     * Return html for a single question.
+     *
+     * One of the two attrs must be present.
+     *
+     * @attr questionNumber the number of the question
+     * @attr question the actual question model
+     */
     def question = { attrs ->
-        QuestionModel model = attrs.question
+        QuestionModel model
+        if (attrs.questionNumber) {
+            model = modelLoaderService.loadQuestion(attrs.questionNumber as int)
+        } else {
+            model = attrs.question
+        }
 
         List secondLevel = model.questions
         int secondLevelIndex = 0
@@ -202,7 +217,14 @@ class WorkforceTagLib {
                 result = textArea(name: q.ident(), rows: q.adata?.rows) + " " + (q.alabel ?: "")
                 break
             case AnswerType.percent:
-                result = textField(name: q.ident(), size: 7) + " %"
+                def attrs = [name: q.ident(), size: 7]
+                if (q.level == 2 && q.layoutHint == 'align-with-level3') {
+                    //println "in layoutWidget:percent for ${q.ident()}: layoutHint is ${q.layoutHint}"
+                    //attrs.put 'class','alignWithLevel3'
+                    result = "<div class='alignWithLevel3'>" + textField(attrs) + " %</div>"
+                } else {
+                    result = textField(attrs) + " %"
+                }
                 break
             case AnswerType.range:
                 // calculate range labels - sample adata = {interval: 4, start: 1, end: 'over 54 years', over: 54, unit: 'years'}
@@ -356,11 +378,25 @@ class WorkforceTagLib {
 
     private Map layoutGroup(QuestionModel q) {
         def items = []
+        def currentSubgroup = ''
+        def indent = ''
         q.questions.each {
-            items << layoutWidget(it) + " ${it.qtext}<br/>"
+            // handle sub-groups within the group
+            if (it.layoutHint?.startsWith('subgroup:')) {
+                def subgroup = it.layoutHint[9..-1]
+                if (currentSubgroup != subgroup) {
+                    indent = '&nbsp;&nbsp;&nbsp;'
+                    items << indent + subgroup
+                    currentSubgroup = subgroup
+                }
+            } else {
+                currentSubgroup = ''
+                indent = ''
+            }
+            items << indent + layoutWidget(it) + " ${it.qtext}<br/>"
         }
 
-        return [secondColumnHtml: layoutListOfItems(items, 2), thirdColumnHtml: "", spanColumns2and3: true]
+        return [secondColumnHtml: layoutListOfItems(items, 6), thirdColumnHtml: "", spanColumns2and3: true]
     }
 
     private Map layoutRank(QuestionModel q) {
@@ -425,6 +461,7 @@ class WorkforceTagLib {
     }
 
     private String layoutListOfItems(List items, int wrapPoint) {
+        //println "layoutListOfItems: items=${items?.size()} wrapPpoint=${wrapPoint}"
         if (items.size() < wrapPoint) {
             def result = "<table class='shy'>"
             items.each {

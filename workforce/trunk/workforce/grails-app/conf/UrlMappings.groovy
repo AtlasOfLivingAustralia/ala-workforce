@@ -7,6 +7,9 @@ class UrlMappings {
 			}
 		}
 
+        "/question/$id" (controller:'question', action:'singleQuestion')
+        "/questions/$from?/$to?" (controller:'question', action:'allQuestions')
+
 		"/"(view:"/index")
 		"500"(view:'/error')
 	}

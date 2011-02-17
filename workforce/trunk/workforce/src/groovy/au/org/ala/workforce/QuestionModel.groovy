@@ -1,9 +1,12 @@
 package au.org.ala.workforce
 
 import grails.converters.deep.JSON
+import static AnswerDataType.*
+import java.text.NumberFormat
+import java.text.ParseException
 
 /**
- * OO representation of a top-level question.
+ * OO representation of a question.
  *
  * Created by markew
  * Date: Dec 14, 2010
@@ -60,6 +63,66 @@ class QuestionModel {
             this."${it}" = record."${it}"
         }
 
+    }
+
+    def validate(params) {
+        def valid = true
+        println "validating ${ident()} atype=${atype} datatype=${datatype}"
+        if (atype != AnswerType.none) {
+            def myAnswer = params."${ident()}"
+            println "answer is ${myAnswer}"
+            if (myAnswer) {
+                // validate my answer
+                switch (datatype) {
+                    case bool:
+                        valid = myAnswer
+                        break
+                    case text:
+                        valid = myAnswer  // only has to exist
+                        break
+                    case number:
+                        try {
+                            println "validating ${ident()} datatype=${datatype} value=${myAnswer}"
+                            NumberFormat.getInstance().parse(myAnswer)
+                        } catch (ParseException e) {
+                            valid = false
+                        }
+                        break
+                    case percent:
+                        try {
+                            def val = NumberFormat.getInstance().parse(myAnswer)
+                            if (!val in 0..100) {
+                                valid = false
+                            }
+                        } catch (ParseException e) {
+                            valid = false
+                        }
+                        break
+                    case numberRange:
+                        def numbers = myAnswer.tokenize('-')
+                        if (numbers.size() == 2) {
+                            try {
+                                NumberFormat.getInstance().parse(numbers[0])
+                                NumberFormat.getInstance().parse(numbers[1])
+                            } catch (ParseException e) {
+                                valid = false
+                            }
+                        } else {
+                            valid = false
+                        }
+                        break
+                    default:
+                        valid = false
+                }
+            }
+            println "answer for ${ident()} is ${valid?'valid':'not valid'}"
+            //if (!valid) { return false }
+        }
+
+        // check sub-questions
+        questions.each {
+            it.validate(params)
+        }
     }
 
     String ident() {
