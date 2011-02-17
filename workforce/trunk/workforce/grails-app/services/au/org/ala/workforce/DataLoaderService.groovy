@@ -52,14 +52,29 @@ class DataLoaderService {
             q.instruction = it.@instruction
             q.qtype = it.@type.toString() ? QuestionType.valueOf(it.@type.toString()) : QuestionType.none
             q.label = it.label
-            q.layoutHint = it.layoutHint
+            q.layoutHint = valueOrDefault(it.layoutHint, defaults)
             q.displayHint = valueOrDefault(it.displayHint, defaults)
             q.qdata = extractJsonString(it.data) as grails.converters.JSON
             q.qtext = it.text
-            q.datatype = valueOrDefault(it.answer?.@dataType, defaults) ? AnswerDataType.valueOf(valueOrDefault(it.answer?.@dataType, defaults) as String) : AnswerDataType.text
             q.atype = valueOrDefault(it.answer?.@type, defaults) ? AnswerType.valueOf(valueOrDefault(it.answer?.@type, defaults) as String) : AnswerType.none
+            def datatype = null//TODO:valueOrDefault(it.answer?.@dataType, defaults)
+            if (datatype) {
+                q.datatype = AnswerDataType.valueOf(datatype as String)
+            } else {
+                // default to what's appropriate for answer type
+                switch (q.atype) {
+                    case AnswerType.number:
+                    case AnswerType.percent:
+                    case AnswerType.rank:
+                        q.datatype = AnswerDataType.number; break
+                    case AnswerType.bool:
+                        q.datatype = AnswerDataType.bool; break
+                    default:
+                        q.datatype = AnswerDataType.text
+                }
+            }
             q.adata = extractJsonString(it.answer?.data) as grails.converters.JSON
-            q.alabel = it.answer?.label.text()
+            q.alabel = it.answer?.label?.text()
 
             q.save()
             if (q.hasErrors()) {
@@ -132,6 +147,10 @@ class DataLoaderService {
         if (node.@defaultDisplayHint.text()) {
             //println "Setting default displayHint to ${node.@defaultDisplayHint.text()}"
             defaults.defaultDisplayHint = node.@defaultDisplayHint.text()
+        }
+        if (node.@defaultLayoutHint.text()) {
+            //println "Setting default layoutHint to ${node.@defaultLayoutHint.text()}"
+            defaults.defaultLayoutHint = node.@defaultLayoutHint.text()
         }
         return defaults
     }

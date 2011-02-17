@@ -20,7 +20,7 @@
     Answers may be booleans, numbers, text or a number range stored as text, eg 4000-9000.
     Answer properties are:
         @dataType - the type of the answer itself - one of bool, number, text or a number range
-        @type - the type answer - one of: bool, none, number, text, textarea, percent, rank, externalRef, radio, range
+        @type - the type of answer widget - one of: bool, none, number, text, textarea, percent, rank, externalRef, radio, range
         @label - a label to show along with the answer, eg. %, hours per week, $
         @labelPlacement - before or after the answer - defaults to after
 -->
@@ -301,7 +301,7 @@
     </question>
     
     <!-- Q9 -->
-    <question>
+    <question defaultLayoutHint="align-with-level3"><!-- the answer widget for level 2 questions should be aligned with those for level 3 -->
         <text>Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?</text>
         <question>
              <text>Acquisition of taxonomic specimens &lt;em&gt;(including collecting, essential preparation, registration and incorporation into the collection)&lt;/em&gt;:</text>
@@ -415,9 +415,9 @@
     <question>
         <text>To assist ABRS to identify research and skills gaps please indicate on which taxa of Australian living or fossil organisms you currently conduct taxonomic research.</text>
         <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
-            <question><text>Eutherian mammals</text></question>
-            <question><text>Marsupials</text></question>
-            <question><text>Monotremes</text></question>
+            <question><layoutHint>subgroup:Mammals</layoutHint><text>Eutherian</text></question>
+            <question><layoutHint>subgroup:Mammals</layoutHint><text>Marsupials</text></question>
+            <question><layoutHint>subgroup:Mammals</layoutHint><text>Monotremes</text></question>
             <question><text>Birds</text></question>
             <question><text>Reptiles</text></question>
             <question><text>Amphibians</text></question>
@@ -446,8 +446,8 @@
         </question>
 
         <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
-            <question><text>Dicotyledons</text></question>
-            <question><text>Monocotyledons</text></question>
+            <question><layoutHint>subgroup:Angiosperms</layoutHint><text>Dicotyledon</text></question>
+            <question><layoutHint>subgroup:Angiosperms</layoutHint><text>Monocotyledon</text></question>
             <question><text>Gymnosperms</text></question>
             <question><text>Pteridophytes</text></question>
         </question>

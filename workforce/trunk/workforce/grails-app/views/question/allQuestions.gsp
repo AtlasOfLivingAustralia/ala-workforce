@@ -14,26 +14,28 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <div class="dialog">
-                <table class="questions">
-                    <colgroup><col width="4%"><col width="33%"><col width="70%"></colgroup>
-                    <tbody>
+            <g:form action="submit">
+              <g:hiddenField name="from" value="${from}"/>
+              <g:hiddenField name="to" value="${to}"/>
+              <div class="dialog">
+                  <table class="questions">
+                      <colgroup><col width="4%"><col width="33%"><col width="70%"></colgroup>
+                      <tbody>
 
-                    <g:each var='question' in="${questions}">
-                      <wf:question question="${question}"/>
-                      <tr><td colspan='3'></td></tr>
-                    </g:each>
+                        <g:each var='questionNumber' in="${from..to}">
+                          <wf:question questionNumber="${questionNumber}"/>
+                          <tr><td colspan='3'></td></tr>
+                        </g:each>
 
-                    </tbody>
-                </table>
-            </div>
-            <div class="buttons">
-                <g:form>
-                    <span class="button"><g:actionSubmit class="edit" action="edit" value="Save" /></span>
-                    <span class="button"><g:actionSubmit class="edit" action="edit" value="Submit" /></span>
-                    <span class="button"><g:actionSubmit class="delete" action="cancel" value="Cancel" onclick="return confirm('${message(code: 'default.button.cancel.confirm.message', default: 'Are you sure?')}');" /></span>
-                </g:form>
-            </div>
+                      </tbody>
+                  </table>
+              </div>
+              <div class="buttons">
+                      <span class="button"><g:actionSubmit class="edit" action="edit" value="Save" /></span>
+                      <span class="button"><g:actionSubmit class="edit" action="submit" value="Submit" /></span>
+                      <span class="button"><g:actionSubmit class="delete" action="cancel" value="Cancel" onclick="return confirm('${message(code: 'default.button.cancel.confirm.message', default: 'Are you sure?')}');" /></span>
+              </div>
+            </g:form>
         </div>
     </body>
 </html>

@@ -1,5 +1,7 @@
 package au.org.ala.workforce
 
+import grails.converters.JSON
+
 class QuestionController {
 
     def dataLoaderService, modelLoaderService
@@ -27,8 +29,10 @@ class QuestionController {
 
     def singleQuestion = {
         // during development reload question set each time - remove later
-        loadXML()
-        //loadJSON()
+        if (!params.noreload) {
+            loadXML()
+            //loadJSON()
+        }
 
         def level1 = params.id ? params.id : 1
         def model = modelLoaderService.loadQuestion(level1 as int)
@@ -40,11 +44,14 @@ class QuestionController {
 
     def allQuestions = {
         // during development reload question set each time - remove later
-        loadXML()
-        //loadJSON()
+        if (!params.noreload) {
+            loadXML()
+            //loadJSON()
+        }
 
-        def tops = Question.findAllByLevel2(0)
-        [questions: tops.collect {modelLoaderService.loadQuestion(it.level1)}]
+        def from = params.from as int ?: 1
+        def to = params.to as int ?: Question.findAllByLevel2(0).size()
+        [from: from, to: to]
     }
 
     def loadJSON() {
@@ -57,6 +64,16 @@ class QuestionController {
 
     def loadTestXML() {
         dataLoaderService.loadTestXML(servletContext.getResource('metadata/test.xml').text)
+    }
+
+    def submit = {
+        // validate answers against each question
+        (params.from as int)..(params.to as int).each {
+            println "validating question ${it}"
+            def question = modelLoaderService.loadQuestion(it)
+            question.validate(params)
+        }
+        render params as JSON
     }
     /*def index = {
         redirect(action: "list", params: params)
