@@ -235,12 +235,13 @@ class QuestionModel {
             s2 = strs[1]
         }
         if (strs.size() > 2) {
-            s3 = strs[3]
+            s3 = strs[2]
         }
         try {
             def nf = NumberFormat.getInstance()
             def l1 = nf.parse(s1)
             def l2 = nf.parse(s2)
+            def l3 = nf.parse(s3)
             return [l1,l2,l3]
         } catch (ParseException e) {
             return []
