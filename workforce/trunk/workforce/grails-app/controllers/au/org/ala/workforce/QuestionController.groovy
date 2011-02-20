@@ -67,13 +67,18 @@ class QuestionController {
     }
 
     def submit = {
+        Map<String, String> errors = new HashMap<String, String>()
         // validate answers against each question
         (params.from as int)..(params.to as int).each {
             println "validating question ${it}"
             def question = modelLoaderService.loadQuestion(it)
-            question.validate(params)
+            errors += question.validate(params)
         }
-        render params as JSON
+        if (errors) {
+            render(view: "allQuestions", model: [from: params.from as int, to: params.to as int, errors:errors])
+        } else {
+            render OK
+        }
     }
     /*def index = {
         redirect(action: "list", params: params)

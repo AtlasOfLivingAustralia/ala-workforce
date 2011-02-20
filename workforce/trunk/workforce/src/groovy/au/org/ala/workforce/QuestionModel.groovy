@@ -29,6 +29,7 @@ class QuestionModel {
     Object adata                    // data for a answer , eg a pick list - may be a reference to an external list eg states of australia
     String displayHint              // suggested form of display, eg dropdown, radio, checkbox
     String layoutHint               // directs layout of child questions
+    boolean required                // the answer may not be blank
 
     QuestionModel owner            // reverse link
 
@@ -59,7 +60,7 @@ class QuestionModel {
         }
 
         // other properties
-        ['atype','qtype','label','qtext','instruction','alabel','displayHint','layoutHint','datatype'].each {
+        ['atype','qtype','label','qtext','instruction','alabel','displayHint','layoutHint','datatype','required'].each {
             this."${it}" = record."${it}"
         }
 
@@ -67,6 +68,7 @@ class QuestionModel {
 
     def validate(params) {
         def valid = true
+        def reason = ''
         println "validating ${ident()} atype=${atype} datatype=${datatype}"
         if (atype != AnswerType.none) {
             def myAnswer = params."${ident()}"
@@ -82,10 +84,10 @@ class QuestionModel {
                         break
                     case number:
                         try {
-                            println "validating ${ident()} datatype=${datatype} value=${myAnswer}"
                             NumberFormat.getInstance().parse(myAnswer)
                         } catch (ParseException e) {
                             valid = false
+                            reason = "${myAnswer} is not a valid number"
                         }
                         break
                     case percent:
@@ -93,9 +95,11 @@ class QuestionModel {
                             def val = NumberFormat.getInstance().parse(myAnswer)
                             if (!val in 0..100) {
                                 valid = false
+                                reason = "A percentage must be between 0 and 100"
                             }
                         } catch (ParseException e) {
                             valid = false
+                            reason = "${myAnswer} is not a valid number"
                         }
                         break
                     case numberRange:
@@ -106,23 +110,36 @@ class QuestionModel {
                                 NumberFormat.getInstance().parse(numbers[1])
                             } catch (ParseException e) {
                                 valid = false
+                                reason = "A number range must contain two valid numbers"  // not a message that a user should see
                             }
                         } else {
                             valid = false
+                            reason = "A number range must be in the form nnn-mmm"  // not a message that a user should see
                         }
                         break
                     default:
                         valid = false
+                        reason = "${datatype} is not a known datatype"
+                }
+            } else {
+                if (required) {
+                    println "answer for ${ident()} is not valid because no value was entered and it is required"
+                    valid = false
+                    reason = "An answer is required"
                 }
             }
-            println "answer for ${ident()} is ${valid?'valid':'not valid'}"
-            //if (!valid) { return false }
         }
 
+        // add errors to a map
+        Map<String,String> errors = new HashMap<String, String>()
+        if (!valid) {
+            errors.put ident(), reason
+        }
         // check sub-questions
         questions.each {
-            it.validate(params)
+            errors += it.validate(params)
         }
+        return errors
     }
 
     String ident() {
@@ -202,5 +219,31 @@ class QuestionModel {
                 "displayHint=${displayHint}\n"
     }
 
-
+    /**
+     * Reverses the ident transform.
+     * @param ident
+     * @return Returns the question number for each level as a list [level1, level2, level3]
+     */
+    static List parseIdent(String ident) {
+        def strs = ident?.tokenize('_')
+        // TODO: needs validity checking and an INVALID_IDENT exception
+        def s1 = strs[0]
+        def s2 = ""
+        def s3 = ""
+        s1 = s1[1..-1] // string the q
+        if (strs.size > 1) {
+            s2 = strs[1]
+        }
+        if (strs.size() > 2) {
+            s3 = strs[3]
+        }
+        try {
+            def nf = NumberFormat.getInstance()
+            def l1 = nf.parse(s1)
+            def l2 = nf.parse(s2)
+            return [l1,l2,l3]
+        } catch (ParseException e) {
+            return []
+        }
+    }
 }

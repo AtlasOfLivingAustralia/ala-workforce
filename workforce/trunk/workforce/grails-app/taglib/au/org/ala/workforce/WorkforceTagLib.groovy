@@ -535,4 +535,21 @@ class WorkforceTagLib {
             return q.calculateDisplayRows()
         }
     }
+
+    def listError = {attrs ->
+        if (attrs.error) {
+            def levels = QuestionModel.parseIdent(attrs.error.key as String)
+            if (levels) {
+                out << "Question ${levels[0]}"
+                if (levels[1]) {
+                    out << " - section ${levels[1]}"
+                }
+                if (levels[2]) {
+                    out << " - part ${levels[2]}"
+                }
+                out << ": ${attrs.error.value}"
+            }
+        }
+    }
+
 }
