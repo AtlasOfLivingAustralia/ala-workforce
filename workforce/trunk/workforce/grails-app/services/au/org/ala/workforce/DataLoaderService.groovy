@@ -73,6 +73,7 @@ class DataLoaderService {
                         q.datatype = AnswerDataType.text
                 }
             }
+            q.required = it.answer?.@required == 'true' || it.answer?.@required == 'yes'
             q.adata = extractJsonString(it.answer?.data) as grails.converters.JSON
             q.alabel = it.answer?.label?.text()
 

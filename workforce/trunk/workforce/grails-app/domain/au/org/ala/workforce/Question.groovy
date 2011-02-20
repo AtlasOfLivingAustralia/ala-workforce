@@ -21,6 +21,7 @@ class Question {
     String adata                    // data for a answer , eg a pick list - may be a reference to an external list eg states of australia
     String displayHint              // suggested form of display, eg dropdown, radio, checkbox
     String layoutHint               // directs layout of child questions
+    boolean required                // the answer (if there is one) may not be blank
 
     static constraints = {
         level1(min:0)

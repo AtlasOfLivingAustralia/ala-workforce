@@ -23,6 +23,7 @@
         @type - the type of answer widget - one of: bool, none, number, text, textarea, percent, rank, externalRef, radio, range
         @label - a label to show along with the answer, eg. %, hours per week, $
         @labelPlacement - before or after the answer - defaults to after
+        @required - if true, a value must be entered (defaults to not required)
 -->
 <questionSet>
     <!-- Q1 -->
@@ -30,7 +31,7 @@
         <question>
             <text>Is curatorial and/or taxonomic work your major responsibility in your organisation?</text>
             <data>YES/NO</data>
-            <answer type="bool" dataType="bool"/>
+            <answer type="bool" dataType="bool" required="true"/>
         </question>
         <question type="none">
             <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
@@ -233,7 +234,7 @@
     <!-- Q4 -->
     <question>
         <text>In your position, how many hours per week do you work on average?</text>
-        <answer type="number">
+        <answer type="number" required="true">
             <data>
                 <min value='int'>0</min>
                 <max value='int'>100</max>
@@ -592,7 +593,7 @@
     <!-- Q16 -->
     <question>
         <text>Are you male or female?</text>
-        <answer type="bool"/>
+        <answer type="bool" required="true"/>
     </question>
 
     <!-- Q17 -->

@@ -10,10 +10,19 @@
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
         </div>
         <div class="body">
-            <h1>Questions</h1>
-            <g:if test="${flash.message}">
+          <h1>Questions</h1>
+          <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
-            </g:if>
+          </g:if>
+          <g:if test="${errors}">
+          <div class="errors">
+            <ul>
+            <g:each var="error" in="${errors}">
+              <li><wf:listError error="${error}"/></li>
+            </g:each>
+            </ul>
+          </div>
+          </g:if>
             <g:form action="submit">
               <g:hiddenField name="from" value="${from}"/>
               <g:hiddenField name="to" value="${to}"/>
