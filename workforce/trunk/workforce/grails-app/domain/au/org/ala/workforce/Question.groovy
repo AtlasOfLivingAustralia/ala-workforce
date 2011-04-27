@@ -22,6 +22,8 @@ class Question {
     String displayHint              // suggested form of display, eg dropdown, radio, checkbox
     String layoutHint               // directs layout of child questions
     boolean required                // the answer (if there is one) may not be blank
+    String requiredIf               // must have an answer if the condition is true
+    String validation               // cross-question validation
 
     static constraints = {
         level1(min:0)
@@ -38,6 +40,8 @@ class Question {
         adata(nullable:true, maxSize:2048)
         displayHint(nullable:true)
         layoutHint(nullable:true)
+        requiredIf(nullable:true, maxSize:1024)
+        validation(nullable:true, maxSize: 1024)
     }
 
 }

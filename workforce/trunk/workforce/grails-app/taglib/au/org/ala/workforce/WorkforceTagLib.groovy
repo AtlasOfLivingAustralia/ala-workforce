@@ -9,18 +9,13 @@ class WorkforceTagLib {
     /**
      * Return html for a single question.
      *
-     * One of the two attrs must be present.
+     * One of the first two attrs must be present.
      *
      * @attr questionNumber the number of the question
      * @attr question the actual question model
      */
     def question = { attrs ->
-        QuestionModel model
-        if (attrs.questionNumber) {
-            model = modelLoaderService.loadQuestion(attrs.questionNumber as int)
-        } else {
-            model = attrs.question
-        }
+        QuestionModel model = attrs.question
 
         List secondLevel = model.questions
         int secondLevelIndex = 0
@@ -183,47 +178,48 @@ class WorkforceTagLib {
     private String layoutWidget(QuestionModel q) {
         String result = ''
 
-        //println q.toString()
-        // types = bool, none, number, text, textarea, percent, rank, externalRef, radio, range
+        if (q.errorMessage) {
+            result = "<div class='errors'>"
+        }
 
         switch (q.atype) {
             case AnswerType.bool:
+                def yesChecked = (q.answerValueStr?.toLowerCase() in ['yes', 'true', 'on']) ? 'checked' : ''
+                def noChecked = (q.answerValueStr?.toLowerCase() in ['no', 'false']) ? 'checked' : ''
                 if (q.displayHint == 'checkbox') {
-                    result = "<input type='checkbox' name='${q.ident()}'/>"
+                    result += "<input type='checkbox' name='${q.ident()}' ${yesChecked}/>"
                 } else {
-                    result = "<input type='radio' name='${q.ident()}' id='yes' value='yes'/><label for='yes'>Yes</label>"
-                    result += "<input type='radio' name='${q.ident()}' id='no' value='no'/><label for='no'>No</label>"
+                    result += "<input type='radio' name='${q.ident()}' id='yes' value='yes' ${yesChecked}/><label for='yes'>Yes</label>"
+                    result += "<input type='radio' name='${q.ident()}' id='no' value='no' ${noChecked}/><label for='no'>No</label>"
                 }
                 break
             case AnswerType.none:
                 break
             case AnswerType.number:
-                result = textField(name: q.ident(), size: 4) + " " + (q.alabel ?: "")
+                result += textField(name: q.ident(), size: 4, value: q.answerValueStr) + " " + (q.alabel ?: "")
                 break
             case AnswerType.radio:
                 // display radio buttons with text from adata to select one chunk of text
                 def items = []
                 q.adata.eachWithIndex { it, idx ->
-                    //println "option ${idx} = ${it}"
-                    items << "<input type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' value='${it}'/><label for='${q.ident()}_${idx}'>${it}</label><br/>"
+                    def checked = it == q.answerValueStr ? 'checked' : ''
+                    items << "<input type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' value='${it}' ${checked}/><label for='${q.ident()}_${idx}'>${it}</label><br/>"
                 }
-                result = layoutListOfItems(items, 7)
+                result += layoutListOfItems(items, 7)
                 break
             case AnswerType.text:
                 def size = extractTextFieldSize(q.displayHint)
-                result = textField(name: q.ident(), size: size) + " " + (q.alabel ?: "")
+                result += textField(name: q.ident(), size: size, value: q.answerValueStr) + " " + (q.alabel ?: "")
                 break
             case AnswerType.textarea:
-                result = textArea(name: q.ident(), rows: q.adata?.rows) + " " + (q.alabel ?: "")
+                result += textArea(name: q.ident(), rows: q.adata?.rows, value: q.answerValueStr) + " " + (q.alabel ?: "")
                 break
             case AnswerType.percent:
-                def attrs = [name: q.ident(), size: 7]
-                if (q.level == 2 && q.layoutHint == 'align-with-level3') {
-                    //println "in layoutWidget:percent for ${q.ident()}: layoutHint is ${q.layoutHint}"
-                    //attrs.put 'class','alignWithLevel3'
+                def attrs = [name: q.ident(), size: 7, value: q.answerValueStr]
+                if (q.level == 2 && q.layoutHint == 'align-with-level3') {  //TODO: apply to other types
                     result = "<div class='alignWithLevel3'>" + textField(attrs) + " %</div>"
                 } else {
-                    result = textField(attrs) + " %"
+                    result += textField(attrs) + " %"
                 }
                 break
             case AnswerType.range:
@@ -252,20 +248,26 @@ class WorkforceTagLib {
 
                 def items = []
                 labels.eachWithIndex { it, idx ->
-                    items << "<input type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' value='${it}'/><label for='${it}'>${it}</label><br/>"
+                    def checked = (it == q.answerValueStr) ? "checked" : ""
+                    items << "<input type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' ${checked} value='${it}'/><label for='${it}'>${it}</label><br/>"
                 }
 
                 // if there are lots of items we want to put them in two columns
-                result = layoutListOfItems(items, 7)
+                result += layoutListOfItems(items, 7)
 
                 break
             case AnswerType.rank:
+                result += textField(name: q.ident(), size: 4, value: q.answerValueStr) + " " + (q.alabel ?: "")
                 break
             case AnswerType.externalRef:
                 if (q.adata =~ 'state') {
-                    result = select(name: q.ident(), from: statesList)
+                    result += select(name: q.ident(), from: statesList, value: q.answerValueStr)
                 }
                 break
+        }
+
+        if (q.errorMessage) {
+            result += "</div>"
         }
 
         return result
@@ -273,7 +275,7 @@ class WorkforceTagLib {
 
     /*
      * A matrix question is really a set of (rows x cols) questions. These questions are
-     * generated and numbered as sub-questions like this:
+     * generated during model-loading and numbered as sub-questions like this:
      *
      *              col 1       col2
      *   row 1        1          4
@@ -282,14 +284,14 @@ class WorkforceTagLib {
      *
      * All answers have the same type given by q.atype. (This may be enhanced in the future.)
      *
-     * Assumes level 2 question for now.
+     * Assumes for now the matrix question is level 2, and the generated cell questions are level 3.
      */
     private Map layoutMatrix(QuestionModel q) {
         def text = q.qtext ?: ""
 
         def rows = q.qdata.rows
         def cols = q.qdata.cols
-        def questionIdx = 1
+        int questionIdx = 0
 
         String content = "<table class='shy'>"
 
@@ -299,6 +301,7 @@ class WorkforceTagLib {
 
         content += "<tr><td>${text}</td>"
 
+        println "checking matrix questions> generated questions = ${q.questions?.size()}"
         cols.each {
             content += "<td style='text-align:center'>${it}</td>"
         }
@@ -308,11 +311,14 @@ class WorkforceTagLib {
         rows.each { row ->
             content += "<tr><td>${row}</td>"
             cols.each { col ->
-                def record = [datatype: q.datatype, atype: q.atype, level1: q.level1(), level2: questionIdx++, level3: 0]
-                QuestionModel qm = new QuestionModel(record)
-                q.questions << qm
-                qm.owner = q
-                content += "<td style='text-align:center'>" + layoutWidget(qm) + "</td>"
+                def qm = q.questions[questionIdx]
+                if (qm) {
+                    content += "<td style='text-align:center'>" + layoutWidget(qm) + "</td>"
+                }
+                else {
+                    println "question not linked (${row}/${col})"
+                }
+                questionIdx++
             }
             content += "</tr>"
         }
@@ -366,7 +372,7 @@ class WorkforceTagLib {
             qm.owner = q
 
             cols.eachWithIndex { col, idx ->
-                def widget = "<input type='radio' name='${qm.ident()}' id='${qm.ident()}_${idx}' value='${col}'/>"
+                def widget = "<input type='radio' name='${qm.ident()}' id='${qm.ident()}_${idx}' value='${col}'/>" //TODO: handle error markup
                 content += "<td style='text-align:center' width='15%'>" + widget + "</td>"
             }
             content += "</tr>"
@@ -540,7 +546,7 @@ class WorkforceTagLib {
         if (attrs.error) {
             def levels = QuestionModel.parseIdent(attrs.error.key as String)
             if (levels) {
-                out << "Question ${levels[0]}"
+                out << "Q${levels[0]}"
                 if (levels[1]) {
                     out << " - section ${levels[1]}"
                 }

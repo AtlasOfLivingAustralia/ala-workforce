@@ -1,4 +1,4 @@
-package workforce
+package au.org.ala.workforce
 
 import grails.test.*
 
