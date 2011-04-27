@@ -1,7 +1,7 @@
 package au.org.ala.workforce
 
 import groovy.sql.Sql
-import grails.converters.deep.JSON
+import grails.converters.JSON
 import org.xml.sax.SAXException
 
 class DataLoaderService {
@@ -51,13 +51,17 @@ class DataLoaderService {
 
             q.instruction = it.@instruction
             q.qtype = it.@type.toString() ? QuestionType.valueOf(it.@type.toString()) : QuestionType.none
+            q.validation = it.validation
+            if (!q.validation && q.qtype == QuestionType.rank) {
+                q.validation = 'ranking-group'
+            }
             q.label = it.label
             q.layoutHint = valueOrDefault(it.layoutHint, defaults)
             q.displayHint = valueOrDefault(it.displayHint, defaults)
             q.qdata = extractJsonString(it.data) as grails.converters.JSON
             q.qtext = it.text
             q.atype = valueOrDefault(it.answer?.@type, defaults) ? AnswerType.valueOf(valueOrDefault(it.answer?.@type, defaults) as String) : AnswerType.none
-            def datatype = null//TODO:valueOrDefault(it.answer?.@dataType, defaults)
+            def datatype = valueOrDefault(it.answer?.@dataType, defaults)
             if (datatype) {
                 q.datatype = AnswerDataType.valueOf(datatype as String)
             } else {
@@ -74,6 +78,7 @@ class DataLoaderService {
                 }
             }
             q.required = it.answer?.@required == 'true' || it.answer?.@required == 'yes'
+            q.requiredIf = it.answer?.@requiredIf
             q.adata = extractJsonString(it.answer?.data) as grails.converters.JSON
             q.alabel = it.answer?.label?.text()
 
@@ -83,8 +88,43 @@ class DataLoaderService {
                     println error
                 }
             }
-            if (it.question) {
+
+            // a question of type matrix is handled by automatically generating the inferred level 3 questions
+            if (q.qtype == QuestionType.matrix) {
+                loadMatrixOfQuestions(q, defaults)
+            }
+
+            // otherwise load child questions
+            else if (it.question) {
                 loadXmlQuestions(it.question, level + 1, l1, l2, defaults)
+            }
+        }
+    }
+
+    def loadMatrixOfQuestions(matrixQuestion, defaults) {
+        def qdata = JSON.parse(matrixQuestion.qdata)
+        def rows = qdata.rows
+        def cols = qdata.cols
+        def questionIdx = 1
+
+        // iterate through cells - rows first
+        rows.each { row ->
+            cols.each { col ->
+
+                // auto-generate a question for this cell of the matrix
+                Question q = new Question(level1: matrixQuestion.level1, level2: matrixQuestion.level2, level3: questionIdx++)
+                q.qtype = QuestionType.matrix
+                q.datatype = AnswerDataType.number//valueOf(defaults.defaultDataType) as AnswerDataType
+                q.atype = AnswerType.number//valueOf(defaults.defaultAnswerType) as AnswerType
+                q.required = true //TODO for now
+                q.adata = [row:row, col:col] as JSON
+
+                q.save()
+                if (q.hasErrors()) {
+                    q.errors.each { error ->
+                        println error
+                    }
+                }
             }
         }
     }
@@ -158,6 +198,7 @@ class DataLoaderService {
 
     def valueOrDefault(node, defaults) {
         def name = node.name()
+        //println "name = " + name
         //defaults.each { key, value -> println "${key}=${value}"}
         if (node?.text()) {
             node.text()

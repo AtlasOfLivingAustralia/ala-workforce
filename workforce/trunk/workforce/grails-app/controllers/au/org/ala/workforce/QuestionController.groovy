@@ -42,16 +42,38 @@ class QuestionController {
         [question: model]
     }
 
-    def allQuestions = {
+    /**
+     * Display a set of questions.
+     *
+     * Optional params 'from' and 'to' control the range of questions as follows:
+     *  - neither specified -> show all questions
+     *  - from specified -> show that single question
+     *  - from and to specified -> show from..to inclusive
+     *  - to specified -> illegal - this won't happen from URL mapping as a single number is mapped to 'from'
+     *
+     * @param from the first question number to display
+     * @param to the last question number to display
+     */
+    def questions = {
         // during development reload question set each time - remove later
-        if (!params.noreload) {
+        //if (!params.noreload) {
             loadXML()
             //loadJSON()
+        //}
+
+        def from, to
+        if (!params.from && !params.to) {
+            // neither specified
+            from = 1
+            to = Question.findAllByLevel2(0).size()
+        } else {
+            // assume from specified
+            from = params.from as int ?: 1
+            to = params.to ? params.to as int : from
         }
 
-        def from = params.from as int ?: 1
-        def to = params.to as int ?: Question.findAllByLevel2(0).size()
-        [from: from, to: to]
+        def questionList = (from..to).collect { modelLoaderService.loadQuestion(it as int) }
+        [from: from, to: to, questions: questionList]
     }
 
     def loadJSON() {
@@ -67,19 +89,59 @@ class QuestionController {
     }
 
     def submit = {
-        Map<String, String> errors = new HashMap<String, String>()
-        // validate answers against each question
-        (params.from as int)..(params.to as int).each {
-            println "validating question ${it}"
-            def question = modelLoaderService.loadQuestion(it)
-            errors += question.validate(params)
+
+        // load question metadata
+        def questionList = ((params.from as int)..(params.to as int)).collect {
+            modelLoaderService.loadQuestion(it)
         }
+
+        // inject answers into questions
+        injectAnswers(questionList, params)
+
+        // validate answers against each question
+        Map<String, String> errors = new HashMap<String, String>()
+        questionList.each {
+            println "validating " + it.ident()
+            errors += it.validate()
+        }
+
         if (errors) {
-            render(view: "allQuestions", model: [from: params.from as int, to: params.to as int, errors:errors])
+            errors = errors.sort {it.key}
+            render(view: "questions", model: [from: params.from as int, to: params.to as int,
+                    questions: questionList, errors:errors])
         } else {
-            render OK
+            def roughRepresentation = ""
+            questionList.each {q1 ->
+                roughRepresentation += dumpQuestion(q1)
+                q1.questions.each {q2 ->
+                    roughRepresentation += dumpQuestion(q2)
+                    q2.questions.each {q3 ->
+                        roughRepresentation += dumpQuestion(q3)
+                    }
+                }
+            }
+            render "<html><body><pre>" + roughRepresentation + "</pre></body></html>"
         }
     }
+
+    def injectAnswers(questions, answers) {
+        questions.each {
+            if (it.atype != AnswerType.none) {
+                it.answerValueStr = answers."${it.ident()}"
+            }
+            injectAnswers(it.questions,answers)
+        }
+    }
+
+    def dumpQuestion(q) {
+        def dump = q.toString()
+        if (q.errorMessage || q.answerValueStr) {
+            return "<b>${dump}</b>\n"
+        } else {
+            return "${dump}\n"
+        }
+    }
+
     /*def index = {
         redirect(action: "list", params: params)
     }

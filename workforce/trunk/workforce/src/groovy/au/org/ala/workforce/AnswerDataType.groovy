@@ -6,9 +6,9 @@ package au.org.ala.workforce
  * Time: 2:26:48 PM
  */
 enum AnswerDataType {
-    bool, number, text, percent, numberRange
+    bool, number, text, numberRange, rank
 
     static list() {
-        [bool, number, text, percent, numberRange]
+        [bool, number, text, numberRange, rank]
     }
 }

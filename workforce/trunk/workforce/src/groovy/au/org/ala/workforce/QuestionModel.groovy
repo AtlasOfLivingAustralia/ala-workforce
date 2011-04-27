@@ -30,6 +30,12 @@ class QuestionModel {
     String displayHint              // suggested form of display, eg dropdown, radio, checkbox
     String layoutHint               // directs layout of child questions
     boolean required                // the answer may not be blank
+    String requiredIf               // the answer may not be blank if the condition is met
+    String validation               // cross-question validation
+
+    String answerValueStr           // any answer that may be supplied for validation - this usually holds the answer supplied
+                                    //  by a user. It is held here during validation and error feedback
+    String errorMessage = ""        // any error that results from validation
 
     QuestionModel owner            // reverse link
 
@@ -59,73 +65,90 @@ class QuestionModel {
             this.qdata = JSON.parse(record.qdata)
         }
 
+        //println "loading props for ${record.level1}_${record.level2}_${record.level3}"
+        
         // other properties
-        ['atype','qtype','label','qtext','instruction','alabel','displayHint','layoutHint','datatype','required'].each {
+        ['atype','qtype','label','qtext','instruction','alabel','displayHint','layoutHint','datatype',
+                'required','requiredIf','validation'].each {
             this."${it}" = record."${it}"
         }
 
     }
 
-    def validate(params) {
+    def validate() {
         def valid = true
-        def reason = ''
+        clearErrors()
         println "validating ${ident()} atype=${atype} datatype=${datatype}"
         if (atype != AnswerType.none) {
-            def myAnswer = params."${ident()}"
-            println "answer is ${myAnswer}"
-            if (myAnswer) {
+            if (answerValueStr) {println "answer is ${answerValueStr}"}
+            if (answerValueStr) {
                 // validate my answer
                 switch (datatype) {
                     case bool:
-                        valid = myAnswer
+                        valid = answerValueStr
                         break
                     case text:
-                        valid = myAnswer  // only has to exist
+                        valid = answerValueStr  // only has to exist
+                        break
+                    case rank:
+                        try {
+                            def val = NumberFormat.getInstance().parse(answerValueStr)
+                            int max = owner.qdata?.max
+                            if (val < 1 || val > max) {
+                                valid = false
+                                errorMessage = "Rank value must be between 1 and ${max}. Value is ${val}"
+                            }
+                        } catch (ParseException e) {
+                            valid = false
+                            errorMessage = "${answerValueStr} is not a valid number"
+                        }
                         break
                     case number:
                         try {
-                            NumberFormat.getInstance().parse(myAnswer)
-                        } catch (ParseException e) {
-                            valid = false
-                            reason = "${myAnswer} is not a valid number"
-                        }
-                        break
-                    case percent:
-                        try {
-                            def val = NumberFormat.getInstance().parse(myAnswer)
-                            if (!val in 0..100) {
+                            def val = NumberFormat.getInstance().parse(answerValueStr)
+                            if (atype == AnswerType.percent && (val < 0 || val > 100)) {
                                 valid = false
-                                reason = "A percentage must be between 0 and 100"
+                                errorMessage = "A percentage must be between 0 and 100. Value is ${val}"
                             }
                         } catch (ParseException e) {
                             valid = false
-                            reason = "${myAnswer} is not a valid number"
+                            errorMessage = "${answerValueStr} is not a valid number"
                         }
                         break
                     case numberRange:
-                        def numbers = myAnswer.tokenize('-')
+                        def numbers = answerValueStr.tokenize('-')
                         if (numbers.size() == 2) {
                             try {
-                                NumberFormat.getInstance().parse(numbers[0])
-                                NumberFormat.getInstance().parse(numbers[1])
+                                NumberFormat.getInstance().parse(numbers[0] as String)
+                                NumberFormat.getInstance().parse(numbers[1] as String)
                             } catch (ParseException e) {
                                 valid = false
-                                reason = "A number range must contain two valid numbers"  // not a message that a user should see
+                                errorMessage = "A number range must contain two valid numbers"  // not a message that a user should see
                             }
                         } else {
                             valid = false
-                            reason = "A number range must be in the form nnn-mmm"  // not a message that a user should see
+                            errorMessage = "A number range must be in the form nnn-mmm"  // not a message that a user should see
                         }
                         break
                     default:
                         valid = false
-                        reason = "${datatype} is not a known datatype"
+                        errorMessage = "${datatype} is not a known datatype"
                 }
             } else {
                 if (required) {
-                    println "answer for ${ident()} is not valid because no value was entered and it is required"
+                    //println "answer for ${ident()} is not valid because no value was entered and it is required"
                     valid = false
-                    reason = "An answer is required"
+                    errorMessage = "An answer is required"
+                }
+                if (requiredIf) {
+                    // see if condition is satisfied
+                    def condition = requiredIf.tokenize('=')
+                    def conditionPath = condition[0]
+                    def conditionValue = condition[1]
+                    if (getQuestionFromPath(conditionPath)?.answerValueStr == conditionValue) {
+                        valid = false
+                        errorMessage = "An answer is required if you select '${conditionValue}'"
+                    }
                 }
             }
         }
@@ -133,13 +156,123 @@ class QuestionModel {
         // add errors to a map
         Map<String,String> errors = new HashMap<String, String>()
         if (!valid) {
-            errors.put ident(), reason
+            errors.put ident(), errorMessage
+            println "Error in ${ident()}: ${errorMessage}"
         }
         // check sub-questions
         questions.each {
-            errors += it.validate(params)
+            errors += it.validate()
+        }
+        // check inter-question validations if all sub-questions are valid
+        if (!errors) { errors += validateGlobalConstraints() }
+        return errors
+    }
+
+    def validateGlobalConstraints() {
+        if (!validation) {
+            return [:]
+        }
+        Map<String,String> errors = new HashMap<String, String>()
+        switch (validation) {
+            case 'percent-total-lessThanOrEqual-100':
+                // all child questions of type percent must sum to <= 100
+                def sum = 0
+                // iterate max of 2 levels
+                questions.each { r1 ->
+                    if (r1.atype == AnswerType.percent && r1.answerValueStr && !r1.errorMessage) {
+                        sum += r1.answerValueStr as int
+                    }
+                    r1.questions.each { r2 ->
+                        if (r2.atype == AnswerType.percent && r2.answerValueStr && !r1.errorMessage) {
+                            sum += r2.answerValueStr as int
+                        }
+                    }
+                }
+                // check sum
+                if (sum > 100) {
+                    errorMessage = "Percentages can not add to more than 100%"
+                    errors.put ident(), errorMessage
+                    println "Error in ${ident()}: ${errorMessage}"
+                }
+                break
+            case 'ranking-group':
+                // set of immediate sub-questions of type rank must contain each of the values 1..maxRequired exactly once
+                def maxRequired = qdata.maxRequired ?: qdata.max
+                def answerSet = []
+                questions.each {
+                    if (it.atype == AnswerType.rank && it.answerValueStr) {
+                        println it.answerValueStr
+                        answerSet << (it.answerValueStr as int)
+                    }
+                }
+                println answerSet
+                boolean valid = true
+                def reason = ''
+                (1..maxRequired).each { rank ->
+                    def occurs = answerSet.findAll {it == rank}.size()
+                    if (occurs != 1) {
+                        reason = "The rank ${rank} appears ${occurs} times"
+                        valid = false
+                    }
+                }
+                if (!valid) {
+                    errorMessage = "Answers must contain the numbers 1 to ${maxRequired} exactly once each. (${reason})"
+                    errors.put ident(), errorMessage
+                    println "Error in ${ident()}: ${errorMessage}"
+                }
+                break
         }
         return errors
+    }
+
+    void clearErrors() {
+        errorMessage = ""
+    }
+
+    /**
+     * Path is a relative way to address other answers in the same level 1 question.
+     *
+     * ../n is the nth question that is sibling to this one (ie in the parent of this)
+     * ../../n is the nth question in the grandparent of this
+     * ../n/m is the mth sub-question in the nth question of the parent of this
+     *
+     * n and m are 1-based
+     *
+     * @param path
+     */
+    def getQuestionFromPath(path) {
+        def bits = path.tokenize('/')
+        if (bits.size < 2) return null
+        // the first bit must be '..'
+        if (bits[0] != '..' || !owner) {
+            return null
+        }
+        def question = owner
+        if (bits[1] == '..') {
+            // the form is ../../n
+            int n = (bits[2] as int) - 1
+            // check that there is a parent and that they have n children
+            if (question.owner && question.owner?.questions?.size() > n) {
+                return question.owner.questions[n]
+            }
+        } else if (bits.size() == 2) {
+            // the form is ../n
+            int n = (bits[1] as int) - 1
+            if (question.questions?.size() > n) {
+                return question.questions[n]
+            }
+        } else if (bits.size() > 2) {
+            // the form is ../n/m
+            int n = (bits[1] as int) - 1
+            int m = (bits[2] as int) - 1
+            if (question.questions?.size() > n) {
+                question = question.questions[n]
+                if (question.questions?.size() > m) {
+                    return question.questions[m]
+                }
+            }
+        }
+        return null
     }
 
     String ident() {
@@ -213,10 +346,14 @@ class QuestionModel {
                 "qdata=${qdata}\n" +
                 "instruction=${instruction}\n" +
                 "atype=${atype}\n" +
-                "dtatype=${datatype}\n" +
+                "datatype=${datatype}\n" +
                 "alabel=${alabel}\n" +
                 "adata=${adata}\n" +
-                "displayHint=${displayHint}\n"
+                "displayHint=${displayHint}\n" +
+                "required=${required}\n" +
+                "requiredIf=${requiredIf}\n" +
+                "errorMessage=${errorMessage}\n" +
+                "value=${answerValueStr}\n"
     }
 
     /**
@@ -227,10 +364,10 @@ class QuestionModel {
     static List parseIdent(String ident) {
         def strs = ident?.tokenize('_')
         // TODO: needs validity checking and an INVALID_IDENT exception
-        def s1 = strs[0]
-        def s2 = ""
-        def s3 = ""
-        s1 = s1[1..-1] // string the q
+        String s1 = strs[0]
+        String s2 = "0"
+        String s3 = "0"
+        s1 = s1[1..-1] // dump the q
         if (strs.size > 1) {
             s2 = strs[1]
         }
