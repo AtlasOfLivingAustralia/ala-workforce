@@ -11,15 +11,17 @@ class QuestionController {
     def scaffold = true;
 
     def loadQuestionSet = {
-        loadJSON()
+        def set = params.set ?: 1
+        loadJSON(set)
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
         render list
     }
 
     def loadQuestionSetXML = {
-        loadXML()
+        def set = params.set ?: 1
+        loadXML(set)
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
-        render "XML question set loaded - ${list}"
+        render "XML question qset loaded - ${list}"
     }
 
     def test = {
@@ -27,15 +29,23 @@ class QuestionController {
         render "Done."
     }
 
+    def reload = {
+        dataLoaderService.clearQuestionSets()
+        loadXML(1)
+        loadXML(2)
+        render "Done."
+    }
+
     def singleQuestion = {
-        // during development reload question set each time - remove later
+        def set = params.set ?: 1
+        // during development reload question qset each time - remove later
         if (!params.noreload) {
-            loadXML()
+            loadXML(set)
             //loadJSON()
         }
 
         def level1 = params.id ? params.id : 1
-        def model = modelLoaderService.loadQuestion(level1 as int)
+        def model = modelLoaderService.loadQuestion(set, level1 as int)
         if (!model) {
             flash.message = "No such question"
         }
@@ -43,7 +53,7 @@ class QuestionController {
     }
 
     /**
-     * Display a set of questions.
+     * Display a qset of questions.
      *
      * Optional params 'from' and 'to' control the range of questions as follows:
      *  - neither specified -> show all questions
@@ -55,9 +65,11 @@ class QuestionController {
      * @param to the last question number to display
      */
     def questions = {
-        // during development reload question set each time - remove later
+        def set = params.set ?: 1
+        // during development reload question qset each time - remove later
         //if (!params.noreload) {
-            loadXML()
+            //dataLoaderService.clearQuestionSet()
+            //loadXML(set)
             //loadJSON()
         //}
 
@@ -72,16 +84,19 @@ class QuestionController {
             to = params.to ? params.to as int : from
         }
 
-        def questionList = (from..to).collect { modelLoaderService.loadQuestion(it as int) }
-        [from: from, to: to, questions: questionList]
+        def questionList = (from..to).collect { modelLoaderService.loadQuestion(set as int, it as int) }
+        [set: set, from: from, to: to, questions: questionList]
     }
 
-    def loadJSON() {
-        dataLoaderService.loadQuestionSet(servletContext.getResource('metadata/question-set.json').text)
+    def loadJSON(set) {
+        dataLoaderService.loadQuestionSet(servletContext.getResource("metadata/question-set-${set}.json").text, set)
     }
 
-    def loadXML() {
-        dataLoaderService.loadQuestionSetXML(servletContext.getResource('metadata/question-set.xml').text)
+    def loadXML(set) {
+        def filename = "metadata/question-set-${set}.xml"
+        def qsetFile = servletContext.getResource(filename)
+        assert qsetFile : "file not found - ${filename}"
+        dataLoaderService.loadQuestionSetXML(qsetFile.text, set)
     }
 
     def loadTestXML() {
@@ -92,9 +107,11 @@ class QuestionController {
 
         // load question metadata
         def questionList = ((params.from as int)..(params.to as int)).collect {
-            modelLoaderService.loadQuestion(it)
+            modelLoaderService.loadQuestion(params.set as int, it)
         }
 
+        params.each { println it }
+        
         // inject answers into questions
         injectAnswers(questionList, params)
 
@@ -107,7 +124,7 @@ class QuestionController {
 
         if (errors) {
             errors = errors.sort {it.key}
-            render(view: "questions", model: [from: params.from as int, to: params.to as int,
+            render(view: "questions", model: [set: params.set as int, from: params.from as int, to: params.to as int,
                     questions: questionList, errors:errors])
         } else {
             def roughRepresentation = ""
@@ -128,6 +145,7 @@ class QuestionController {
         questions.each {
             if (it.atype != AnswerType.none) {
                 it.answerValueStr = answers."${it.ident()}"
+                //println "${it.ident()} : ${it.answerValueStr}"
             }
             injectAnswers(it.questions,answers)
         }
