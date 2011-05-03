@@ -45,6 +45,8 @@ class QuestionModel {
 
     QuestionModel(record) {
 
+        //println "creating questionModel for q${record.level1}_${record.level2}_${record.level3}"
+        
         // determine level from the values of level1, level2 and level 3
         if (record.level3 > 0) {
             this.level = 3
@@ -70,11 +72,36 @@ class QuestionModel {
         // other properties
         ['atype','qtype','label','qtext','instruction','alabel','displayHint','layoutHint','datatype',
                 'required','requiredIf','validation'].each {
-            this."${it}" = record."${it}"
+            if (record."${it}") {
+                this."${it}" = record."${it}"
+            }
         }
-
     }
 
+    boolean isAnswerTrue() {
+        return datatype == AnswerDataType.bool && answerValueStr in ['on','yes','true']
+    }
+
+    /**
+     * Override the dynamic setter to filter the values being set.
+     *
+     * @param answer
+     * @return
+     */
+    public void setAnswerValueStr(String answer) {
+        /* This handles the case where a boolean checkbox on a parent question acts as a 'gatekeeper' to the
+         * rest of the question. We don't want to store any entered or default values from the sub-questions
+         * if the parent checkbox is not ticked.
+         */
+        if (owner && owner.datatype == AnswerDataType.bool && !owner.isAnswerTrue()) {
+            // do not set the answer as it has no meaning
+            return
+        }
+
+        // the default action is to set the property
+        this.answerValueStr = answer
+    }
+    
     def validate() {
         def valid = true
         clearErrors()
@@ -85,32 +112,41 @@ class QuestionModel {
                 // validate my answer
                 switch (datatype) {
                     case bool:
+                        // only needs to have a value
                         valid = answerValueStr
                         break
                     case text:
-                        valid = answerValueStr  // only has to exist
+                        // only needs to have a value
+                        valid = answerValueStr
                         break
                     case rank:
-                        try {
-                            def val = NumberFormat.getInstance().parse(answerValueStr)
+                        // must be 1) a number, 2) within range
+                        // note that this is unlikely to be called as the ranking-group validation on the
+                        // parent question happens first
+                        if (answerValueStr.isInteger()) {
+                            def val = NumberFormat.getIntegerInstance().parse(answerValueStr)
                             int max = owner.qdata?.max
                             if (val < 1 || val > max) {
                                 valid = false
                                 errorMessage = "Rank value must be between 1 and ${max}. Value is ${val}"
                             }
-                        } catch (ParseException e) {
+                        }
+                        else {
                             valid = false
-                            errorMessage = "${answerValueStr} is not a valid number"
+                            errorMessage = "${answerValueStr} is not a valid integer"
                         }
                         break
                     case number:
-                        try {
+                        // must be a number
+                        if (answerValueStr.isNumber()) {
                             def val = NumberFormat.getInstance().parse(answerValueStr)
+                            // if it's also a percent, it must be in range
                             if (atype == AnswerType.percent && (val < 0 || val > 100)) {
                                 valid = false
                                 errorMessage = "A percentage must be between 0 and 100. Value is ${val}"
                             }
-                        } catch (ParseException e) {
+                        }
+                        else {
                             valid = false
                             errorMessage = "${answerValueStr} is not a valid number"
                         }
@@ -125,7 +161,11 @@ class QuestionModel {
                                 valid = false
                                 errorMessage = "A number range must contain two valid numbers"  // not a message that a user should see
                             }
-                        } else {
+                        }
+                        else if (answerValueStr == "over" || answerValueStr == "alt") {
+                            valid = true
+                        }
+                        else {
                             valid = false
                             errorMessage = "A number range must be in the form nnn-mmm"  // not a message that a user should see
                         }
@@ -199,26 +239,39 @@ class QuestionModel {
                 // set of immediate sub-questions of type rank must contain each of the values 1..maxRequired exactly once
                 def maxRequired = qdata.maxRequired ?: qdata.max
                 def answerSet = []
+                boolean valid = true
                 questions.each {
                     if (it.atype == AnswerType.rank && it.answerValueStr) {
-                        println it.answerValueStr
-                        answerSet << (it.answerValueStr as int)
+                        if (it.answerValueStr.isInteger()) {
+                            def val = NumberFormat.getIntegerInstance().parse(it.answerValueStr)
+                            answerSet << val
+                            if (val < 1 || val > maxRequired) {
+                                valid = false
+                                errorMessage = "Rank value must be between 1 and ${maxRequired}. Value is ${val}"
+                                errors.put ident(), errorMessage
+                            }
+                        }
+                        else {
+                            valid = false
+                            errorMessage = "${it.answerValueStr} is not an integer."
+                            errors.put ident(), errorMessage
+                        }
                     }
                 }
-                println answerSet
-                boolean valid = true
-                def reason = ''
-                (1..maxRequired).each { rank ->
-                    def occurs = answerSet.findAll {it == rank}.size()
-                    if (occurs != 1) {
-                        reason = "The rank ${rank} appears ${occurs} times"
-                        valid = false
+                if (valid) {
+                    def reason = ''
+                    (1..maxRequired).each { rank ->
+                        def occurs = answerSet.findAll {it == rank}.size()
+                        if (occurs != 1) {
+                            reason = "The rank ${rank} appears ${occurs} times"
+                            valid = false
+                        }
                     }
-                }
-                if (!valid) {
-                    errorMessage = "Answers must contain the numbers 1 to ${maxRequired} exactly once each. (${reason})"
-                    errors.put ident(), errorMessage
-                    println "Error in ${ident()}: ${errorMessage}"
+                    if (!valid) {
+                        errorMessage = "Answers must contain the numbers 1 to ${maxRequired} exactly once each. (${reason})"
+                        errors.put ident(), errorMessage
+                        println "Error in ${ident()}: ${errorMessage}"
+                    }
                 }
                 break
         }
