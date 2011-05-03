@@ -24,6 +24,7 @@
           </div>
           </g:if>
             <g:form action="submit">
+              <g:hiddenField name="set" value="${set}"/>
               <g:hiddenField name="from" value="${from}"/>
               <g:hiddenField name="to" value="${to}"/>
               <div class="dialog">
