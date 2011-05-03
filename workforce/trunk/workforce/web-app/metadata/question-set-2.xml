@@ -1,0 +1,92 @@
+<questionSet>
+    <!-- Q1 -->
+    <question>
+        <text>Resources of Australian Natural Science Collections</text>
+        <subtext>Please provide the following information about your institution.</subtext>
+        <question>
+            <text>MUSEUM and/or COLLECTION CODE:</text>
+            <answer type='text' required="true"/>
+        </question>
+        <question>
+            <text>CITES number:</text>
+            <answer type='text'/>
+        </question>
+        <question>
+            <text>MUSEUM and/or COLLECTION NAME:</text>
+            <answer type='text' required="true"/>
+        </question>
+        <question>
+            <text>RESPONSIBLE DEPARTMENT/ORGANISATION:</text>
+            <answer type='text' required="true"/>
+        </question>
+    </question>
+
+    <!-- Q2 -->
+    <question>
+        <text>CONTACT DETAILS</text>
+        <question>
+            <text>Street Address:</text>
+            <answer type='text' required="true"/>
+        </question>
+        <question>
+            <text>Postal Address:</text>
+            <answer type='text' required="true"/>
+        </question>
+        <question>
+            <text>City:</text>
+            <answer type='text' required="true"/>
+        </question>
+        <question type="pick">
+            <text>State</text>
+            <displayHint>dropdown</displayHint>
+            <answer type="externalRef">
+                <data>state</data>
+            </answer>
+        </question>
+        <question>
+            <text>Postcode:</text>
+            <answer type='text' required="true"/>
+        </question>
+        <question>
+            <text>Telephone:</text>
+            <answer type='text' required="true"/>
+        </question>
+        <question>
+            <text>Facsimile:</text>
+            <answer type='text' required="true"/>
+        </question>
+        <question>
+            <text>Email:</text>
+            <answer type='text' required="true"/>
+        </question>
+        <question>
+            <text>Location</text>
+            <answer type='text' required="true"/>
+        </question>
+    </question>
+
+    <!-- Q3 -->
+    <question instruction="Please provide the following information about your institution.">
+        <question>
+            <text>MUSEUM and/or COLLECTION CODE:</text>
+            <answer type='text' required="true"/>
+        </question>
+    </question>
+
+    <!-- Q4 -->
+    <question instruction="Please provide the following information about your institution.">
+        <question>
+            <text>MUSEUM and/or COLLECTION CODE:</text>
+            <answer type='text' required="true"/>
+        </question>
+    </question>
+
+    <!-- Q5 -->
+    <question instruction="Please provide the following information about your institution.">
+        <question>
+            <text>MUSEUM and/or COLLECTION CODE:</text>
+            <answer type='text' required="true"/>
+        </question>
+    </question>
+
+</questionSet>
