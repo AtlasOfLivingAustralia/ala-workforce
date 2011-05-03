@@ -323,3 +323,7 @@ table.shy {
     float: right;
     margin-right: 64px;
 }
+
+span.errors {
+    color: red;
+}
