@@ -7,6 +7,7 @@ package au.org.ala.workforce
  */
 class Question {
 
+    int qset                        // a unique int that identifies the question qset
     int level1                      // main question number as in Q1, Q2, etc
     int level2                      // question number within main question
     int level3                      // sub-question within a question
