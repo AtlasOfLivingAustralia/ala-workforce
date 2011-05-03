@@ -10,11 +10,33 @@ class DataLoaderService {
     javax.sql.DataSource dataSource
 
     /**
+     * Clear existing questions in a set.
+     *
+     * @return
+     */
+    def clearQuestionSet(set) {
+        // clear existing
+        def sql = new Sql(dataSource)
+        sql.execute("delete from question where qset = ${set}")
+    }
+
+    /**
+     * Clear all existing questions from database.
+     *
+     * Only used for testing.
+     * @return
+     */
+    def clearQuestionSets() {
+        // clear existing
+        def sql = new Sql(dataSource)
+        sql.execute("delete from question")
+    }
+
+    /**
      * Load from XML metadata
      */
-
-    def loadQuestionSetXML(text) {
-        println "LoadQuestionSetXML............."
+    def loadQuestionSetXML(text, set) {
+        println "LoadQuestionSet ${set} ............."
         def qset
 
         try {
@@ -26,23 +48,20 @@ class DataLoaderService {
             println e
             return
         }
-        // clear existing
-        def sql = new Sql(dataSource)
-        sql.execute("delete from question")
 
-        loadXmlQuestions(qset.question, 1, 0, 0, [:])
+        loadXmlQuestions(qset.question, set, 1, 0, 0, [:])
     }
 
-    private void loadXmlQuestions(questions, level, level1, level2, Map defaults) {
+    private void loadXmlQuestions(questions, set, level, level1, level2, Map defaults) {
         questions.eachWithIndex { it, idx ->
-            //println "Level ${level}: ${it.text}"
+            //println "Set ${set} Level ${level}: ${it.text}"
             def l1, l2, l3
             switch (level) {
                 case 1: l1 = idx + 1; l2 = 0; l3 = 0; break;
                 case 2: l1 = level1; l2 = idx + 1; l3 = 0; break;
                 case 3: l1 = level1; l2 = level2; l3 = idx + 1; break;
             }
-            Question q = new Question(level1: l1, level2: l2, level3: l3)
+            Question q = new Question(qset: set, level1: l1, level2: l2, level3: l3)
             // reset defaults for new top level question
             if (level == 1) {
                 defaults = [:]
@@ -91,17 +110,28 @@ class DataLoaderService {
 
             // a question of type matrix is handled by automatically generating the inferred level 3 questions
             if (q.qtype == QuestionType.matrix) {
-                loadMatrixOfQuestions(q, defaults)
+                /*
+                These can be of 2 types:
+                1. a list of m questions that have 1 answer each picked from a list of n options (in which case
+                    the matrix quality applies to widget layout but does not multiply the number of answers)
+                2. a genuine m x n matrix of answers
+                */
+                if (q.atype == AnswerType.radio) {
+                    loadListOfQuestions(q, set, defaults)
+                }
+                else {
+                    loadMatrixOfQuestions(q, set, defaults)
+                }
             }
 
             // otherwise load child questions
             else if (it.question) {
-                loadXmlQuestions(it.question, level + 1, l1, l2, defaults)
+                loadXmlQuestions(it.question, set, level + 1, l1, l2, defaults)
             }
         }
     }
 
-    def loadMatrixOfQuestions(matrixQuestion, defaults) {
+    def loadMatrixOfQuestions(matrixQuestion, set, defaults) {
         def qdata = JSON.parse(matrixQuestion.qdata)
         def rows = qdata.rows
         def cols = qdata.cols
@@ -112,8 +142,8 @@ class DataLoaderService {
             cols.each { col ->
 
                 // auto-generate a question for this cell of the matrix
-                Question q = new Question(level1: matrixQuestion.level1, level2: matrixQuestion.level2, level3: questionIdx++)
-                q.qtype = QuestionType.matrix
+                Question q = new Question(qset: set, level1: matrixQuestion.level1, level2: matrixQuestion.level2, level3: questionIdx++)
+                q.qtype = QuestionType.none
                 q.datatype = AnswerDataType.number//valueOf(defaults.defaultDataType) as AnswerDataType
                 q.atype = AnswerType.number//valueOf(defaults.defaultAnswerType) as AnswerType
                 q.required = true //TODO for now
@@ -124,6 +154,32 @@ class DataLoaderService {
                     q.errors.each { error ->
                         println error
                     }
+                }
+            }
+        }
+    }
+
+    def loadListOfQuestions(matrixQuestion, set, defaults) {
+        def qdata = JSON.parse(matrixQuestion.qdata)
+        def rows = qdata.rows
+
+        // iterate through rows
+        rows.eachWithIndex { row, questionIdx ->
+            // questions numbers are one-based
+            questionIdx++
+
+            // auto-generate a question for this row of the matrix
+            Question q = new Question(qset: set, level1: matrixQuestion.level1, level2: matrixQuestion.level2, level3: questionIdx++)
+            q.qtype = QuestionType.none
+            q.datatype = AnswerDataType.text//valueOf(defaults.defaultDataType) as AnswerDataType
+            q.atype = AnswerType.text//valueOf(defaults.defaultAnswerType) as AnswerType
+            q.required = true //TODO for now
+            q.qtext = row
+
+            q.save()
+            if (q.hasErrors()) {
+                q.errors.each { error ->
+                    println error
                 }
             }
         }
@@ -140,7 +196,7 @@ class DataLoaderService {
             return [data.text()]
         }
 
-        // determine if it's a list or set of properties
+        // determine if it's a list or qset of properties
         def name = data.children()[0].name()
         boolean isList = data.children().size() > 1
         if (isList) {
@@ -213,17 +269,17 @@ class DataLoaderService {
      * Load from JSON metadata
      */
 
-    def loadQuestionSet(text) {
+    def loadQuestionSet(text, set) {
         def imp = JSON.parse(text)
 
         // clear existing
         def sql = new Sql(dataSource)
-        sql.execute("delete from question")
+        sql.execute("delete from question where qset = ${set}")
 
-        loadQuestions(imp.workforce, 1, 0, 0)
+        loadQuestions(imp.workforce, set, 1, 0, 0)
     }
 
-    private void loadQuestions(questions, level, level1, level2) {
+    private void loadQuestions(questions, set, level, level1, level2) {
         questions.eachWithIndex { it, idx ->
 //            println "Level ${level}: ${it.qtext}"
             def l1, l2, l3
@@ -232,7 +288,7 @@ class DataLoaderService {
                 case 2: l1 = level1; l2 = idx + 1; l3 = 0; break;
                 case 3: l1 = level1; l2 = level2; l3 = idx + 1; break;
             }
-            Question q = new Question(level1: l1, level2: l2, level3: l3)
+            Question q = new Question(qset: set, level1: l1, level2: l2, level3: l3)
             ['qtext','label','instruction','alabel','displayHint','qdata','adata','layoutHint'].each { key ->
                 //println "${key} = " + it.(key)
                 if (it."${key}") {
@@ -249,7 +305,7 @@ class DataLoaderService {
                 }
             }
             if (it.question) {
-                loadQuestions(it.question, level + 1, l1, l2)
+                loadQuestions(it.question, set, level + 1, l1, l2)
             }
         }
     }
