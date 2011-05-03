@@ -1,5 +1,7 @@
 package au.org.ala.workforce
 
+import java.text.NumberFormat
+
 class WorkforceTagLib {
 
     static namespace = 'wf'
@@ -173,14 +175,10 @@ class WorkforceTagLib {
         return result
     }
 
-    static statesList = ['Australian Capital Territory', 'New South Wales', 'Queensland', 'Northern Territory', 'Western Australia', 'South Australia', 'Tasmania', 'Victoria']
+    static statesList = ['Select a state or territory', 'Australian Capital Territory', 'New South Wales', 'Queensland', 'Northern Territory', 'Western Australia', 'South Australia', 'Tasmania', 'Victoria']
 
     private String layoutWidget(QuestionModel q) {
         String result = ''
-
-        if (q.errorMessage) {
-            result = "<div class='errors'>"
-        }
 
         switch (q.atype) {
             case AnswerType.bool:
@@ -203,9 +201,15 @@ class WorkforceTagLib {
                 def items = []
                 q.adata.eachWithIndex { it, idx ->
                     def checked = it == q.answerValueStr ? 'checked' : ''
-                    items << "<input type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' value='${it}' ${checked}/><label for='${q.ident()}_${idx}'>${it}</label><br/>"
+                    items << "<input type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' value='${it}' ${checked}/><label for='${q.ident()}_${idx}'>${it}</label>"
                 }
-                result += layoutListOfItems(items, 7)
+                if (items.size() == 2) {
+                    // treat as boolean with arbitrary labels
+                    result += items.join()
+                }
+                else {
+                    result += layoutListOfItems(items, 7)
+                }
                 break
             case AnswerType.text:
                 def size = extractTextFieldSize(q.displayHint)
@@ -224,36 +228,42 @@ class WorkforceTagLib {
                 break
             case AnswerType.range:
                 // calculate range labels - sample adata = {interval: 4, start: 1, end: 'over 54 years', over: 54, unit: 'years'}
-                def labels = []
+                def items = []
                 for (int i = q.adata.start; i < q.adata.end; i += q.adata.interval) {
+                    def value = "${i}-${i + q.adata.interval - 1}"
+                    def fromValue = String.format('%,d', i)
+                    def toValue = String.format('%,d', i + q.adata.interval - 1)
                     if (q.adata.unit && q.adata.unitPlacement) {
                         switch (q.adata.unitPlacement) {
                             case 'beforeEach':
-                                labels << "${q.adata.unit}${i} - ${q.adata.unit}${i + q.adata.interval - 1}"
+                                items << [label:"${q.adata.unit}${fromValue} - ${q.adata.unit}${toValue}",
+                                           value:value]
                                 break
                             default:
-                                labels << "${i} - ${i + q.adata.interval - 1} ${q.adata.unit}"
+                                items << [label:"${fromValue} - ${toValue} ${q.adata.unit}", value:value]
                                 break
                         }
                     } else {
-                        labels << "${i} - ${i + q.adata.interval - 1} ${q.adata.unit}"
+                        items << [label:"${fromValue} - ${toValue} ${q.adata.unit}", value:value]
                     }
                 }
                 if (q.adata.over) {
-                    labels << q.adata.over
+                    items << [label:q.adata.over, value:"over"]
                 }
                 if (q.adata.alt) {
-                    labels << q.adata.alt
+                    items << [label:q.adata.alt, value:"alt"]
                 }
 
-                def items = []
-                labels.eachWithIndex { it, idx ->
-                    def checked = (it == q.answerValueStr) ? "checked" : ""
-                    items << "<input type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' ${checked} value='${it}'/><label for='${it}'>${it}</label><br/>"
+                def widgets = []
+                items.eachWithIndex { it, idx ->
+                    def checked = (it.value == q.answerValueStr) ? "checked" : ""
+                    def id = "${q.ident()}_${idx}"
+                    widgets << "<input type='radio' name='${q.ident()}' id='${id}' ${checked} value='${it.value}'/>"+
+                            "<label for='${id}'>${it.label}</label><br/>"
                 }
 
-                // if there are lots of items we want to put them in two columns
-                result += layoutListOfItems(items, 7)
+                // if there are lots of widgets we want to put them in two columns
+                result += layoutListOfItems(widgets, 7)
 
                 break
             case AnswerType.rank:
@@ -267,7 +277,7 @@ class WorkforceTagLib {
         }
 
         if (q.errorMessage) {
-            result += "</div>"
+            result = "<div class='errors'>" + result + "</div>"
         }
 
         return result
@@ -301,7 +311,6 @@ class WorkforceTagLib {
 
         content += "<tr><td>${text}</td>"
 
-        println "checking matrix questions> generated questions = ${q.questions?.size()}"
         cols.each {
             content += "<td style='text-align:center'>${it}</td>"
         }
@@ -346,7 +355,6 @@ class WorkforceTagLib {
 
         def rows = q.qdata.rows
         def cols = q.qdata.cols
-        def questionIdx = 1
 
         String content = "<table class='shy'>"
 
@@ -361,18 +369,18 @@ class WorkforceTagLib {
 
         content += "</tr>"
 
-        rows.each { row ->
-            content += "<tr><td>${row}</td>"
+        q.questions.each { q2 ->
+            def rowText = q2.qtext
+            if (q2.errorMessage) {
+                rowText = "<span class='errors'>" + rowText + "</span>"
+            }
+            content += "<tr><td>${rowText}</td>"
 
-            // this logically creates questions that are implied by the matrix
-            // the questions exist temporarily to encapsulate the numbering operations
-            def record = [datatype: q.datatype, atype: q.atype, level1: q.level1(), level2: questionIdx++, level3: 0]
-            QuestionModel qm = new QuestionModel(record)
-            q.questions << qm
-            qm.owner = q
+            def ident = q2.ident()
 
             cols.eachWithIndex { col, idx ->
-                def widget = "<input type='radio' name='${qm.ident()}' id='${qm.ident()}_${idx}' value='${col}'/>" //TODO: handle error markup
+                def selected = (col == q2.answerValueStr) ? " checked" : ""
+                def widget = "<input type='radio'${selected} name='${ident}' id='${ident}_${idx}' value='${col}'/>" //TODO: handle error markup
                 content += "<td style='text-align:center' width='15%'>" + widget + "</td>"
             }
             content += "</tr>"
