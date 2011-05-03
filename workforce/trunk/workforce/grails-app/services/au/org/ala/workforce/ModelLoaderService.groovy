@@ -4,10 +4,17 @@ class ModelLoaderService {
 
     static transactional = true
 
-    def loadQuestion(int number) {
+    /**
+     * Loads a top-level question and all its sub-questions.
+     *
+     * @param set
+     * @param questionNumber
+     * @return
+     */
+    def loadQuestion(int set, int questionNumber) {
 
         // load all question records for this top-level question
-        def records = Question.findAllByLevel1(number)
+        def records = Question.findAllByLevel1AndQset(questionNumber, set)
 
         if (!records) {return null}
 
