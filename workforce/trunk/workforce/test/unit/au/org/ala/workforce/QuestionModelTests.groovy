@@ -91,4 +91,34 @@ class QuestionModelTests extends GrailsUnitTestCase {
 
         assertEquals('q1_1_1', qm4.getQuestionFromPath('../1')?.ident())
     }
+
+    void testSaveAnswer() {
+        mockDomain Answer
+
+        QuestionModel qm1 = new QuestionModel()
+        qm1.level = 1
+        qm1.questionNumber = 1
+        qm1.hash = 2**24 + 2**16
+
+        QuestionModel qm2 = new QuestionModel()
+        qm2.level = 2
+        qm2.questionNumber = 1
+        qm2.hash = 2**24 + 2**16 + 2**8
+        qm2.owner = qm1
+        qm1.questions = [qm2]
+
+        QuestionModel qm3 = new QuestionModel()
+        qm3.level = 3
+        qm3.questionNumber = 1
+        qm3.hash = 2**24 + 2**16 + 2**8 + 1
+        qm3.owner = qm2
+        qm2.questions = [qm3]
+
+        qm3.answerValueStr = '666'
+
+        assert qm3.saveAnswer(1)
+
+        assert Answer.get(1).answerValue == '666'
+        assert Answer.get(1).questionId == qm3.hash
+    }
 }
