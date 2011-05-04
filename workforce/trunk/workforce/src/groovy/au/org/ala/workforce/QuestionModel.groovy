@@ -16,6 +16,7 @@ class QuestionModel {
 
     int questionNumber              // the ordinal for this level of question
     int level                       // the level this question has in the hierarchy
+    int hash                        // the unique identifier for the question (used by DB to link answers)
     String label                    // type of displayed label, eg none, 3, b), iii)
     String qtext                    // the question text
     QuestionType qtype              // question type, eg rank, pick, range, matrix, group, none
@@ -71,7 +72,7 @@ class QuestionModel {
         
         // other properties
         ['atype','qtype','label','qtext','instruction','alabel','displayHint','layoutHint','datatype',
-                'required','requiredIf','validation'].each {
+                'required','requiredIf','validation','hash'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
             }
@@ -391,6 +392,33 @@ class QuestionModel {
         if (instruction) rows++
         return rows;
     }
+
+    /**
+     * Save the answer to the database.
+     *
+     * @return false if unsuccessful
+     */
+    def saveAnswer(userId) {
+        if (!answerValueStr) {
+            return false
+        }
+        Answer a = new Answer(questionId: hash, userId: userId, answerValue: answerValueStr)
+        return a.save()
+    }
+
+    /**
+     * Save the answer and the answers of all sub-questions to the database.
+     * 
+     * @param userId
+     * @return
+     */
+    def saveAllAnswers(userId) {
+        saveAnswer(userId)
+        questions.each {
+            it.saveAllAnswers userId
+        }
+    }
+
 
     def String toString() {
         return ident() + ":\n" +
