@@ -11,6 +11,7 @@ class Question {
     int level1                      // main question number as in Q1, Q2, etc
     int level2                      // question number within main question
     int level3                      // sub-question within a question
+    int hash                        // an integer that is a unique hash of the set and levels - uniquely identifies this question
     String label                    // type of displayed label, eg none, 3, b), iii)
     String qtext                    // the question text
     QuestionType qtype              // question type, eg ranked, matrix, pick-one
@@ -45,4 +46,18 @@ class Question {
         validation(nullable:true, maxSize: 1024)
     }
 
+    // make the hash an index
+    static mapping = {
+        hash index:'hash_idx'
+    }
+
+    // calculate the hash before initial save
+    def beforeInsert() {
+        hash = makeHash()
+    }
+
+    // make a unique integer identifier from the set and levels values
+    int makeHash() {
+        return qset * 16777216 + level1 * 65536 + level2 * 256 + level3
+    }
 }
