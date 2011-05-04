@@ -127,6 +127,11 @@ class QuestionController {
             render(view: "questions", model: [set: params.set as int, from: params.from as int, to: params.to as int,
                     questions: questionList, errors:errors])
         } else {
+            // save the answers
+            questionList.each {q1 ->
+                q1.saveAllAnswers(1)
+            }
+
             def roughRepresentation = ""
             questionList.each {q1 ->
                 roughRepresentation += dumpQuestion(q1)
