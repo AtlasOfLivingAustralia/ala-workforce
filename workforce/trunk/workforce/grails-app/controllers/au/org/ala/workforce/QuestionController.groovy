@@ -38,7 +38,7 @@ class QuestionController {
 
     def singleQuestion = {
         def set = params.set ?: 1
-        // during development reload question qset each time - remove later
+        // during development reload question set each time - remove later
         if (!params.noreload) {
             loadXML(set)
             //loadJSON()
@@ -53,39 +53,78 @@ class QuestionController {
     }
 
     /**
-     * Display a qset of questions.
+     * Display a set of questions.
      *
      * Optional params 'from' and 'to' control the range of questions as follows:
      *  - neither specified -> show all questions
-     *  - from specified -> show that single question
+     *  - from specified -> show a 'page full' of questions starting with from
      *  - from and to specified -> show from..to inclusive
      *  - to specified -> illegal - this won't happen from URL mapping as a single number is mapped to 'from'
      *
+     * @param set the number of the question set
      * @param from the first question number to display
      * @param to the last question number to display
      */
     def questions = {
-        def set = params.set ?: 1
-        // during development reload question qset each time - remove later
+        //println ".params............."
+        //params.each { println it}
+        //println "> questions set=${params.set} from=${params.from} to=${params.to}"
+        def set = params.set as int ?: 1
+        // during development reload question set each time - remove later
         //if (!params.noreload) {
             //dataLoaderService.clearQuestionSet()
             //loadXML(set)
             //loadJSON()
         //}
 
+        def questionList = []
         def from, to
         if (!params.from && !params.to) {
             // neither specified
             from = 1
             to = Question.findAllByLevel2(0).size()
-        } else {
-            // assume from specified
-            from = params.from as int ?: 1
-            to = params.to ? params.to as int : from
+            questionList = (from..to).collect { modelLoaderService.loadQuestion(set, it) }
+        }
+        else if (!params.to) {
+            // show as many as will fit on a page
+            from = params.from  // must be present
+            int current = from as int
+            boolean roomForMore = true
+            while (roomForMore) {
+                def modelInstance = modelLoaderService.loadQuestion(set, current++ as int)
+                if (modelInstance) {
+                    questionList << modelInstance
+                    int pageHeight = 0
+                    questionList.each {
+                        println "${it.ident()} height is ${it.heightHint}"
+                        pageHeight += it.heightHint
+                    }
+                    println "pageHeight is ${pageHeight}\n"
+                    if (pageHeight > 10) {
+                        roomForMore = false
+                    }
+                }
+                else {
+                    roomForMore = false
+                }
+            }
+            to = current - 1
+        }
+        else {
+            // both specified
+            from = params.from as int
+            to = params.to as int
+            questionList = (from..to).collect { modelLoaderService.loadQuestion(set, it) }
         }
 
-        def questionList = (from..to).collect { modelLoaderService.loadQuestion(set as int, it as int) }
         [set: set, from: from, to: to, questions: questionList]
+    }
+
+    def next = {
+        // just navigate for now and don't worry about validation or saving
+        params.from = (params.to as int) + 1
+        params.to = null
+        forward(action: 'questions', params:params)
     }
 
     def loadJSON(set) {
