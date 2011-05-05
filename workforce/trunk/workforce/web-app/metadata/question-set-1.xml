@@ -4,11 +4,13 @@
     Questions have properties that relate to how the question is asked, eg picking one from a list.
     All question properties are optional.
     Questions properties are:
-        text - the question text
         @type - the class of question - one of rank, pick, range, matrix, group or none
+        @instruction - an additional instruction such as 'if you answered x to the above go to question 6'
+        @heightHint- an estimate of the laid-out height of the question for pagination (this is temporary as this will
+            eventually be calculated)
+        text - the question text
         data - any data associate with the type, eg. list of options or rows and columns in a matrix
         label - an outline-style label for the question, eg. (a), i, 1
-        @instruction - an additional instruction such as 'if you answered x to the above go to question 6'
         displayHint - the type of widget to use, eg radio buttons or drop-down or size of widget, eg. textbox size
         layoutHint - hints how nested questions should be laid out
     Questions may also contain sub-questions - any number of nested questions to a depth of 3 levels overall.
@@ -27,7 +29,8 @@
 -->
 <questionSet>
     <!-- Q1 -->
-    <question instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
+    <question heightHint="11"
+            instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
         <question>
             <text>Is curatorial and/or taxonomic work your major responsibility in your organisation?</text>
             <data>YES/NO</data>
@@ -79,7 +82,7 @@
     </question>
 
     <!-- Q2 -->
-    <question>
+    <question heightHint="14">
         <text>Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?</text>
         <question>
             <text>Museum</text>
@@ -205,7 +208,7 @@
     </question>
 
     <!-- Q3 -->
-    <question>
+    <question heightHint="7">
         <text>What is your employment status at this organisation?</text>
         <question type="pick" datatype="text">
             <displayHint>radio</displayHint>
@@ -232,7 +235,7 @@
     </question>
 
     <!-- Q4 -->
-    <question>
+    <question heightHint="1">
         <text>In your position, how many hours per week do you work on average?</text>
         <answer type="number" required="true">
             <data>
@@ -244,7 +247,7 @@
     </question>
 
     <!-- Q5 -->
-    <question type="range">
+    <question type="range" heightHint="5">
         <text>How long have you been working in the field of taxonomy?</text>
         <answer type="range" dataType="numberRange" required="true">
             <data>
@@ -259,13 +262,13 @@
     </question>
 
     <!-- Q6 -->
-    <question>
+    <question heightHint="1">
         <text>And do you intend to be working in this field in 12 months time?</text>
         <answer type='bool' required="true"/>
     </question>
 
     <!-- Q7 -->
-    <question>
+    <question heightHint="6">
         <text>And thinking about your longer-term future, how likely is it that you will continue your career in taxonomy?</text>
         <question type="pick" datatype="text">
             <text>Would you say that it is:</text>
@@ -282,7 +285,7 @@
     </question>
 
     <!-- Q8 -->
-    <question>
+    <question heightHint="5">
         <text>How many days of taxonomic field-work have you undertaken in the last two calendar years and how were they funded?</text>
         <question type="matrix" defaultDataType="number" defaultAnswerType="number">
             <text>Method of funding</text>
@@ -301,7 +304,7 @@
     </question>
     
     <!-- Q9 -->
-    <question defaultLayoutHint="align-with-level3"><!-- the answer widget for level 2 questions should be aligned with those for level 3 -->
+    <question heightHint="19" defaultLayoutHint="align-with-level3"><!-- the answer widget for level 2 questions should be aligned with those for level 3 -->
         <text>Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?</text>
         <validation>percent-total-lessThanOrEqual-100</validation>
         <question>
@@ -413,7 +416,7 @@
     </question>
 
     <!-- Q10 -->
-    <question>
+    <question heightHint="27">
         <text>To assist ABRS to identify research and skills gaps please indicate on which taxa of Australian living or fossil organisms you currently conduct taxonomic research.</text>
         <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
             <question><layoutHint>subgroup:Mammals</layoutHint><text>Eutherian</text></question>
@@ -471,7 +474,7 @@
     </question>
 
     <!-- Q11 -->
-    <question>
+    <question heightHint="3">
         <text>Please identify the groups you work on, if possible at Family level, if not then at Order level.</text>
         <question>
             <text>Family</text>
@@ -488,7 +491,7 @@
     </question>
 
     <!-- Q12 -->
-    <question>
+    <question heightHint="10">
         <text>Below is a list of things that previous survey respondents have identified as being important to increasing their taxonomic productivity. Thinking about your current position please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase your productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
         <question type="rank" defaultAnswerType="rank" defaultDataType="rank">
             <data>
@@ -511,7 +514,7 @@
     </question>
 
     <!-- Q13 -->
-    <question>
+    <question heightHint="10">
         <text>As for the previous question, but this time please consider the answer in terms of the needs for taxonomy in Australia (rather than for you personally). Please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase Australia's taxonomic productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
         <question type="rank" defaultAnswerType="rank" defaultDataType="rank">
             <data>
@@ -534,7 +537,7 @@
     </question>
 
     <!-- Q14 -->
-    <question>
+    <question heightHint="12">
         <text>Below is a list of things related to the costs and opportunities in Taxonomy. Please indicate how much you think these issues impact on the taxonomic workforce.&lt;br/&gt;Do they impact &lt;strong&gt;a lot&lt;/strong&gt;, &lt;strong&gt;a little&lt;/strong&gt; or &lt;strong&gt;not at all&lt;/strong&gt;?</text>
         <question type="matrix">
             <data>
@@ -565,7 +568,7 @@
     </question>
 
     <!-- Q15 -->
-    <question>
+    <question heightHint="9">
         <text>What was the highest level you achieved in your formal education?</text>
         <question type="pick">
             <text>Please select one:</text>
@@ -593,7 +596,7 @@
     </question>
 
     <!-- Q16 -->
-    <question>
+    <question heightHint="1">
         <text>Are you male or female?</text>
         <answer type="radio" required="true">
             <data>
@@ -604,7 +607,7 @@
     </question>
 
     <!-- Q17 -->
-    <question type="range">
+    <question heightHint="5" type="range">
         <text>Which of the following age categories are you in?</text>
         <answer type="range" dataType="numberRange" required="true">
             <data>
@@ -619,7 +622,7 @@
     </question>
 
     <!-- Q18 -->
-    <question type="range">
+    <question heightHint="9" type="range">
         <text>Which of the following best describes your approximate annual income before tax?</text>
         <answer type="range" dataType="numberRange" required="true">
             <data>
