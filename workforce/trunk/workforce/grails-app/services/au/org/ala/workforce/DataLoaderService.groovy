@@ -77,6 +77,9 @@ class DataLoaderService {
             q.label = it.label
             q.layoutHint = valueOrDefault(it.layoutHint, defaults)
             q.displayHint = valueOrDefault(it.displayHint, defaults)
+            if (it.@heightHint.text()) {
+                q.heightHint = it.@heightHint.text() as int
+            }
             q.qdata = extractJsonString(it.data) as grails.converters.JSON
             q.qtext = it.text
             q.atype = valueOrDefault(it.answer?.@type, defaults) ? AnswerType.valueOf(valueOrDefault(it.answer?.@type, defaults) as String) : AnswerType.none
