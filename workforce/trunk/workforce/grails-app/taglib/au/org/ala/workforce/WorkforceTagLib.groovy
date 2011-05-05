@@ -216,7 +216,7 @@ class WorkforceTagLib {
                 result += textField(name: q.ident(), size: size, value: q.answerValueStr) + " " + (q.alabel ?: "")
                 break
             case AnswerType.textarea:
-                result += textArea(name: q.ident(), rows: q.adata?.rows, value: q.answerValueStr) + " " + (q.alabel ?: "")
+                result += textArea(name: q.ident(), rows: q.adata?.rows ?: 4, value: (q.answerValueStr ?: "")) + " " + (q.alabel ?: "")
                 break
             case AnswerType.percent:
                 def attrs = [name: q.ident(), size: 7, value: q.answerValueStr]
