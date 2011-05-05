@@ -26,6 +26,8 @@ class Question {
     boolean required                // the answer (if there is one) may not be blank
     String requiredIf               // must have an answer if the condition is true
     String validation               // cross-question validation
+    int heightHint                  // an estimate of the laid-out height of the question for pagination (this is
+                                    // temporary as this will eventually be calculated)
 
     static constraints = {
         level1(min:0)
