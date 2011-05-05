@@ -10,7 +10,18 @@
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
         </div>
         <div class="body">
-          <h1>Questions</h1>
+            <g:if test="${set == 1}">
+                <g:set var="heading" value="Survey of Australian Taxonomic Workforce - Personal Survey"/>
+            </g:if>
+            <g:else>
+                <g:set var="heading" value="Resources of Australian Natural Science Collections"/>
+            </g:else>
+            <g:if test="${questions.size() == 1}">
+                <h1>${heading} - Question ${from}</h1>
+            </g:if>
+            <g:else>
+                <h1>${heading} - Questions ${from} to ${to}</h1>
+            </g:else>
           <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
           </g:if>
@@ -41,9 +52,12 @@
                   </table>
               </div>
               <div class="buttons">
-                      <span class="button"><g:actionSubmit class="edit" action="edit" value="Save" /></span>
-                      <span class="button"><g:actionSubmit class="edit" action="submit" value="Submit" /></span>
-                      <span class="button"><g:actionSubmit class="delete" action="cancel" value="Cancel" onclick="return confirm('${message(code: 'default.button.cancel.confirm.message', default: 'Are you sure?')}');" /></span>
+                  <span class="button"><g:actionSubmit class="edit" action="edit" value="Save" /></span>
+                  <span class="button"><g:actionSubmit class="edit" action="submit" value="Submit" /></span>
+                  <!-- this is temp - to allow nav without validation -->
+                  <span class="button"><g:actionSubmit class="edit" action="next" value="Next" /></span>
+
+                  <span class="button"><g:actionSubmit class="delete" action="cancel" value="Cancel" onclick="return confirm('${message(code: 'default.button.cancel.confirm.message', default: 'Are you sure?')}');" /></span>
               </div>
             </g:form>
         </div>
