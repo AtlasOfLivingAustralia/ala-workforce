@@ -30,6 +30,7 @@ class QuestionModel {
     Object adata                    // data for a answer , eg a pick list - may be a reference to an external list eg states of australia
     String displayHint              // suggested form of display, eg dropdown, radio, checkbox
     String layoutHint               // directs layout of child questions
+    int heightHint = 1              // an estimate of the laid-out height of the question for pagination (this is
     boolean required                // the answer may not be blank
     String requiredIf               // the answer may not be blank if the condition is met
     String validation               // cross-question validation
@@ -72,7 +73,7 @@ class QuestionModel {
         
         // other properties
         ['atype','qtype','label','qtext','instruction','alabel','displayHint','layoutHint','datatype',
-                'required','requiredIf','validation','hash'].each {
+                'required','requiredIf','validation','hash','heightHint'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
             }
@@ -419,6 +420,14 @@ class QuestionModel {
         }
     }
 
+    int estimateHeight() {
+        int height = 0
+        if (qtext) height++
+        if (instruction) height++
+        questions.each {height += it.estimateHeight()}
+
+        return height
+    }
 
     def String toString() {
         return ident() + ":\n" +
