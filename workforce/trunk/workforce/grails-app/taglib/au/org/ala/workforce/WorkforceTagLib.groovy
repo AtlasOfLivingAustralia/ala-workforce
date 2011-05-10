@@ -566,4 +566,28 @@ class WorkforceTagLib {
         }
     }
 
+    /**
+     * Draws a page progress track.
+     *
+     * @total number of pages in set
+     * @page one-based number of the page this is being drawn on
+     */
+    def pageProgress = {attrs->
+        def total = attrs.total
+        def pageNumber = attrs.page
+        if (pageNumber && total && total > 2) {
+            def track = pageNumber == 1 ?
+                "<img src='${resource(dir:'/images/abrsskin/', file: 'first-step-on.png')}'/>" :
+                "<img src='${resource(dir:'/images/abrsskin/', file: 'first-step-off.png')}'/>"
+            2.upto(total-1) { num ->
+                track += pageNumber == num ?
+                    "<img src='${resource(dir:'/images/abrsskin/', file: 'step-on.png')}'/>" :
+                    "<img src='${resource(dir:'/images/abrsskin/', file: 'step-off.png')}'/>"
+            }
+            track += pageNumber == total ?
+                "<img src='${resource(dir:'/images/abrsskin/', file: 'last-step-on.png')}'/>" :
+                "<img src='${resource(dir:'/images/abrsskin/', file: 'last-step-off.png')}'/>"
+            out << track
+        }
+    }
 }
