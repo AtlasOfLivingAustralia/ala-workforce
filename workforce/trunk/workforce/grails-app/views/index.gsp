@@ -1,3 +1,4 @@
+<%@ page import="au.org.ala.workforce.QuestionSet" %>
 <html>
     <head>
         <title>ABRS Surveys</title>
@@ -31,8 +32,9 @@
             <h1>ABRS Workforce Surveys</h1>
             <p>Click a link to begin a survey.</p>
             <ul>
-                <li><g:link controller="question" action="questions" params="[set:1,from:1]">Personal Workforce Survey</g:link></li>
-                <li><g:link controller="question" action="questions" params="[set:2,from:1]">Institution Survey</g:link></li>
+                <g:each var="qs" in="${QuestionSet.list([sort:'setId'])}">
+                    <li><g:link controller="question" action="questions" params='[set:"${qs.setId}",from:1]'>${qs.title}</g:link></li>
+                </g:each>
             </ul>
         </div>
     </body>
