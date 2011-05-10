@@ -1,7 +1,5 @@
 package au.org.ala.workforce
 
-import grails.converters.JSON
-
 class QuestionController {
 
     def dataLoaderService, modelLoaderService
@@ -69,7 +67,8 @@ class QuestionController {
         //println ".params............."
         //params.each { println it}
         //println "> questions set=${params.set} from=${params.from} to=${params.to}"
-        def set = params.set as int ?: 1
+        def qset = QuestionSet.findBySetId(params.set as int ?: 1)
+        assert qset
         // during development reload question set each time - remove later
         //if (!params.noreload) {
             //dataLoaderService.clearQuestionSet()
@@ -78,53 +77,94 @@ class QuestionController {
         //}
 
         def questionList = []
-        def from, to
+        def page = [:]
         if (!params.from && !params.to) {
             // neither specified
-            from = 1
-            to = Question.findAllByLevel2(0).size()
-            questionList = (from..to).collect { modelLoaderService.loadQuestion(set, it) }
+            page.from = 1
+            page.to = Question.findAllByLevel2(0).size()
+            questionList = (page.from..page.to).collect { modelLoaderService.loadQuestion(qset.setId, it) }
         }
         else if (!params.to) {
-            // show as many as will fit on a page
-            from = params.from  // must be present
-            int current = from as int
-            boolean roomForMore = true
-            while (roomForMore) {
-                def modelInstance = modelLoaderService.loadQuestion(set, current++ as int)
-                if (modelInstance) {
-                    questionList << modelInstance
-                    int pageHeight = 0
-                    questionList.each {
-                        println "${it.ident()} height is ${it.heightHint}"
-                        pageHeight += it.heightHint
+            if (qset.hasPageSequence()) {
+                // paginate based on the provided sequence
+                page = qset.nextPage(params.from.toInteger())
+                assert page
+                questionList = (page.from..page.to).collect { modelLoaderService.loadQuestion(qset.setId, it) }
+            }
+            else {
+                // paginate by best fit
+                // show as many as will fit on a page
+                page.from = params.from  // must be present
+                int current = page.from.toInteger()
+                boolean roomForMore = true
+                while (roomForMore) {
+                    def modelInstance = modelLoaderService.loadQuestion(qset.setId, current++)
+                    if (modelInstance) {
+                        questionList << modelInstance
+                        int pageHeight = 0
+                        questionList.each {
+                            pageHeight += it.heightHint
+                        }
+                        if (pageHeight > 10) {
+                            roomForMore = false
+                        }
                     }
-                    println "pageHeight is ${pageHeight}\n"
-                    if (pageHeight > 10) {
+                    else {
                         roomForMore = false
                     }
                 }
-                else {
-                    roomForMore = false
-                }
+                page.to = current - 1
             }
-            to = current - 1
         }
         else {
             // both specified
-            from = params.from as int
-            to = params.to as int
-            questionList = (from..to).collect { modelLoaderService.loadQuestion(set, it) }
+            page.from = params.from as int
+            page.to = params.to as int
+            questionList = (from..to).collect { modelLoaderService.loadQuestion(qset.setId, it) }
         }
 
-        [set: set, from: from, to: to, questions: questionList]
+        [qset: qset, pagination: page, questions: questionList]
     }
 
     def next = {
-        // just navigate for now and don't worry about validation or saving
-        params.from = (params.to as int) + 1
-        params.to = null
-        forward(action: 'questions', params:params)
+        def result = validateAndSave(params.from as int, params.to as int, params)
+        def questionList = result.questionList
+        def errors = result.errors
+        if (errors) {
+            errors = errors.sort {it.key}
+            render(view: "questions", model: [qset: QuestionSet.findBySetId(params.set as int),
+                    pagination: buildPagination(params),
+                    questions: questionList, errors:errors])
+        } else {
+            // save the answers
+            questionList.each {q1 ->
+                q1.saveAllAnswers(1)
+            }
+
+            params.from = (params.to as int) + 1
+            params.to = null
+            chain(action: 'questions', params:[set:params.set, from:params.from, to:null])
+        }
+    }
+
+    def previous = {
+        def result = validateAndSave(params.from as int, params.to as int, params)
+        def questionList = result.questionList
+        def errors = result.errors
+        if (errors) {
+            errors = errors.sort {it.key}
+            render(view: "questions", model: [qset: QuestionSet.findBySetId(params.set as int),
+                     pagination: buildPagination(params),
+                     questions: questionList, errors:errors])
+         } else {
+            // save the answers
+            questionList.each {q1 ->
+                q1.saveAllAnswers(1)
+            }
+            params.from = (params.from as int) - 1
+            params.to = null
+            chain(action: 'questions', params:[set:params.set, from:params.from, to:null])
+        }
     }
 
     def loadJSON(set) {
@@ -135,42 +175,31 @@ class QuestionController {
         def filename = "metadata/question-set-${set}.xml"
         def qsetFile = servletContext.getResource(filename)
         assert qsetFile : "file not found - ${filename}"
-        dataLoaderService.loadQuestionSetXML(qsetFile.text, set)
+        dataLoaderService.loadQuestionSetXML(qsetFile.text)
     }
 
     def loadTestXML() {
         dataLoaderService.loadTestXML(servletContext.getResource('metadata/test.xml').text)
     }
 
+    /**
+     * 
+     */
     def submit = {
-
-        // load question metadata
-        def questionList = ((params.from as int)..(params.to as int)).collect {
-            modelLoaderService.loadQuestion(params.set as int, it)
-        }
-
-        params.each { println it }
-        
-        // inject answers into questions
-        injectAnswers(questionList, params)
-
-        // validate answers against each question
-        Map<String, String> errors = new HashMap<String, String>()
-        questionList.each {
-            println "validating " + it.ident()
-            errors += it.validate()
-        }
-
+        def result = validateAndSave(params.from as int, params.to as int, params)
+        def questionList = result.questionList
+        def errors = result.errors
         if (errors) {
             errors = errors.sort {it.key}
-            render(view: "questions", model: [set: params.set as int, from: params.from as int, to: params.to as int,
-                    questions: questionList, errors:errors])
-        } else {
+            println "redirect to errors"
+            render(view: "questions", model: [qset: QuestionSet.findBySetId(params.set as int),
+                     pagination: buildPagination(params),
+                     questions: questionList, errors:errors])
+         } else {
             // save the answers
             questionList.each {q1 ->
                 q1.saveAllAnswers(1)
             }
-
             def roughRepresentation = ""
             questionList.each {q1 ->
                 roughRepresentation += dumpQuestion(q1)
@@ -183,6 +212,43 @@ class QuestionController {
             }
             render "<html><body><pre>" + roughRepresentation + "</pre></body></html>"
         }
+    }
+
+    /**
+     * Mark the survey as complete.
+     *
+     * 1. validate entire question set and feedback errors
+     * 2. mark latest answers as complete
+     */
+    def complete = {
+
+    }
+
+    Map buildPagination(params) {
+        return [from:params.from as int, to:params.to as int,
+                pageNumber:params.pageNumber as int, totalPages:params.totalPages as int]
+    }
+
+    def validateAndSave(int from, int to, params) {
+
+        // load question metadata
+        def questionList = (from..to).collect {
+            modelLoaderService.loadQuestion(params.set as int, it)
+        }
+
+        //params.each { println it }
+        
+        // inject answers into questions
+        injectAnswers(questionList, params)
+
+        // validate answers against each question
+        Map<String, String> errors = new HashMap<String, String>()
+        questionList.each {
+            println "validating " + it.ident()
+            errors += it.validate()
+        }
+
+        return [questionList:questionList, errors:errors]
     }
 
     def injectAnswers(questions, answers) {
@@ -202,6 +268,10 @@ class QuestionController {
         } else {
             return "${dump}\n"
         }
+    }
+
+    def cancel = {
+        redirect(url: "/workforce")
     }
 
     /*def index = {
