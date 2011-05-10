@@ -70,11 +70,13 @@ input:focus, select:focus, textarea:focus {
     border-style: solid none solid none;
     margin-top: 5px;
     padding: 7px 12px;
+    text-align: center;
 }
 
 .menuButton {
     font-size: 10px;
     padding: 0 5px;
+    float: left;
 }
 .menuButton a {
     color: #333;
@@ -326,4 +328,12 @@ table.shy {
 
 span.errors {
     color: red;
+}
+
+span.pageProgress {
+    padding-right: 75px;
+}
+
+span.pageProgress img {
+    padding: 1px 0 0 0;
 }
