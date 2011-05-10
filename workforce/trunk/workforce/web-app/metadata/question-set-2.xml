@@ -1,8 +1,14 @@
-<questionSet>
+<questionSet set="2">
+    <title>Resources of Australian Natural Science Collections</title>
+    <pageSequence>
+        <page>1-2</page>
+        <page>3-3</page>
+        <page>4-4</page>
+        <page>5-5</page>
+    </pageSequence>
     <!-- Q1 -->
     <question>
-        <text>Resources of Australian Natural Science Collections</text>
-        <subtext>Please provide the following information about your institution.</subtext>
+        <text>Please provide the following information about your institution.</text>
         <question>
             <text>MUSEUM and/or COLLECTION CODE:</text>
             <answer type='text' required="true"/>

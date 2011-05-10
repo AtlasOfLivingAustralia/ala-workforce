@@ -27,7 +27,20 @@
         @labelPlacement - beforeEach or afterEach the answer - defaults to after
         @required - if true, a value must be entered (defaults to not required)
 -->
-<questionSet>
+<questionSet set="1">
+    <title>Survey of Australian Taxonomic Workforce - Personal Survey</title>
+    <pageSequence>
+        <page>1-1</page>
+        <page>2-2</page>
+        <page>3-5</page>
+        <page>6-8</page>
+        <page>9-9</page>
+        <page>10-11</page>
+        <page>12-13</page>
+        <page>14-14</page>
+        <page>15-18</page>
+    </pageSequence>
+
     <!-- Q1 -->
     <question heightHint="11"
             instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
