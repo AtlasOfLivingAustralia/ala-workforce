@@ -18,6 +18,7 @@ class DataLoaderService {
         // clear existing
         def sql = new Sql(dataSource)
         sql.execute("delete from question where qset = ${set}")
+        sql.execute("delete from question_set where qset = ${set}")
     }
 
     /**
@@ -30,13 +31,13 @@ class DataLoaderService {
         // clear existing
         def sql = new Sql(dataSource)
         sql.execute("delete from question")
+        sql.execute("delete from question_set")
     }
 
     /**
      * Load from XML metadata
      */
-    def loadQuestionSetXML(text, set) {
-        println "LoadQuestionSet ${set} ............."
+    def loadQuestionSetXML(text) {
         def qset
 
         try {
@@ -49,7 +50,32 @@ class DataLoaderService {
             return
         }
 
+        int set = loadSetMetadata(qset)
+        println "LoadQuestionSet ${set} ............."
         loadXmlQuestions(qset.question, set, 1, 0, 0, [:])
+    }
+
+    private int loadSetMetadata(qset) {
+        int set = qset.@set.text().toInteger()
+        def title = qset.title.text()
+        def pageSequence = []
+        if (qset.pageSequence.text()) {
+            qset.pageSequence.page.each { page ->
+                // text should be of the form m-n
+                def values = page.text().tokenize('-')
+                if (values.size() == 2) {
+                    if (values[0].isInteger() && values[1].isInteger()) {
+                        pageSequence << [from:values[0].toInteger(), to:values[1].toInteger()]
+                    }
+                }
+            }
+        }
+        def qs = new QuestionSet(setId:set, title:title, pageSequence:(pageSequence as JSON).toString())
+        if (!qs.save()) {
+            qs.errors.each { println it }
+        }
+
+        return set
     }
 
     private void loadXmlQuestions(questions, set, level, level1, level2, Map defaults) {
