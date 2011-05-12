@@ -6,27 +6,37 @@ class QuestionController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def scaffold = true;
+    /**
+     * Preloads objects for page requests.
+     *
+     * @param set Question set metadata is loaded if set is specified
+     * @param question page number will be derived
+     */
+    def beforeInterceptor = {
+        if (params.set?.isInteger()) {
+            params.qset = QuestionSet.findBySetId(params.set.toInteger())
 
-    def loadQuestionSet = {
-        def set = params.set ?: 1
-        loadJSON(set)
-        def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
-        render list
+            if (params.question?.isInteger() && !params.page) {
+                params.page = params.qset.findPageByQuestionNumber(params.question.toInteger()).pageNumber
+            }
+        }
     }
 
+    def scaffold = true;
+
+    /**
+     * Load a specific question set. DEVT only.
+     */
     def loadQuestionSetXML = {
         def set = params.set ?: 1
         loadXML(set)
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
-        render "XML question qset loaded - ${list}"
+        render "XML question set loaded - ${list}"
     }
 
-    def test = {
-        loadTestXML()
-        render "Done."
-    }
-
+    /**
+     * Reload all questions sets. DEVT only.
+     */
     def reload = {
         dataLoaderService.clearQuestionSets()
         loadXML(1)
@@ -51,119 +61,81 @@ class QuestionController {
     }
 
     /**
-     * Display a set of questions.
-     *
-     * Optional params 'from' and 'to' control the range of questions as follows:
-     *  - neither specified -> show all questions
-     *  - from specified -> show a 'page full' of questions starting with from
-     *  - from and to specified -> show from..to inclusive
-     *  - to specified -> illegal - this won't happen from URL mapping as a single number is mapped to 'from'
+     * Display the specified page of questions.
      *
      * @param set the number of the question set
-     * @param from the first question number to display
-     * @param to the last question number to display
+     * @param qset the question set object (injected by the beforeInterceptor
+     * @param page the page to display
      */
-    def questions = {
-        //println ".params............."
-        //params.each { println it}
-        //println "> questions set=${params.set} from=${params.from} to=${params.to}"
-        def qset = QuestionSet.findBySetId(params.set as int ?: 1)
-        assert qset
-        // during development reload question set each time - remove later
-        //if (!params.noreload) {
-            //dataLoaderService.clearQuestionSet()
-            //loadXML(set)
-            //loadJSON()
-        //}
+    def page = {
 
-        def questionList = []
-        def page = [:]
-        if (!params.from && !params.to) {
-            // neither specified
-            page.from = 1
-            page.to = Question.findAllByLevel2(0).size()
-            questionList = (page.from..page.to).collect { modelLoaderService.loadQuestion(qset.setId, it) }
-        }
-        else if (!params.to) {
-            if (qset.hasPageSequence()) {
-                // paginate based on the provided sequence
-                page = qset.nextPage(params.from.toInteger())
-                assert page
-                questionList = (page.from..page.to).collect { modelLoaderService.loadQuestion(qset.setId, it) }
-            }
-            else {
-                // paginate by best fit
-                // show as many as will fit on a page
-                page.from = params.from  // must be present
-                int current = page.from.toInteger()
-                boolean roomForMore = true
-                while (roomForMore) {
-                    def modelInstance = modelLoaderService.loadQuestion(qset.setId, current++)
-                    if (modelInstance) {
-                        questionList << modelInstance
-                        int pageHeight = 0
-                        questionList.each {
-                            pageHeight += it.heightHint
-                        }
-                        if (pageHeight > 10) {
-                            roomForMore = false
-                        }
-                    }
-                    else {
-                        roomForMore = false
-                    }
-                }
-                page.to = current - 1
-            }
-        }
-        else {
-            // both specified
-            page.from = params.from as int
-            page.to = params.to as int
-            questionList = (from..to).collect { modelLoaderService.loadQuestion(qset.setId, it) }
-        }
+        // grab the required page number
+        def pageNumber = params.page.isInteger() ? params.page.toInteger() : 1
+        assert params.qset
+        assert pageNumber >= 1 && pageNumber <= params.qset.totalPages
 
-        [qset: qset, pagination: page, questions: questionList]
+        // get the page definition
+        def pg = params.qset.getPage(pageNumber)
+        assert pg
+
+        // load the question metadata for each question on the page
+        def questionList = (pg.from..pg.to).collect { modelLoaderService.loadQuestionWithAnswer(params.qset.setId, it, 1) }
+
+        // render the page
+        render(view:'questions', model:[qset: params.qset, pagination: pg, questions: questionList])
     }
 
+    /**
+     * Handle move to next page.
+     */
     def next = {
-        def result = validateAndSave(params.from as int, params.to as int, params)
-        def questionList = result.questionList
+        // set the direction to move
+        params.where = 'next'
+
+        // forward to page submission
+        forward(action:'changePage', params:params)
+    }
+
+    /**
+     * Handle move to previous page.
+     */
+    def previous = {
+        // set the direction to move
+        params.where = 'prev'
+
+        // forward to page submission
+        forward(action:'changePage', params:params)
+    }
+
+    /**
+     * Processes page submission when the user leaves a page.
+     *
+     */
+    def changePage = {
+        // validate the answers
+        def result = validate(params.from as int, params.to as int, params)
+
+        // check for validation errors
         def errors = result.errors
         if (errors) {
+
+            // redisplay the same page with errors highlighted
             errors = errors.sort {it.key}
             render(view: "questions", model: [qset: QuestionSet.findBySetId(params.set as int),
                     pagination: buildPagination(params),
-                    questions: questionList, errors:errors])
+                    questions: result.questionList, errors:errors])
         } else {
+
             // save the answers
-            questionList.each {q1 ->
+            result.questionList.each {q1 ->
                 q1.saveAllAnswers(1)
             }
 
-            params.from = (params.to as int) + 1
-            params.to = null
-            chain(action: 'questions', params:[set:params.set, from:params.from, to:null])
-        }
-    }
+            // calculate the next page to show
+            int pageNumber = params.pageNumber.toInteger() + (params.where == 'next' ? 1 : -1)
 
-    def previous = {
-        def result = validateAndSave(params.from as int, params.to as int, params)
-        def questionList = result.questionList
-        def errors = result.errors
-        if (errors) {
-            errors = errors.sort {it.key}
-            render(view: "questions", model: [qset: QuestionSet.findBySetId(params.set as int),
-                     pagination: buildPagination(params),
-                     questions: questionList, errors:errors])
-         } else {
-            // save the answers
-            questionList.each {q1 ->
-                q1.saveAllAnswers(1)
-            }
-            params.from = (params.from as int) - 1
-            params.to = null
-            chain(action: 'questions', params:[set:params.set, from:params.from, to:null])
+            // display the next page
+            chain(action: 'page', params:[set:params.set, page:pageNumber])
         }
     }
 
@@ -186,12 +158,12 @@ class QuestionController {
      * 
      */
     def submit = {
-        def result = validateAndSave(params.from as int, params.to as int, params)
+        def result = validate(params.from as int, params.to as int, params)
         def questionList = result.questionList
         def errors = result.errors
         if (errors) {
             errors = errors.sort {it.key}
-            println "redirect to errors"
+            //println "redirect to errors"
             render(view: "questions", model: [qset: QuestionSet.findBySetId(params.set as int),
                      pagination: buildPagination(params),
                      questions: questionList, errors:errors])
@@ -221,7 +193,8 @@ class QuestionController {
      * 2. mark latest answers as complete
      */
     def complete = {
-
+        // re-create all questions and the most recent answers from the database
+        
     }
 
     Map buildPagination(params) {
@@ -229,25 +202,32 @@ class QuestionController {
                 pageNumber:params.pageNumber as int, totalPages:params.totalPages as int]
     }
 
-    def validateAndSave(int from, int to, params) {
+    /**
+     * Validates the answers in params for the range specified against the question metadata.
+     *
+     * @param from the first question to validate
+     * @param to the last question to validate
+     * @param params the answers
+     * @return populated questions and any errors
+     */
+    def validate(int from, int to, params) {
 
         // load question metadata
         def questionList = (from..to).collect {
             modelLoaderService.loadQuestion(params.set as int, it)
         }
 
-        //params.each { println it }
-        
         // inject answers into questions
         injectAnswers(questionList, params)
 
         // validate answers against each question
         Map<String, String> errors = new HashMap<String, String>()
         questionList.each {
-            println "validating " + it.ident()
+            //println "validating " + it.ident()
             errors += it.validate()
         }
 
+        // return the populated question list and any errors
         return [questionList:questionList, errors:errors]
     }
 
@@ -255,7 +235,6 @@ class QuestionController {
         questions.each {
             if (it.atype != AnswerType.none) {
                 it.answerValueStr = answers."${it.ident()}"
-                //println "${it.ident()} : ${it.answerValueStr}"
             }
             injectAnswers(it.questions,answers)
         }
@@ -274,97 +253,4 @@ class QuestionController {
         redirect(url: "/workforce")
     }
 
-    /*def index = {
-        redirect(action: "list", params: params)
-    }
-
-    def list = {
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        [questionInstanceList: Question.list(params), questionInstanceTotal: Question.count()]
-    }
-
-    def create = {
-        def questionInstance = new Question()
-        questionInstance.properties = params
-        return [questionInstance: questionInstance]
-    }
-
-    def save = {
-        def questionInstance = new Question(params)
-        if (questionInstance.save(flush: true)) {
-            flash.message = "${message(code: 'default.created.message', args: [message(code: 'question.label', default: 'Question'), questionInstance.id])}"
-            redirect(action: "show", id: questionInstance.id)
-        }
-        else {
-            render(view: "create", model: [questionInstance: questionInstance])
-        }
-    }
-
-    def show = {
-        def questionInstance = Question.get(params.id)
-        if (!questionInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Question'), params.id])}"
-            redirect(action: "list")
-        }
-        else {
-            [questionInstance: questionInstance]
-        }
-    }
-
-    def edit = {
-        def questionInstance = Question.get(params.id)
-        if (!questionInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Question'), params.id])}"
-            redirect(action: "list")
-        }
-        else {
-            return [questionInstance: questionInstance]
-        }
-    }
-
-    def update = {
-        def questionInstance = Question.get(params.id)
-        if (questionInstance) {
-            if (params.version) {
-                def version = params.version.toLong()
-                if (questionInstance.version > version) {
-                    
-                    questionInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'question.label', default: 'Question')] as Object[], "Another user has updated this Question while you were editing")
-                    render(view: "edit", model: [questionInstance: questionInstance])
-                    return
-                }
-            }
-            questionInstance.properties = params
-            if (!questionInstance.hasErrors() && questionInstance.save(flush: true)) {
-                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'question.label', default: 'Question'), questionInstance.id])}"
-                redirect(action: "show", id: questionInstance.id)
-            }
-            else {
-                render(view: "edit", model: [questionInstance: questionInstance])
-            }
-        }
-        else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Question'), params.id])}"
-            redirect(action: "list")
-        }
-    }
-
-    def delete = {
-        def questionInstance = Question.get(params.id)
-        if (questionInstance) {
-            try {
-                questionInstance.delete(flush: true)
-                flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'question.label', default: 'Question'), params.id])}"
-                redirect(action: "list")
-            }
-            catch (org.springframework.dao.DataIntegrityViolationException e) {
-                flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'question.label', default: 'Question'), params.id])}"
-                redirect(action: "show", id: params.id)
-            }
-        }
-        else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Question'), params.id])}"
-            redirect(action: "list")
-        }
-    }*/
 }
