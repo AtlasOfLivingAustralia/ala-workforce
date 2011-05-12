@@ -14,7 +14,7 @@ class QuestionSet {
         pageSequence(nullable:true)
     }
 
-    static transients = ['paginationData']
+    static transients = ['paginationData','page','totalPages']
 
     boolean hasPageSequence() {
         pageSequence as Boolean
@@ -41,7 +41,7 @@ class QuestionSet {
     }
 
     /**
-     * Returns a map representing the next page.
+     * Returns a map representing the page that contains the specified question.
      *
      * Properties are:
      * 'from' - the start question number
@@ -52,7 +52,7 @@ class QuestionSet {
      * @param questionNumber
      * @return
      */
-    def nextPage(int questionNumber) {
+    def findPageByQuestionNumber(int questionNumber) {
         def pages = getPaginationData()
         for (int i = 0; i < pages.size(); i++) {
             if (questionNumber in pages[i].from..pages[i].to) {
@@ -61,11 +61,42 @@ class QuestionSet {
                 return pages[i]
             }
         }
-        // no following page found
+        // no page found
         return null
     }
 
+    /**
+     * Returns a map representing the specified page.
+     *
+     * Properties are:
+     * 'from' - the start question number
+     * 'to' - the end question number
+     * 'pageNumber' - the number of this page in the sequence (one-based)
+     * 'totalPages' - the total number of pages in the question set
+     *
+     * @param pageNumber the page to return
+     * @return
+     */
     def getPage(int pageNumber) {
-        
+        def pages = getPaginationData()
+        if (pageNumber in 1..pages.size()) {
+            def page = getPaginationData()[pageNumber - 1] // list is zero-base but page numbers are one-based
+            page.pageNumber = pageNumber
+            page.totalPages = pages.size()
+            return page
+        }
+        else {
+            return null
+        }
     }
+
+    /**
+     * Returns the total number of pages of questions.
+     *
+     * @return
+     */
+    def getTotalPages() {
+        return getPaginationData()?.size() ?: 0
+    }
+    
 }
