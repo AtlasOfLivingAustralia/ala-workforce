@@ -109,7 +109,7 @@ class QuestionModel {
         clearErrors()
         //println "validating ${ident()} atype=${atype} datatype=${datatype}"
         if (atype != AnswerType.none) {
-            if (answerValueStr) {println "answer is ${answerValueStr}"}
+            //if (answerValueStr) {println "answer is ${answerValueStr}"}
             if (answerValueStr) {
                 // validate my answer
                 switch (datatype) {
@@ -409,7 +409,7 @@ class QuestionModel {
         def answers = Answer.findAllByUserIdAndQuestionId(userId, hash, [sort:'lastUpdated',order:'desc'])
         if (answers) {
             def answer = answers[0] // the most recent
-            println "Question ${ident()}: comparing ${answer.answerValue} to ${answerValueStr}"
+            //println "Question ${ident()}: comparing ${answer.answerValue} to ${answerValueStr}"
             saveAnswer = answer.answerValue != answerValueStr
             // explicit check for blank answers
             if (answer.answerValue == null && answerValueStr == "") {
