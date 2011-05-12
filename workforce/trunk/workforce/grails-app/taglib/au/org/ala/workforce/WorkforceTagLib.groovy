@@ -571,6 +571,7 @@ class WorkforceTagLib {
      *
      * @total number of pages in set
      * @page one-based number of the page this is being drawn on
+     * @set the question set to use in links
      */
     def pageProgress = {attrs->
         def total = attrs.total
@@ -578,15 +579,15 @@ class WorkforceTagLib {
         if (pageNumber && total && total > 2) {
             def track = pageNumber == 1 ?
                 "<img src='${resource(dir:'/images/abrsskin/', file: 'first-step-on.png')}'/>" :
-                "<img src='${resource(dir:'/images/abrsskin/', file: 'first-step-off.png')}'/>"
+                "<a href='${resource(file:'/set/'+ params.set +'/page/1')}'><img src='${resource(dir:'/images/abrsskin/', file: 'first-step-off.png')}'/></a>"
             2.upto(total-1) { num ->
                 track += pageNumber == num ?
                     "<img src='${resource(dir:'/images/abrsskin/', file: 'step-on.png')}'/>" :
-                    "<img src='${resource(dir:'/images/abrsskin/', file: 'step-off.png')}'/>"
+                    "<a href='${resource(file:'/set/'+ params.set +'/page/' + num)}'><img src='${resource(dir:'/images/abrsskin/', file: 'step-off.png')}'/></a>"
             }
             track += pageNumber == total ?
                 "<img src='${resource(dir:'/images/abrsskin/', file: 'last-step-on.png')}'/>" :
-                "<img src='${resource(dir:'/images/abrsskin/', file: 'last-step-off.png')}'/>"
+                "<a href='${resource(file:'/set/'+ params.set +'/page/'+ total)}'><img src='${resource(dir:'/images/abrsskin/', file: 'last-step-off.png')}'/></a>"
             out << track
         }
     }
