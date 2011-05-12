@@ -95,7 +95,7 @@ class QuestionModel {
          * rest of the question. We don't want to store any entered or default values from the sub-questions
          * if the parent checkbox is not ticked.
          */
-        if (owner && owner.datatype == AnswerDataType.bool && !owner.isAnswerTrue()) {
+        if (owner && owner.atype == AnswerType.bool && !owner.isAnswerTrue()) {
             // do not set the answer as it has no meaning
             return
         }
@@ -107,7 +107,7 @@ class QuestionModel {
     def validate() {
         def valid = true
         clearErrors()
-        println "validating ${ident()} atype=${atype} datatype=${datatype}"
+        //println "validating ${ident()} atype=${atype} datatype=${datatype}"
         if (atype != AnswerType.none) {
             if (answerValueStr) {println "answer is ${answerValueStr}"}
             if (answerValueStr) {
@@ -397,14 +397,35 @@ class QuestionModel {
     /**
      * Save the answer to the database.
      *
-     * @return false if unsuccessful
+     * Need to save when:
+     *  1) no previous answer and this answer has a value
+     *  2) previous answer is different to this answer (even if this answer is blank)
+     *
+     * @return true if answer actually written
      */
     def saveAnswer(userId) {
-        if (!answerValueStr) {
-            return false
+        def saveAnswer = true
+        // get all answers for the question for this user
+        def answers = Answer.findAllByUserIdAndQuestionId(userId, hash, [sort:'lastUpdated',order:'desc'])
+        if (answers) {
+            def answer = answers[0] // the most recent
+            println "Question ${ident()}: comparing ${answer.answerValue} to ${answerValueStr}"
+            saveAnswer = answer.answerValue != answerValueStr
+            // explicit check for blank answers
+            if (answer.answerValue == null && answerValueStr == "") {
+                // would result in the same answer, so don't save
+                saveAnswer = false
+            }
         }
-        Answer a = new Answer(questionId: hash, userId: userId, answerValue: answerValueStr)
-        return a.save()
+        else {
+            // no existing answer so only save if there is a value
+            saveAnswer = answerValueStr
+        }
+        if (saveAnswer) {
+            Answer a = new Answer(questionId: hash, userId: userId, answerValue: answerValueStr)
+            return a.save()
+        }
+        return saveAnswer
     }
 
     /**
