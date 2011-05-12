@@ -28,12 +28,12 @@
 
     </head>
     <body>
-        <div class='links'>
+        <div style="padding-bottom: 300px;" class='links'>
             <h1>ABRS Workforce Surveys</h1>
             <p>Click a link to begin a survey.</p>
             <ul>
                 <g:each var="qs" in="${QuestionSet.list([sort:'setId'])}">
-                    <li><g:link controller="question" action="questions" params='[set:"${qs.setId}",from:1]'>${qs.title}</g:link></li>
+                    <li><g:link controller="question" action="page" params='[set:"${qs.setId}",page:1]'>${qs.title}</g:link></li>
                 </g:each>
             </ul>
         </div>
