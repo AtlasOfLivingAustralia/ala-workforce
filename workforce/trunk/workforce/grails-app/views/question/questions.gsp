@@ -8,7 +8,7 @@
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
-            <span class='pageProgress'><wf:pageProgress page="${pagination.pageNumber}" total="${pagination.totalPages}"/></span>
+            <span class='pageProgress'><wf:pageProgress set="${qset.setId}" page="${pagination.pageNumber}" total="${pagination.totalPages}"/></span>
         </div>
         <div class="body">
             <g:if test="${questions.size() == 1}">
@@ -65,5 +65,6 @@
               </div>
             </g:form>
         </div>
+
     </body>
 </html>
