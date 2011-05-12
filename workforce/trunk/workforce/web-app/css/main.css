@@ -70,7 +70,7 @@ input:focus, select:focus, textarea:focus {
     border-style: solid none solid none;
     margin-top: 5px;
     padding: 7px 12px;
-    text-align: center;
+    /*text-align: center;*/
 }
 
 .menuButton {
@@ -331,9 +331,24 @@ span.errors {
 }
 
 span.pageProgress {
-    padding-right: 75px;
+    /*padding-right: 75px;*/
+    padding-left:160px;
 }
 
 span.pageProgress img {
     padding: 1px 0 0 0;
+}
+
+div.footer {
+    border-top: 1px solid #CCC;
+    clear: both;
+    font-size: 90%;
+    margin-top: 2em;
+    padding-top: 1em;
+    text-align: center;
+}
+
+div.footer img {
+    float:right;
+    padding-right: 70px;
 }
