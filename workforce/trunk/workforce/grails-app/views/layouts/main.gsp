@@ -38,5 +38,8 @@
             <span>Australian Biological Resources Study</span>
         </div>
         <g:layoutBody />
+        <div class='footer'>
+            <img src="${resource(dir:'images',file:'atlas-poweredby_rgb-lightbg.png')}"/>
+        </div>
     </body>
 </html>
