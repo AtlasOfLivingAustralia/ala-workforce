@@ -110,6 +110,22 @@ class DataLoaderService {
             q.qtext = it.text
             q.atype = valueOrDefault(it.answer?.@type, defaults) ? AnswerType.valueOf(valueOrDefault(it.answer?.@type, defaults) as String) : AnswerType.none
             def datatype = valueOrDefault(it.answer?.@dataType, defaults)
+
+            /* --Special hack--
+             * Questions of type 'group' that contain questions with boolean answers use defaultDatatype=bool
+             * to save declaring datatype on every answer.
+             * However this default is applied to the question in which it is defined which is not intended (here
+             * at least) and which activates the 'checkbox blocking rule' ie. the processor thinks the child answers
+             * are irrelevant because parent is a boolean which is not 'on'.
+             * TODO: The fix is to refactor so that default does not apply to the question where it is declared - however
+             * needs extensive testing as it may break other scenarios.
+             * So for the moment just set the datatype and answer type of group questions to avoid the issue.
+             */
+            if (q.qtype == QuestionType.group) {
+                datatype = 'text'
+                q.atype = AnswerType.none
+            }
+
             if (datatype) {
                 q.datatype = AnswerDataType.valueOf(datatype as String)
             } else {
