@@ -352,3 +352,15 @@ div.footer img {
     float:right;
     padding-right: 70px;
 }
+
+div.login-info {
+    float: right;
+    margin-right: 15px;
+    margin-top: 3px;
+    color: #666;
+    font: 11px verdana, arial, helvetica, sans-serif;
+}
+
+#logged-in {
+padding-right: 30px;
+}

@@ -10,6 +10,25 @@
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
 
+/******************************************************************************\
+ *  SECURITY
+\******************************************************************************/
+if (!security.cas.urlPattern) {
+    security.cas.urlPattern = "/.+"
+}
+if (!security.cas.loginUrl) {
+    security.cas.loginUrl = "https://auth.ala.org.au/cas/login"
+}
+if (!security.cas.contextPath) {
+    security.cas.contextPath = "workforce" //"""${appName}"
+}
+if (!security.cas.bypass) {
+    security.cas.bypass = false
+}
+// SEE ENV SECTION for environment-specific overrides
+
+/* end SECURITY */
+
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
@@ -48,18 +67,21 @@ grails.logging.jul.usebridge = true
 // packages to include in Spring bean scanning
 grails.spring.bean.packages = []
 
+
 // set per-environment serverURL stem for creating absolute links
 environments {
     production {
-        grails.serverURL = "http://www.changeme.com"
+        grails.serverURL = "http://abrs.ala.org.au"
+        security.cas.serverName = "http://abrs.ala.org.au:8080"
     }
     development {
         grails.serverURL = "http://localhost:8090/${appName}"
+        security.cas.serverName = "http://woodfired.ala.org.au:8090"
     }
     test {
-        grails.serverURL = "http://localhost:8080/${appName}"
+        grails.serverURL = "http://localhost:8090/${appName}"
+        security.cas.serverName = "http://woodfired.ala.org.au:8090"
     }
-
 }
 
 // log4j configuration
