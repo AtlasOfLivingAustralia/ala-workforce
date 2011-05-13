@@ -1,6 +1,8 @@
 package au.org.ala.workforce
 
 import java.text.NumberFormat
+import au.org.ala.cas.util.AuthenticationCookieUtils
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class WorkforceTagLib {
 
@@ -591,4 +593,28 @@ class WorkforceTagLib {
             out << track
         }
     }
+
+    def loggedInName = {
+        if (ConfigurationHolder.config.security.cas.bypass) {
+            out << 'cas bypassed'
+        }
+        else if (AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
+            out << AuthenticationCookieUtils.getUserName(request)
+        } else {
+            out << "unknown"
+        }
+    }
+
+    def isLoggedIn = { attrs, body ->
+        if (AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
+            out << body()
+        }
+    }
+
+    def isNotLoggedIn = {attrs, body ->
+        if (!AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
+            out << body()
+        }
+    }
+
 }

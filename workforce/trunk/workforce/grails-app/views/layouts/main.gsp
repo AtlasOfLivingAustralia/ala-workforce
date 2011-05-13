@@ -1,3 +1,4 @@
+<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
 <html>
     <head>
         <title><g:layoutTitle default="ABRS Surveys" /></title>
@@ -36,6 +37,15 @@
             <img class="left" src="${resource(dir:'/images/abrsskin/', file: 'logo-environment.gif')}"/>
             <img class="right" src="${resource(dir:'/images/abrsskin/', file: 'abrs-logo-white.png')}"/>
             <span>Australian Biological Resources Study</span>
+        </div>
+        <div class="login-info">
+            <wf:isLoggedIn>
+                <span id="logged-in">Logged in as <wf:loggedInName/></span>
+                <a href="http://auth.ala.org.au/cas/logout?url=${ConfigurationHolder.config.security.cas.serverName}/${ConfigurationHolder.config.security.cas.contextPath}">Logout</a>
+            </wf:isLoggedIn>
+            <wf:isNotLoggedIn>
+                <a href="http://auth.ala.org.au/cas/login?service=${ConfigurationHolder.config.security.cas.serverName}/${ConfigurationHolder.config.security.cas.contextPath}">Login</a>
+            </wf:isNotLoggedIn>
         </div>
         <g:layoutBody />
         <div class='footer'>
