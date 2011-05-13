@@ -1,5 +1,7 @@
 package au.org.ala.workforce
 
+import au.org.ala.cas.util.AuthenticationCookieUtils
+
 class QuestionController {
 
     def dataLoaderService, modelLoaderService
@@ -79,7 +81,7 @@ class QuestionController {
         assert pg
 
         // load the question metadata for each question on the page
-        def questionList = (pg.from..pg.to).collect { modelLoaderService.loadQuestionWithAnswer(params.qset.setId, it, 1) }
+        def questionList = (pg.from..pg.to).collect { modelLoaderService.loadQuestionWithAnswer(params.qset.setId, it, userId()) }
 
         // render the page
         render(view:'questions', model:[qset: params.qset, pagination: pg, questions: questionList])
@@ -128,7 +130,7 @@ class QuestionController {
 
             // save the answers
             result.questionList.each {q1 ->
-                q1.saveAllAnswers(1)
+                q1.saveAllAnswers(userId())
             }
 
             // calculate the next page to show
@@ -170,7 +172,7 @@ class QuestionController {
          } else {
             // save the answers
             questionList.each {q1 ->
-                q1.saveAllAnswers(1)
+                q1.saveAllAnswers(userId())
             }
             def roughRepresentation = ""
             questionList.each {q1 ->
@@ -253,4 +255,9 @@ class QuestionController {
         redirect(url: "/workforce")
     }
 
+    int userId() {
+        def username = AuthenticationCookieUtils.getUserName(request)
+        assert username
+        User.getUser(username).id
+    }
 }
