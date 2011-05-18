@@ -23,6 +23,13 @@ environments {
             url = "jdbc:hsqldb:mem:testDb"
         }
     }
+    testserver {
+        dataSource {
+            dbCreate = "update"
+            //url = "jdbc:mysql://ala-testweb1.vm.csiro.au:3306/workforce?autoReconnect=true&connectTimeout=0"
+            url = "jdbc:mysql://localhost:3306/workforce?autoReconnect=true&connectTimeout=0"
+        }
+    }
     production {
         dataSource {
             dbCreate = "update"
