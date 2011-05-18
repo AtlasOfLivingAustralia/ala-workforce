@@ -12,30 +12,40 @@
                 padding-top: 30px;
             }
             div.links {
-                float: left;
                 padding-top: 40px;
                 padding-left: 80px;
-            }
+                padding-bottom: 30px;            }
             p {
-                margin-top: 10px;
-                margin-bottom: 10px;
+                margin-top: 15px;
+                margin-bottom: 15px;
+                font-size: 12px;
             }
             li {
                 padding: 5px;
+            }
+            div.go-buttons {
+                padding-bottom: 100px;
+                text-align: center;
+            }
+            div.go-buttons img {
+                padding: 0 20px 0 20px;
             }
 
         </style>
 
     </head>
     <body>
-        <div style="padding-bottom: 300px;" class='links'>
+        <div class='links'>
             <h1>ABRS Workforce Surveys</h1>
-            <p>Click a link to begin a survey.</p>
-            <ul>
-                <g:each var="qs" in="${QuestionSet.list([sort:'setId'])}">
-                    <li><g:link controller="question" action="page" params='[set:"${qs.setId}",page:1]'>${qs.title}</g:link></li>
-                </g:each>
-            </ul>
+            <p>You are invited to participate in the 2011 ABRS taxonomic resources surveys.</p>
+            <p>If you work in taxonomy in an Australian context, please complete the
+              <g:link controller="question" action="page" params='[set:1,page:1]'><strong>Australian Taxonomic Workforce - Personal Survey</strong></g:link>.</p>
+            <p>If you are responsible for an Australian natural science collection, please complete the
+            <g:link controller="question" action="page" params='[set:2,page:1]'><strong>Resources of Australian Natural Science Collections Survey</strong></g:link>.</p>
+        </div>
+        <div class="go-buttons">
+            <g:link controller="question" action="page" params='[set:1,page:1]'><img src="${resource(dir:'images/abrsskin',file:'personal-button.png')}"/></g:link>
+            <g:link controller="question" action="page" params='[set:2,page:1]'><img src="${resource(dir:'images/abrsskin',file:'collections-button.png')}"/></g:link>
         </div>
     </body>
 </html>
