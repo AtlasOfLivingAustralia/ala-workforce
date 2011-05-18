@@ -522,7 +522,7 @@
         </question>
         <question>
             <text>If other please specify</text>
-            <answer type="textarea"/>
+            <answer type="textarea" dataType="text"/>
         </question>
     </question>
 
@@ -545,7 +545,7 @@
         </question>
         <question>
             <text>If other please specify</text>
-            <answer type="textarea"/>
+            <answer type="textarea" dataType="text"/>
         </question>
     </question>
 
