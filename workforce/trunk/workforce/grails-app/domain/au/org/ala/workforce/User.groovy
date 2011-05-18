@@ -5,7 +5,13 @@ class User {
     String name
     int userid
 
-    static constraints = {}
+    static mapping = {
+        userid index:'userid_idx'
+    }
+    
+    static constraints = {
+        userid(unique: true)
+    }
 
     static transients = ['user']
 
