@@ -3,6 +3,7 @@ package au.org.ala.workforce
 class User {
 
     String name
+    int userid
 
     static constraints = {}
 
@@ -14,10 +15,10 @@ class User {
      * @param name
      * @return the user
      */
-    static User getUser(String name) {
-        User u = User.findByName(name)
+    static User getUser(userPrincipal) {
+        User u = User.findByUserid(userPrincipal.attributes.userid as int)
         if (!u) {
-            u = new User(name: name)
+            u = new User(userid: userPrincipal.attributes.userid as int, name: userPrincipal.name)
             u.save(flush:true)
         }
         return u
