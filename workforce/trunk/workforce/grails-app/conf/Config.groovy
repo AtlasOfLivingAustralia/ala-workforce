@@ -20,7 +20,7 @@ if (!security.cas.loginUrl) {
     security.cas.loginUrl = "https://auth.ala.org.au/cas/login"
 }
 if (!security.cas.contextPath) {
-    security.cas.contextPath = "workforce" //"""${appName}"
+    security.cas.contextPath = "/workforce" //"""${appName}"
 }
 if (!security.cas.bypass) {
     security.cas.bypass = false
@@ -77,6 +77,10 @@ environments {
     development {
         grails.serverURL = "http://localhost:8090/${appName}"
         security.cas.serverName = "http://woodfired.ala.org.au:8090"
+    }
+    testserver {
+        grails.serverURL = "http://ala-testweb1.vm.csiro.au:8080/${appName}"
+        security.cas.serverName = "http://ala-testweb1.vm.csiro.au:8080"
     }
     test {
         grails.serverURL = "http://localhost:8090/${appName}"
