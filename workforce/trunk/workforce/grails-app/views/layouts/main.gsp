@@ -39,13 +39,14 @@
             <span>Australian Biological Resources Study</span>
         </div>
         <div class="login-info">
-            <wf:isLoggedIn>
-                <span id="logged-in">Logged in as <wf:loggedInName/></span>
+            <g:set var="username" value="${wf.loggedInName()}"/>
+            <g:if test="${username}">
+                <span id="logged-in">Logged in as ${username}</span>
                 <a href="http://auth.ala.org.au/cas/logout?url=${ConfigurationHolder.config.security.cas.serverName}/${ConfigurationHolder.config.security.cas.contextPath}">Logout</a>
-            </wf:isLoggedIn>
-            <wf:isNotLoggedIn>
+            </g:if>
+            <g:else>
                 <a href="http://auth.ala.org.au/cas/login?service=${ConfigurationHolder.config.security.cas.serverName}/${ConfigurationHolder.config.security.cas.contextPath}">Login</a>
-            </wf:isNotLoggedIn>
+            </g:else>
         </div>
         <g:layoutBody />
         <div class='footer'>
