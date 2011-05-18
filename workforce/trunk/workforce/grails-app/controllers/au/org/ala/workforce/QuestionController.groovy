@@ -87,12 +87,20 @@ class QuestionController {
         render(view:'questions', model:[qset: params.qset, pagination: pg, questions: questionList])
     }
 
+    def finish = {
+        // set the destination page
+        params.chainTo = [action: 'showComplete', params:[set:params.set]]
+
+        // forward to page submission
+        forward(action:'changePage', params:params)
+    }
+
     /**
      * Handle move to next page.
      */
     def next = {
-        // set the direction to move
-        params.where = 'next'
+        // set the destination page
+        params.chainTo = [action: 'page', params:[set:params.set, page:params.pageNumber.toInteger() + 1]]
 
         // forward to page submission
         forward(action:'changePage', params:params)
@@ -102,8 +110,8 @@ class QuestionController {
      * Handle move to previous page.
      */
     def previous = {
-        // set the direction to move
-        params.where = 'prev'
+        // set the destination page
+        params.chainTo = [action: 'page', params:[set:params.set, page:params.pageNumber.toInteger() - 1]]
 
         // forward to page submission
         forward(action:'changePage', params:params)
@@ -133,12 +141,16 @@ class QuestionController {
                 q1.saveAllAnswers(userId())
             }
 
-            // calculate the next page to show
-            int pageNumber = params.pageNumber.toInteger() + (params.where == 'next' ? 1 : -1)
+            println "set# = ${params.set} qset = ${params.qset}"
 
             // display the next page
-            chain(action: 'page', params:[set:params.set, page:pageNumber])
+            chain(params.chainTo)
         }
+    }
+
+    def showComplete = {
+        println "set# = ${params.set} qset = ${params.qset}"
+        [qset: params.qset, user: userId()]
     }
 
     def loadJSON(set) {
@@ -186,17 +198,6 @@ class QuestionController {
             }
             render "<html><body><pre>" + roughRepresentation + "</pre></body></html>"
         }
-    }
-
-    /**
-     * Mark the survey as complete.
-     *
-     * 1. validate entire question set and feedback errors
-     * 2. mark latest answers as complete
-     */
-    def complete = {
-        // re-create all questions and the most recent answers from the database
-        
     }
 
     Map buildPagination(params) {
@@ -256,8 +257,7 @@ class QuestionController {
     }
 
     int userId() {
-        def username = AuthenticationCookieUtils.getUserName(request)
-        assert username
-        User.getUser(username).id
+        assert request.getUserPrincipal()
+        User.getUser(request.getUserPrincipal()).userid
     }
 }
