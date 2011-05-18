@@ -598,10 +598,13 @@ class WorkforceTagLib {
         if (ConfigurationHolder.config.security.cas.bypass) {
             out << 'cas bypassed'
         }
+        else if (request.getUserPrincipal()) {
+            out << request.getUserPrincipal().getName()
+        }
         else if (AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
             out << AuthenticationCookieUtils.getUserName(request)
         } else {
-            out << "unknown"
+            out << ""
         }
     }
 
