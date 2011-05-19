@@ -285,7 +285,7 @@ class QuestionController {
     }
 
     int userId() {
-        return request.userPrincipal().userid
+        return request.getUserPrincipal().attributes.userid as int
         //User.getUser(request.getUserPrincipal()).userid
     }
 }
