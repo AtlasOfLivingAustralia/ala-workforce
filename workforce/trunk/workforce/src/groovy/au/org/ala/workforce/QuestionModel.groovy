@@ -19,6 +19,7 @@ class QuestionModel {
     int hash                        // the unique identifier for the question (used by DB to link answers)
     String label                    // type of displayed label, eg none, 3, b), iii)
     String qtext                    // the question text
+    String shorttext                // abbreviated question text for answers report
     QuestionType qtype              // question type, eg rank, pick, range, matrix, group, none
     Object qdata                    // json string describing data - format depends on the qType
     String instruction              // optional instructions
@@ -72,7 +73,7 @@ class QuestionModel {
         //println "loading props for ${record.level1}_${record.level2}_${record.level3}"
         
         // other properties
-        ['atype','qtype','label','qtext','instruction','alabel','displayHint','layoutHint','datatype',
+        ['atype','qtype','label','qtext','shorttext','instruction','alabel','displayHint','layoutHint','datatype',
                 'required','requiredIf','validation','hash','heightHint'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
