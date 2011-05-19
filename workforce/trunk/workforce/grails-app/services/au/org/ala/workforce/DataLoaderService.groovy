@@ -108,6 +108,7 @@ class DataLoaderService {
             }
             q.qdata = extractJsonString(it.data) as grails.converters.JSON
             q.qtext = it.text
+            q.shorttext = it.shortText
             q.atype = valueOrDefault(it.answer?.@type, defaults) ? AnswerType.valueOf(valueOrDefault(it.answer?.@type, defaults) as String) : AnswerType.none
             def datatype = valueOrDefault(it.answer?.@dataType, defaults)
 
