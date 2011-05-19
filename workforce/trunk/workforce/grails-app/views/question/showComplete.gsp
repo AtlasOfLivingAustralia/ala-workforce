@@ -1,3 +1,4 @@
+<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -5,10 +6,7 @@
         <title>${qset.title}</title>
     </head>
     <body>
-        <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
-        </div>
-        <div class="body">
+        <div class="links">
           <h1>${qset.title}</h1>
           <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
@@ -25,5 +23,10 @@
 
           <p>Thank you ${request.userPrincipal.attributes?.firstname}.</p>
         </div>
+
+        <div class="go-buttons">
+            <a href="${ConfigurationHolder.config.grails.serverURL}"><img src="${resource(dir:'images/abrsskin',file:'home-button.png')}"/></a>
+        </div>
+
     </body>
 </html>
