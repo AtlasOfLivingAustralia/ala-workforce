@@ -177,7 +177,7 @@ class WorkforceTagLib {
                   out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
                 if (secondLevel) {
                   QuestionModel q = secondLevel[0]
-                  contents.remove(0)
+                  if (contents) {contents.remove(0)}
                   out << "<td>${getQuestionTextForReport(q)}</td>"
                   out << "<td>" + layoutAnswer(q) + "</td>"
                 } else {
