@@ -188,6 +188,8 @@ class QuestionModel {
                     def condition = requiredIf.tokenize('=')
                     def conditionPath = condition[0]
                     def conditionValue = condition[1]
+                    log.debug "evaluating 'requiredIf': path = ${conditionPath} testvalue = ${conditionValue} " +
+                            "answer = ${getQuestionFromPath(conditionPath)?.answerValueStr}"
                     if (getQuestionFromPath(conditionPath)?.answerValueStr == conditionValue) {
                         valid = false
                         errorMessage = "An answer is required if you select '${conditionValue}'"
@@ -288,6 +290,7 @@ class QuestionModel {
     /**
      * Path is a relative way to address other answers in the same level 1 question.
      *
+     * .. is the parent question
      * ../n is the nth question that is sibling to this one (ie in the parent of this)
      * ../../n is the nth question in the grandparent of this
      * ../n/m is the mth sub-question in the nth question of the parent of this
@@ -297,13 +300,17 @@ class QuestionModel {
      * @param path
      */
     def getQuestionFromPath(path) {
+        if (!path) return null
         def bits = path.tokenize('/')
-        if (bits.size < 2) return null
         // the first bit must be '..'
         if (bits[0] != '..' || !owner) {
             return null
         }
         def question = owner
+        if (bits.size == 1) {
+            // must be ..
+            return question
+        }
         if (bits[1] == '..') {
             // the form is ../../n
             int n = (bits[2] as int) - 1
