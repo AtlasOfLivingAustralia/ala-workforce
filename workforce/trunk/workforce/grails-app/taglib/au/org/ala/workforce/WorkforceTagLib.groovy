@@ -39,20 +39,20 @@ class WorkforceTagLib {
             if (model.qtext) {
                 // question text should span q & a columns
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                  out << "<td colspan=2>${model.qtext}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td colspan=2>${model.qtext}</td>"
                 out << "</tr>"
 
             } else {
                 // go straight to first sub-question
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
                 if (secondLevel) {
-                  QuestionModel q = secondLevel[secondLevelIndex++]
-                  out << "<td>${q.qtext}</td>"
-                  out << "<td>" + layoutWidget(q) + "</td>"
+                    QuestionModel q = secondLevel[secondLevelIndex++]
+                    out << "<td>${q.qtext}</td>"
+                    out << "<td>" + layoutWidget(q) + "</td>"
                 } else {
-                  out << "<td></td><td></td>"
+                    out << "<td></td><td></td>"
                 }
                 out << "</tr>"
 
@@ -61,16 +61,16 @@ class WorkforceTagLib {
             if (model.qtext) {
                 // real question - with text and answer
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                  out << "<td>${model.qtext}</td>"
-                  out << "<td>" + layoutWidget(model) + "</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td>${model.qtext}</td>"
+                    out << "<td>" + layoutWidget(model) + "</td>"
                 out << "</tr>"
 
             } else {
                 // probably won't occur
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                  out << "<td colspan=2>" + layoutWidget(model) + "</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td colspan=2>" + layoutWidget(model) + "</td>"
                 out << "</tr>"
             }
         }
@@ -167,21 +167,21 @@ class WorkforceTagLib {
                 // question text should span q & a columns
                 firstCellRowSpan++
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                  out << "<td colspan=2>${getQuestionTextForReport(model)}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td colspan=2>${getQuestionTextForReport(model)}</td>"
                 out << "</tr>"
 
             } else {
                 // go straight to first sub-question
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
                 if (secondLevel) {
-                  QuestionModel q = secondLevel[0]
-                  if (contents) {contents.remove(0)}
-                  out << "<td>${getQuestionTextForReport(q)}</td>"
-                  out << "<td>" + layoutAnswer(q) + "</td>"
+                    QuestionModel q = secondLevel[0]
+                    if (contents) {contents.remove(0)}
+                    out << "<td>${getQuestionTextForReport(q)}</td>"
+                    out << "<td>" + layoutAnswer(q) + "</td>"
                 } else {
-                  out << "<td></td><td></td>"
+                    out << "<td></td><td></td>"
                 }
                 out << "</tr>"
 
@@ -190,16 +190,16 @@ class WorkforceTagLib {
             if (model.qtext) {
                 // real question - with text and answer
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                  out << "<td>${getQuestionTextForReport(model)}</td>"
-                  out << "<td>" + layoutAnswer(model) + "</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td>${getQuestionTextForReport(model)}</td>"
+                    out << "<td>" + layoutAnswer(model) + "</td>"
                 out << "</tr>"
 
             } else {
                 // probably won't occur
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                  out << "<td colspan=2>" + layoutAnswer(model) + "</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td colspan=2>" + layoutAnswer(model) + "</td>"
                 out << "</tr>"
             }
         }
