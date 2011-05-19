@@ -13,7 +13,9 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <p>Answers for ${user.name}</p>
+            <g:if test="${user}">
+                <p>Answers for ${user.name}</p>
+            </g:if>
             <div class="list">
                 <table class="answers">
                     <colgroup><col width="4%"><col width="50%"><col width="46%"></colgroup>
