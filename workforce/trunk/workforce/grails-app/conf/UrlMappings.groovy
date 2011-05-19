@@ -13,6 +13,7 @@ class UrlMappings {
         "/question/$set/$id" (controller:'question', action:'singleQuestion')
 
         "/report/$set" (controller: 'report', action: 'answers')
+        "/report/$set/user/$id" (controller: 'report', action: 'answers')
         "/report/$set/q/$id" (controller: 'report', action: 'singleQuestionAnswer')
 
 		"/"(view:"/index")
