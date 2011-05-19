@@ -3,36 +3,6 @@
     <head>
         <title>ABRS Surveys</title>
         <meta name="layout" content="main" />
-        <style type="text/css" media="screen">
-            div.right {
-                float: right;
-            }
-            div.right img {
-                padding-right: 40px;
-                padding-top: 30px;
-            }
-            div.links {
-                padding-top: 40px;
-                padding-left: 80px;
-                padding-bottom: 30px;            }
-            p {
-                margin-top: 15px;
-                margin-bottom: 15px;
-                font-size: 12px;
-            }
-            li {
-                padding: 5px;
-            }
-            div.go-buttons {
-                padding-bottom: 100px;
-                text-align: center;
-            }
-            div.go-buttons img {
-                padding: 0 20px 0 20px;
-            }
-
-        </style>
-
     </head>
     <body>
         <div class='links'>
