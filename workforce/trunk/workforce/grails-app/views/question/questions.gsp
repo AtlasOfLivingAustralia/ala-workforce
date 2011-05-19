@@ -17,6 +17,10 @@
                 <g:if test="${pagination.pageNumber != 1}">
                     <g:actionSubmit class="navButton" action="previous" value="Prev" />
                 </g:if>
+                <g:else>
+                    <!-- this is an invisible placeholder for the prev button on subsequent pages -->
+                    <input style="visibility:hidden;" type="submit" disabled="true" value="Prev" class="navButton"/>
+                </g:else>
                 <span class='pageProgress'><wf:pageProgress set="${qset.setId}" page="${pagination.pageNumber}" total="${pagination.totalPages}"/></span>
                 <g:if test="${pagination.pageNumber != pagination.totalPages}">
                     <g:actionSubmit class="navButton" action="next" value="Next" />
