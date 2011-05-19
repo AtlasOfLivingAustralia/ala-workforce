@@ -12,6 +12,9 @@ class UrlMappings {
         "/question/load/xml/$set" (controller: 'question', action: 'loadQuestionSetXML')
         "/question/$set/$id" (controller:'question', action:'singleQuestion')
 
+        "/report/$set" (controller: 'report', action: 'answers')
+        "/report/$set/q/$id" (controller: 'report', action: 'singleQuestionAnswer')
+
 		"/"(view:"/index")
 		"500"(view:'/error')
 	}
