@@ -188,8 +188,8 @@ class QuestionModel {
                     def condition = requiredIf.tokenize('=')
                     def conditionPath = condition[0]
                     def conditionValue = condition[1]
-                    log.debug "evaluating 'requiredIf': path = ${conditionPath} testvalue = ${conditionValue} " +
-                            "answer = ${getQuestionFromPath(conditionPath)?.answerValueStr}"
+                    //println "evaluating 'requiredIf': path = ${conditionPath} testvalue = ${conditionValue} " +
+                    //        "answer = ${getQuestionFromPath(conditionPath)?.answerValueStr}"
                     if (getQuestionFromPath(conditionPath)?.answerValueStr == conditionValue) {
                         valid = false
                         errorMessage = "An answer is required if you select '${conditionValue}'"
