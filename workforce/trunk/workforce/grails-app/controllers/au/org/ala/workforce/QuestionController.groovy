@@ -285,7 +285,7 @@ class QuestionController {
     }
 
     int userId() {
-        assert request.getUserPrincipal()
-        User.getUser(request.getUserPrincipal()).userid
+        return request.userPrincipal().userid
+        //User.getUser(request.getUserPrincipal()).userid
     }
 }
