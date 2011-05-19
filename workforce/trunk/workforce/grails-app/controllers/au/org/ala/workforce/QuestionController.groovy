@@ -1,7 +1,5 @@
 package au.org.ala.workforce
 
-import au.org.ala.cas.util.AuthenticationCookieUtils
-
 class QuestionController {
 
     def dataLoaderService, modelLoaderService
@@ -92,7 +90,7 @@ class QuestionController {
         params.chainTo = [action: 'showComplete', params:[set:params.set]]
 
         // forward to page submission
-        forward(action:'changePage', params:params)
+        forward(action: 'leavePage', params:params)
     }
 
     /**
@@ -103,7 +101,7 @@ class QuestionController {
         params.chainTo = [action: 'page', params:[set:params.set, page:params.pageNumber.toInteger() + 1]]
 
         // forward to page submission
-        forward(action:'changePage', params:params)
+        forward(action: 'leavePage', params:params)
     }
 
     /**
@@ -114,14 +112,14 @@ class QuestionController {
         params.chainTo = [action: 'page', params:[set:params.set, page:params.pageNumber.toInteger() - 1]]
 
         // forward to page submission
-        forward(action:'changePage', params:params)
+        forward(action: 'leavePage', params:params)
     }
 
     /**
      * Processes page submission when the user leaves a page.
      *
      */
-    def changePage = {
+    def leavePage = {
         // validate the answers
         def result = validate(params.from as int, params.to as int, params)
 
@@ -141,7 +139,7 @@ class QuestionController {
                 q1.saveAllAnswers(userId())
             }
 
-            println "set# = ${params.set} qset = ${params.qset}"
+            //println "set# = ${params.set} qset = ${params.qset}"
 
             // display the next page
             chain(params.chainTo)
@@ -149,8 +147,38 @@ class QuestionController {
     }
 
     def showComplete = {
-        println "set# = ${params.set} qset = ${params.qset}"
-        [qset: params.qset, user: userId()]
+        /* validate all pages and display any problems */
+        QuestionSet qset = params.qset
+
+        boolean noErrors = true
+
+        // validate each - stop at first page with errors
+        for (page in qset.getPaginationData()) {
+
+            // load the question metadata for each question on the page
+            def questionList = (page.from..page.to).collect { modelLoaderService.loadQuestionWithAnswer(qset.setId, it, userId()) }
+
+            // validate answers against each question on the page
+            Map<String, String> errors = new HashMap<String, String>()
+            questionList.each {
+                errors += it.validate()
+            }
+
+            // redirect to page if any errors
+            if (errors) {
+                noErrors = false
+                // redisplay the same page with errors highlighted
+                errors = errors.sort {it.key}
+                render(view: "questions", model: [qset: qset,
+                        pagination: [from: page.from, to: page.to, pageNumber: page.pageNumber, totalPages: qset.totalPages],
+                        questions: questionList,
+                        errors:errors])
+            }
+        }
+
+        if (noErrors) {
+            [qset: params.qset, user: userId()]
+        }
     }
 
     def loadJSON(set) {
