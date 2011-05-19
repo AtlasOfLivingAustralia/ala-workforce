@@ -1,6 +1,5 @@
 package au.org.ala.workforce
 
-import java.text.NumberFormat
 import au.org.ala.cas.util.AuthenticationCookieUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
@@ -121,6 +120,115 @@ class WorkforceTagLib {
         }
     }
 
+    /**
+     * Return html for the answers report for a single question.
+     *
+     * @attr question the actual question model
+     */
+    def report = { attrs ->
+        QuestionModel model = attrs.question
+
+        List secondLevel = model.questions
+        int secondLevelIndex = 0
+
+        // second and third level questions
+        /**
+         * Sub-questions may be repeating.
+         *
+         * A single sub-question can:
+         *  span the entire 2 column space; or
+         *  have text in the left column and a widget in the right; or
+         *
+         */
+        def contents = []
+        for (secondLevelIndex; secondLevelIndex < secondLevel.size(); secondLevelIndex++) {
+
+            QuestionModel q = secondLevel[secondLevelIndex]
+
+            if (areAnswers(q)) {
+                contents << generateContentForReport(q)
+            }
+        }
+
+        // calculate row span for 1st column
+        int firstCellRowSpan = contents.size();
+
+        /*
+         * The top level may:
+         *  - just be a container for subquestions (no qtext and no answer)
+         *  - just be the carrier for the question text (qtext but no answer)
+         *  - be a real question (both qtext and answer)
+         *  - (?) take an answer but have no question text (no qtext but answer)
+         * This determines top-level layout.
+         */
+        if (model.atype == AnswerType.none) {
+            // there is no answer but there may be text
+            if (model.qtext) {
+                // question text should span q & a columns
+                firstCellRowSpan++
+                out << "<tr>"
+                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td colspan=2>${getQuestionTextForReport(model)}</td>"
+                out << "</tr>"
+
+            } else {
+                // go straight to first sub-question
+                out << "<tr>"
+                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                if (secondLevel) {
+                  QuestionModel q = secondLevel[0]
+                  contents.remove(0)
+                  out << "<td>${getQuestionTextForReport(q)}</td>"
+                  out << "<td>" + layoutAnswer(q) + "</td>"
+                } else {
+                  out << "<td></td><td></td>"
+                }
+                out << "</tr>"
+
+            }
+        } else {
+            if (model.qtext) {
+                // real question - with text and answer
+                out << "<tr>"
+                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td>${getQuestionTextForReport(model)}</td>"
+                  out << "<td>" + layoutAnswer(model) + "</td>"
+                out << "</tr>"
+
+            } else {
+                // probably won't occur
+                out << "<tr>"
+                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td colspan=2>" + layoutAnswer(model) + "</td>"
+                out << "</tr>"
+            }
+        }
+
+        contents.each {
+            QuestionModel q = it.question
+
+            // new row
+            out << "<tr>"
+
+            // add cell with optional label unless the very first cell is spanning all rows
+//            if (firstCellRowSpan == 1) {
+//                out << "<td>${makeLabel(q)}</td>"
+//            }
+
+            // add cells 2 and 3
+            if (it.spanColumns2and3) {
+                out << "<td colspan=2>" + it.secondColumnHtml + "</td>"
+            } else {
+                //println "secondColumnHtml = ${contents.secondColumnHtml}"
+                def style = '' //q.qdata?.align ? " style='text-align:${q.qdata.align};'" : ''
+                out << "<td${style}>" + it.secondColumnHtml + "</td><td>" + it.thirdColumnHtml + "</td>"
+            }
+
+            // end row
+            out << "</tr>"
+        }
+    }
+
     private Map generateContentFor(QuestionModel q) {
         Map result = [secondColumnHtml: "", thirdColumnHtml: "", spanColumns2and3: false]
         /*
@@ -171,6 +279,63 @@ class WorkforceTagLib {
                 result.thirdColumnHtml = layoutWidget(q)
             } else {
                 result.secondColumnHtml = layoutWidget(q)
+                result.spanColumns2and3 = true
+            }
+        }
+        return result
+    }
+
+    private Map generateContentForReport(QuestionModel q) {
+        Map result = [secondColumnHtml: "", thirdColumnHtml: "", spanColumns2and3: false, question: q]
+        /*
+         * Calculate the content of second and third columns
+         * -------------------------------------------------
+         *
+         * If the qtype is matrix, group or rank then the content spans both columns
+         *
+         * Otherwise:
+         * If there are no 3rd level questions then layout is:
+         * || question text || answer widget ||
+         * unless there is no question text in which case:
+         * || answer widget ||
+         *
+         * If there are 2nd & 3rd level questions the layout is:
+         * || question text & answer widget (order determined by type || 3rd level questions and widgets ||
+         */
+        if (q.qtype == QuestionType.matrix) {
+            result = q.atype == AnswerType.radio ? layoutRadioMatrixForReport(q) : layoutMatrixForReport(q)
+        }
+
+        else if (q.qtype == QuestionType.group) {
+            result = layoutGroupForReport(q)
+        }
+
+        else if (q.atype == AnswerType.rank) {
+            result = layoutRankForReport(q)
+        }
+
+        else if (q.questions) {
+            // 3rd level questions
+            result.thirdColumnHtml = layoutLevel3ForReport(q)
+
+            if (result.thirdColumnHtml) {
+                if (q.displayHint == 'checkbox') {
+                     // widget first
+                     result.secondColumnHtml = "${getQuestionTextForReport(q)}"
+                 } else {
+                     // text first
+                     result.secondColumnHtml = "${getQuestionTextForReport(q)} " + layoutAnswer(q)
+                 }
+            }
+        }
+
+        else {
+            // no 3rd level questions - put widgets in 3rd column unless there is no content for the 2nd
+            if (q.qtext) {
+                result.secondColumnHtml = getQuestionTextForReport(q)
+                result.thirdColumnHtml = layoutAnswer(q)
+            } else {
+                result.secondColumnHtml = layoutAnswer(q)
                 result.spanColumns2and3 = true
             }
         }
@@ -285,6 +450,53 @@ class WorkforceTagLib {
         return result
     }
 
+    private String layoutAnswer(QuestionModel q) {
+        String result = "<span class='answer'>"
+        switch (q.atype) {
+            case AnswerType.bool:
+                if (q.answerValueStr?.toLowerCase() in ['yes', 'true', 'on']) {
+                    result += "Yes"
+                } else if (q.answerValueStr?.toLowerCase() in ['no', 'false']) {
+                    result += "No"
+                }
+                break
+            case AnswerType.none:
+                break
+            case AnswerType.number:
+                result += q.answerValueStr
+                break
+            case AnswerType.radio:
+                result += q.answerValueStr
+                break
+            case AnswerType.text:
+                result += q.answerValueStr
+                break
+            case AnswerType.textarea:
+                result += q.answerValueStr
+                break
+            case AnswerType.percent:
+                result += q.answerValueStr + "%"
+                break
+            case AnswerType.range:
+                if (q.adata.unitPlacement == 'beforeEach') {
+                    result += "${q.adata.unit}${q.answerValueStr}"
+                } else {
+                    result += "${q.answerValueStr} ${q.adata.unit}"
+                }
+                break
+            case AnswerType.rank:
+                result += q.answerValueStr
+                break
+            case AnswerType.externalRef:
+                if (q.adata =~ 'state') {
+                    result += q.answerValueStr
+                }
+                break
+        }
+
+        return result + "</span>"
+    }
+
     /*
      * A matrix question is really a set of (rows x cols) questions. These questions are
      * generated during model-loading and numbered as sub-questions like this:
@@ -338,6 +550,45 @@ class WorkforceTagLib {
         return [secondColumnHtml: content, thirdColumnHtml: "", spanColumns2and3: true]
     }
 
+    private Map layoutMatrixForReport(QuestionModel q) {
+        def text = getQuestionTextForReport(q) ?: ""
+
+        def rows = q.qdata.rows
+        def cols = q.qdata.cols
+        int questionIdx = 0
+
+        String content = "<table class='shy'>"
+
+        content += "<col align='left' width='25%'/>"
+        def colWidth = 75/cols.size()
+        cols.each { content += "<col width='${colWidth}%'/>"}
+
+        content += "<tr><td>${text}</td>"
+
+        cols.each {
+            content += "<td style='text-align:center'>${it}</td>"
+        }
+
+        content += "</tr>"
+
+        rows.each { row ->
+            content += "<tr><td>${row}</td>"
+            cols.each { col ->
+                def qm = q.questions[questionIdx]
+                if (qm) {
+                    content += "<td style='text-align:center'>" + layoutAnswer(qm) + "</td>"
+                }
+                else {
+                    println "question not linked (${row}/${col})"
+                }
+                questionIdx++
+            }
+            content += "</tr>"
+        }
+        content += "</table>"
+
+        return [secondColumnHtml: content, thirdColumnHtml: "", spanColumns2and3: true, question: q]
+    }
     /*
      * A radio matrix question is really just a list of questions. They are treated as a matrix so
      * that the radio buttons can be labelled as a group (in the column header)
@@ -392,6 +643,17 @@ class WorkforceTagLib {
         return [secondColumnHtml: content, thirdColumnHtml: "", spanColumns2and3: true]
     }
 
+    private Map layoutRadioMatrixForReport(QuestionModel q) {
+        String content = "<table class='shy'>"
+
+        q.questions.each {
+            content += "<tr><td width='52%'>${getQuestionTextForReport(it)}</td><td><span class='answer'>${it.answerValueStr}</span></td></tr>"
+        }
+        content += "</table>"
+
+        return [secondColumnHtml: content, thirdColumnHtml: "", spanColumns2and3: true, question: q]
+    }
+
     private Map layoutGroup(QuestionModel q) {
         def items = []
         def currentSubgroup = ''
@@ -415,6 +677,17 @@ class WorkforceTagLib {
         return [secondColumnHtml: layoutListOfItems(items, 6), thirdColumnHtml: "", spanColumns2and3: true]
     }
 
+    private Map layoutGroupForReport(QuestionModel q) {
+        def items = []
+        q.questions.each {
+            if (it.answerValueStr) {
+                items << "<span class='answer'>${getQuestionTextForReport(it)}</span>"
+            }
+        }
+
+        return [secondColumnHtml: layoutListOfItemsForReport(items), thirdColumnHtml: "", spanColumns2and3: true, question: q]
+    }
+
     private Map layoutRank(QuestionModel q) {
         def choices = "<table class='shy'>"
         q.questions.each {
@@ -423,6 +696,18 @@ class WorkforceTagLib {
         choices += "</table>"
 
         return [secondColumnHtml: choices, thirdColumnHtml: "", spanColumns2and3: true]
+    }
+
+    private Map layoutRankForReport(QuestionModel q) {
+        def choices = "<table class='shy'>"
+        q.questions.each {
+            if (it.answerValueStr) {
+                choices += "<tr><td width='85%'>${getQuestionTextForReport(it)}</td><td style='text-align:center;padding-left:40px;' width='15%'>${layoutAnswer(it)}</td></tr>"
+            }
+        }
+        choices += "</table>"
+
+        return [secondColumnHtml: "", thirdColumnHtml: choices, spanColumns2and3: false, question: q]
     }
 
     private String layoutLevel3(QuestionModel q) {
@@ -442,6 +727,32 @@ class WorkforceTagLib {
         }
         return result
     }
+
+    private String layoutLevel3ForReport(QuestionModel q) {
+         String result = ''
+         // layout 3rd level questions
+         if (q.questions) {
+             String content = ''
+             q.questions.each {
+                 if (it.answerValueStr) {
+                     def text = getQuestionTextForReport(it) ?: ""
+                     def label = makeLabel(it)
+                     if (label) {
+                         label += " "
+                     }
+                     content += "<tr><td>${label}${text}</td><td>" + layoutAnswer(it) + "</td></tr>"
+                 }
+             }
+             if (content) {
+                 // determine layout params
+                 def layoutParams = extractLayoutHints(q.layoutHint)
+                 // create inner table to layout questions and answers
+                 result = "<table class='shy'><colgroup><col width='${layoutParams.textWidth}%'/><col width='${layoutParams.widgetWidth}%'/></colgroup>"
+                 result += content + "</table>"
+             }
+         }
+         return result
+     }
 
     private int extractTextFieldSize(hint) {
         def result = 40
@@ -498,6 +809,15 @@ class WorkforceTagLib {
         }
         result += "</table>"
         return result
+    }
+
+    private String layoutListOfItemsForReport(List items) {
+         def result = "<table class='shy'>"
+         for (int i = 0; i < items.size(); i++) {
+             result += "<tr><td width='52%'></td><td width='48%'>${items[i]}</td></tr>"
+         }
+         result += "</table>"
+         return result
     }
 
     static lowerAlpha = 'a'..'z'
@@ -620,4 +940,23 @@ class WorkforceTagLib {
         }
     }
 
+    private boolean areAnswers(QuestionModel q) {
+        for (it in q.questions) {
+            if (it.answerValueStr && !it.answerValueStr.equalsIgnoreCase('null')) {
+                return true
+            }
+        }
+        if (q.answerValueStr && !q.answerValueStr.equalsIgnoreCase('null')) {
+            return true
+        }
+        return false
+    }
+
+    private String getQuestionTextForReport(QuestionModel q) {
+        if (q.shorttext) {
+            return q.shorttext
+        } else {
+            return q.qtext
+        }
+    }
 }
