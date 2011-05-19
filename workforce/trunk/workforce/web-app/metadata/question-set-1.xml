@@ -46,11 +46,13 @@
             instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
         <question>
             <text>Is curatorial and/or taxonomic work your major responsibility in your organisation?</text>
+            <shortText>Curatorial and/or taxonomic work your major responsibility</shortText>
             <data>YES/NO</data>
             <answer type="bool" dataType="bool" required="true"/>
         </question>
         <question type="none">
             <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
+            <shortText>Time spent on curatorial and/or taxonomic duties</shortText>
             <question>
                 <text>Scientist/Taxonomist (permanent)</text>
                 <answer type="percent" label="%" dataType="number"/>
@@ -86,6 +88,7 @@
         </question>
         <question>
             <text>Any additional comments:</text>
+            <shortText>Additional comments</shortText>
             <answer dataType="text" type="textarea">
                 <data>
                     <rows value="int">3</rows>
@@ -97,6 +100,7 @@
     <!-- Q2 -->
     <question heightHint="14">
         <text>Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?</text>
+        <shortText>Organisation and location</shortText>
         <question>
             <text>Museum</text>
             <displayHint>checkbox</displayHint>
@@ -223,6 +227,7 @@
     <!-- Q3 -->
     <question heightHint="7">
         <text>What is your employment status at this organisation?</text>
+        <shortText>Employment status</shortText>
         <question type="pick" datatype="text">
             <displayHint>radio</displayHint>
             <answer type="radio" required="true">
@@ -250,6 +255,7 @@
     <!-- Q4 -->
     <question heightHint="1">
         <text>In your position, how many hours per week do you work on average?</text>
+        <shortText>Hours per week worked</shortText>
         <answer type="number" required="true">
             <data>
                 <min value='int'>0</min>
@@ -262,6 +268,7 @@
     <!-- Q5 -->
     <question type="range" heightHint="5">
         <text>How long have you been working in the field of taxonomy?</text>
+        <shortText>Years in taxonomy</shortText>
         <answer type="range" dataType="numberRange" required="true">
             <data>
                 <interval value='int'>5</interval>
@@ -277,14 +284,17 @@
     <!-- Q6 -->
     <question heightHint="1">
         <text>And do you intend to be working in this field in 12 months time?</text>
+        <shortText>Working in taxonomy in 12 months</shortText>
         <answer type='bool' required="true"/>
     </question>
 
     <!-- Q7 -->
     <question heightHint="6">
         <text>And thinking about your longer-term future, how likely is it that you will continue your career in taxonomy?</text>
+        <shortText>Likelihood of continuing in taxonomy</shortText>
         <question type="pick" datatype="text">
             <text>Would you say that it is:</text>
+            <shortText></shortText>
             <answer type="radio" required="true">
                 <data>
                     <item>Very likely</item>
@@ -300,6 +310,7 @@
     <!-- Q8 -->
     <question heightHint="5">
         <text>How many days of taxonomic field-work have you undertaken in the last two calendar years and how were they funded?</text>
+        <shortText>Days of taxonomic field-work</shortText>
         <question type="matrix" defaultDataType="number" defaultAnswerType="number">
             <text>Method of funding</text>
             <data>
@@ -319,9 +330,11 @@
     <!-- Q9 -->
     <question heightHint="19" defaultLayoutHint="align-with-level3"><!-- the answer widget for level 2 questions should be aligned with those for level 3 -->
         <text>Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?</text>
+        <shortText>Percentage of full time work</shortText>
         <validation>percent-total-lessThanOrEqual-100</validation>
         <question>
              <text>Acquisition of taxonomic specimens &lt;em&gt;(including collecting, essential preparation, registration and incorporation into the collection)&lt;/em&gt;:</text>
+             <shortText>Acquisition of taxonomic specimens:</shortText>
              <label>i</label>
              <question>
                  <text>Field component</text>
@@ -344,11 +357,13 @@
              <label>i</label>
              <question>
                  <text>For own institution &lt;em&gt;(including borrowing material, final preparation of specimens and "writing up"&lt;/em&gt;)</text>
+                 <shortText>For own institution</shortText>
                  <answer type="percent"/>
                  <label>(a)</label>
              </question>
              <question>
                  <text>Conducted for others &lt;em&gt;(e.g. other government depts., environmental agencies, including work on and writing of reports not for publication)&lt;/em&gt;</text>
+                 <shortText>Conducted for others</shortText>
                  <answer type="percent"/>
                  <label>(a)</label>
              </question>
@@ -360,6 +375,7 @@
         </question>
         <question>
             <text>Theoretical taxonomic work &lt;em&gt;(e.g. phylogenetic, cladistic)&lt;/em&gt;</text>
+            <shortText>Theoretical taxonomic work</shortText>
             <answer type="percent"/>
             <label>i</label>
         </question>
@@ -375,6 +391,7 @@
         </question>
         <question>
             <text>Teaching and lecturing &lt;em&gt;(as part of official work)&lt;/em&gt;</text>
+            <shortText>Teaching and lecturing</shortText>
             <answer type="percent"/>
             <label>i</label>
         </question>
@@ -385,6 +402,7 @@
         </question>
         <question>
             <text>Administration &lt;em&gt;(including staff supervision, meetings policy and program management)&lt;/em&gt;</text>
+            <shortText>Administration</shortText>
             <answer type="percent"/>
             <label>i</label>
         </question>
@@ -431,6 +449,7 @@
     <!-- Q10 -->
     <question heightHint="27">
         <text>To assist ABRS to identify research and skills gaps please indicate on which taxa of Australian living or fossil organisms you currently conduct taxonomic research.</text>
+        <shortText>Taxa of Australian living or fossil organisms</shortText>
         <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
             <question><layoutHint>subgroup:Mammals</layoutHint><text>Eutherian</text></question>
             <question><layoutHint>subgroup:Mammals</layoutHint><text>Marsupials</text></question>
@@ -489,6 +508,7 @@
     <!-- Q11 -->
     <question heightHint="3">
         <text>Please identify the groups you work on, if possible at Family level, if not then at Order level.</text>
+        <shortText>Taxonomic groups</shortText>
         <question>
             <text>Family</text>
             <answer type="textarea" dataType="text">
@@ -506,6 +526,7 @@
     <!-- Q12 -->
     <question heightHint="10">
         <text>Below is a list of things that previous survey respondents have identified as being important to increasing their taxonomic productivity. Thinking about your current position please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase your productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
+        <shortText>Importance for personal taxonomic productivity</shortText>
         <question type="rank" defaultAnswerType="rank" defaultDataType="rank">
             <data>
                 <max value='int'>5</max>
@@ -529,6 +550,7 @@
     <!-- Q13 -->
     <question heightHint="10">
         <text>As for the previous question, but this time please consider the answer in terms of the needs for taxonomy in Australia (rather than for you personally). Please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase Australia's taxonomic productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
+        <shortText>Importance for Australian taxonomic productivity</shortText>
         <question type="rank" defaultAnswerType="rank" defaultDataType="rank">
             <data>
                 <max value='int'>5</max>
@@ -552,6 +574,7 @@
     <!-- Q14 -->
     <question heightHint="12">
         <text>Below is a list of things related to the costs and opportunities in Taxonomy. Please indicate how much you think these issues impact on the taxonomic workforce.&lt;br/&gt;Do they impact &lt;strong&gt;a lot&lt;/strong&gt;, &lt;strong&gt;a little&lt;/strong&gt; or &lt;strong&gt;not at all&lt;/strong&gt;?</text>
+        <shortText>Impact on the taxonomic workforce</shortText>
         <question type="matrix">
             <data>
                 <rows>
@@ -583,8 +606,10 @@
     <!-- Q15 -->
     <question heightHint="9">
         <text>What was the highest level you achieved in your formal education?</text>
+        <shortText>Highest level of formal education</shortText>
         <question type="pick">
             <text>Please select one:</text>
+            <shortText>Level</shortText>
             <data><align>right</align></data>
             <answer type="radio" datatype='text' required="true">
                 <data>
@@ -599,11 +624,13 @@
             </question>
             <question>
                 <text>If other please specify</text>
+                <shortText>Other</shortText>
                 <answer type="textarea"/>
                 <data><align>right</align></data>
             </question>
             <question>
                 <text>In what subject areas did you major?</text>
+                <shortText>Subject area(s)</shortText>
                 <answer type="textarea"/>
             </question>
     </question>
@@ -611,6 +638,7 @@
     <!-- Q16 -->
     <question heightHint="1">
         <text>Are you male or female?</text>
+        <shortText>Gender</shortText>
         <answer type="radio" required="true">
             <data>
                 <item>Male</item>
@@ -622,6 +650,7 @@
     <!-- Q17 -->
     <question heightHint="5" type="range">
         <text>Which of the following age categories are you in?</text>
+        <shortText>Age range</shortText>
         <answer type="range" dataType="numberRange" required="true">
             <data>
                 <interval value="int">5</interval>
@@ -637,6 +666,7 @@
     <!-- Q18 -->
     <question heightHint="9" type="range">
         <text>Which of the following best describes your approximate annual income before tax?</text>
+        <shortText>Income range</shortText>
         <answer type="range" dataType="numberRange" required="true">
             <data>
                 <interval value="int">5000</interval>
