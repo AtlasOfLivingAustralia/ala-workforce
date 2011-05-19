@@ -24,7 +24,10 @@ class QuestionSet {
      * Returns a list of maps that represent the pagination of questions.
      *
      * Each page is represented by an entry in the list.
-     * Each entry has a 'from' and a 'to' property which are question numbers.
+     * Each entry has the properties:
+     *  'from' - starting question number
+     *  'to' - ending question number
+     *  'pageNumber' - the one-based number of the page
      *
      * @return list of maps
      */
@@ -33,7 +36,9 @@ class QuestionSet {
             return []
         }
         try {
-            return JSON.parse(pageSequence)
+            List pages = JSON.parse(pageSequence)
+            pages.eachWithIndex {page, i -> page.pageNumber = i + 1}
+            return pages
         } catch (JSONException e) {
             log.error "unable to parse page sequence: ${pageSequence} - ${e.getMessage()}"
             return []
