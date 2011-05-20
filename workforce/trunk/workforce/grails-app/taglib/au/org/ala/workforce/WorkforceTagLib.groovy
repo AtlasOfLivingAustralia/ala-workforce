@@ -39,20 +39,20 @@ class WorkforceTagLib {
             if (model.qtext) {
                 // question text should span q & a columns
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                    out << "<td colspan=2>${model.qtext}</td>"
+                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td colspan=2>${buildText(model)}</td>"
                 out << "</tr>"
 
             } else {
                 // go straight to first sub-question
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
                 if (secondLevel) {
-                    QuestionModel q = secondLevel[secondLevelIndex++]
-                    out << "<td>${q.qtext}</td>"
-                    out << "<td>" + layoutWidget(q) + "</td>"
+                  QuestionModel q = secondLevel[secondLevelIndex++]
+                  out << "<td>${buildText(q)}</td>"
+                  out << "<td>" + layoutWidget(q) + "</td>"
                 } else {
-                    out << "<td></td><td></td>"
+                  out << "<td></td><td></td>"
                 }
                 out << "</tr>"
 
@@ -61,16 +61,16 @@ class WorkforceTagLib {
             if (model.qtext) {
                 // real question - with text and answer
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                    out << "<td>${model.qtext}</td>"
-                    out << "<td>" + layoutWidget(model) + "</td>"
+                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td>${buildText(model)}</td>"
+                  out << "<td>" + layoutWidget(model) + "</td>"
                 out << "</tr>"
 
             } else {
                 // probably won't occur
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                    out << "<td colspan=2>" + layoutWidget(model) + "</td>"
+                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td colspan=2>" + layoutWidget(model) + "</td>"
                 out << "</tr>"
             }
         }
@@ -262,10 +262,10 @@ class WorkforceTagLib {
             // all level 2 in column 2; level 3 in column 3
             if (q.displayHint == 'checkbox') {
                 // widget first
-                result.secondColumnHtml = layoutWidget(q) + " ${q.qtext}"
+                result.secondColumnHtml = layoutWidget(q) + " ${buildText(q)}"
             } else {
                 // text first
-                result.secondColumnHtml = "${q.qtext} " + layoutWidget(q)
+                result.secondColumnHtml = "${buildText(q)} " + layoutWidget(q)
             }
             // 3rd level questions
             result.thirdColumnHtml = layoutLevel3(q)
@@ -275,7 +275,7 @@ class WorkforceTagLib {
         else {
             // no 3rd level questions - put widgets in 3rd column unless there is no content for the 2nd
             if (q.qtext) {
-                result.secondColumnHtml = q.qtext
+                result.secondColumnHtml = buildText(q)
                 result.thirdColumnHtml = layoutWidget(q)
             } else {
                 result.secondColumnHtml = layoutWidget(q)
@@ -623,7 +623,7 @@ class WorkforceTagLib {
         content += "</tr>"
 
         q.questions.each { q2 ->
-            def rowText = q2.qtext
+            def rowText = buildText(q2)
             if (q2.errorMessage) {
                 rowText = "<span class='errors'>" + rowText + "</span>"
             }
@@ -671,7 +671,7 @@ class WorkforceTagLib {
                 currentSubgroup = ''
                 indent = ''
             }
-            items << indent + layoutWidget(it) + " ${it.qtext}<br/>"
+            items << indent + layoutWidget(it) + " ${buildText(it)}<br/>"
         }
 
         return [secondColumnHtml: layoutListOfItems(items, 6), thirdColumnHtml: "", spanColumns2and3: true]
@@ -691,7 +691,7 @@ class WorkforceTagLib {
     private Map layoutRank(QuestionModel q) {
         def choices = "<table class='shy'>"
         q.questions.each {
-            choices += "<tr><td style='text-align:center;padding-left:40px;' width='15%'>${layoutWidget(it)}</td><td width='85%'>${it.qtext}</td></tr>"
+            choices += "<tr><td style='text-align:center;padding-left:40px;' width='15%'>${layoutWidget(it)}</td><td width='85%'>${buildText(it)}</td></tr>"
         }
         choices += "</table>"
 
@@ -719,7 +719,7 @@ class WorkforceTagLib {
             // create inner table to layout questions and answers
             result = "<table class='shy'><colgroup><col width='${layoutParams.textWidth}%'/><col width='${layoutParams.widgetWidth}%'/></colgroup>"
             q.questions.each {
-                def text = it.qtext ?: ""
+                def text = buildText(it) ?: ""
                 def label = makeLabel(it)
                 result += "<tr><td>${label} ${text}</td><td>" + layoutWidget(it) + "</td></tr>"
             }
@@ -959,4 +959,18 @@ class WorkforceTagLib {
             return q.qtext
         }
     }
+
+    /**
+     * Combines text and optional subtext into an HTML string.
+     * @return
+     */
+    private String buildText(QuestionModel q) {
+        if (q.subtext) {
+            return q.qtext + "<br/><span class='subtext'>${q.subtext}</span>"
+        }
+        else {
+            return q.qtext
+        }
+    }
+
 }
