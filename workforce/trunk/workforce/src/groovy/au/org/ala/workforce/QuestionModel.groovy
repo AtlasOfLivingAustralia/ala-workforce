@@ -19,6 +19,7 @@ class QuestionModel {
     int hash                        // the unique identifier for the question (used by DB to link answers)
     String label                    // type of displayed label, eg none, 3, b), iii)
     String qtext                    // the question text
+    String subtext                  // sub-heading to the question text
     String shorttext                // abbreviated question text for answers report
     QuestionType qtype              // question type, eg rank, pick, range, matrix, group, none
     Object qdata                    // json string describing data - format depends on the qType
@@ -74,7 +75,7 @@ class QuestionModel {
         
         // other properties
         ['atype','qtype','label','qtext','shorttext','instruction','alabel','displayHint','layoutHint','datatype',
-                'required','requiredIf','validation','hash','heightHint'].each {
+                'subtext','required','requiredIf','validation','hash','heightHint'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
             }
@@ -184,15 +185,21 @@ class QuestionModel {
                     errorMessage = "An answer is required"
                 }
                 if (requiredIf) {
+                    // extract the optional label
+                    def optionalLabel = ""
+                    def opt = requiredIf.tokenize('|')
+                    if (opt.size > 1) {
+                        optionalLabel = opt[1]
+                    }
                     // see if condition is satisfied
-                    def condition = requiredIf.tokenize('=')
+                    def condition = opt[0].tokenize('=')
                     def conditionPath = condition[0]
                     def conditionValue = condition[1]
-                    //println "evaluating 'requiredIf': path = ${conditionPath} testvalue = ${conditionValue} " +
-                    //        "answer = ${getQuestionFromPath(conditionPath)?.answerValueStr}"
+                    println "evaluating 'requiredIf': path = ${conditionPath} testvalue = ${conditionValue} " +
+                            "answer = ${getQuestionFromPath(conditionPath)?.answerValueStr}"
                     if (getQuestionFromPath(conditionPath)?.answerValueStr == conditionValue) {
                         valid = false
-                        errorMessage = "An answer is required if you select '${conditionValue}'"
+                        errorMessage = "An answer is required if you select '${optionalLabel ?: conditionValue}'"
                     }
                 }
             }
@@ -236,6 +243,25 @@ class QuestionModel {
                 // check sum
                 if (sum > 100) {
                     errorMessage = "Percentages can not add to more than 100%"
+                    errors.put ident(), errorMessage
+                    println "Error in ${ident()}: ${errorMessage}"
+                }
+                break
+            case 'pseudo-radio':
+                int onCheckboxes = 0
+                // iterate next level
+                questions.each { q ->
+                    if (q.datatype == AnswerDataType.bool && q.answerValueStr in ['on','yes']) {
+                        onCheckboxes++
+                    }
+                }
+                if (onCheckboxes == 0) {
+                    errorMessage = "You must check one answer"
+                    errors.put ident(), errorMessage
+                    println "Error in ${ident()}: ${errorMessage}"
+                }
+                else if (onCheckboxes > 1) {
+                    errorMessage = "You may only check one answer"
                     errors.put ident(), errorMessage
                     println "Error in ${ident()}: ${errorMessage}"
                 }
