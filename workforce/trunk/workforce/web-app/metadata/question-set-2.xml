@@ -3,14 +3,16 @@
     <pageSequence>
         <page>1-2</page>
         <page>3-3</page>
-        <page>4-4</page>
-        <page>5-5</page>
+        <page>4-5</page>
+        <page>6-6</page>
+        <page>7-7</page>
     </pageSequence>
     <!-- Q1 -->
     <question>
         <text>Please provide the following information about your institution.</text>
         <question>
             <text>MUSEUM and/or COLLECTION CODE:</text>
+            <subtext>eg. NMMI</subtext>
             <answer type='text' required="true"/>
         </question>
         <question>
@@ -19,6 +21,7 @@
         </question>
         <question>
             <text>MUSEUM and/or COLLECTION NAME:</text>
+            <subtext>eg. National Museum of Macquarie Is.</subtext>
             <answer type='text' required="true"/>
         </question>
         <question>
@@ -67,32 +70,250 @@
         </question>
         <question>
             <text>Location</text>
-            <answer type='text' required="true"/>
+            <subtext>Where are collections housed? - if they are in more than one location please give access details for each.</subtext>
+            <answer type='textarea' required="true"/>
         </question>
     </question>
 
     <!-- Q3 -->
-    <question instruction="Please provide the following information about your institution.">
+    <question>
+        <text>ACCESS TO COLLECTIONS:</text>
+        <subtext>What access rights do visiting researchers and the general public have to the collections?</subtext>
+        <question type="pick" datatype="text">
+            <displayHint>radio</displayHint>
+            <answer type="radio" required="true">
+                <data>
+                    <item>Full public access by appointment</item>
+                    <item>Full public access no appointment required</item>
+                    <item>Limited public access by appointment</item>
+                    <item>Limited public access no appointment required</item>
+                    <item>No public access</item>
+                    <item>Other</item>
+                </data>
+            </answer>
+        </question>
         <question>
-            <text>MUSEUM and/or COLLECTION CODE:</text>
-            <answer type='text' required="true"/>
+            <text>If other please specify:</text>
+            <answer type="textarea" requiredIf="../1=Other"/>
+        </question>
+        <question type="pick" datatype="text">
+            <displayHint>radio</displayHint>
+            <answer type="radio" required="true">
+                <data>
+                    <item>Full research access by appointment</item>
+                    <item>Full research access no appointment required</item>
+                    <item>Limited research access by appointment</item>
+                    <item>Limited research access no appointment required</item>
+                    <item>No research access</item>
+                    <item>Other</item>
+                </data>
+            </answer>
+        </question>
+        <question>
+            <text>If other please specify:</text>
+            <answer type="textarea" requiredIf="../3=Other"/>
         </question>
     </question>
 
     <!-- Q4 -->
-    <question instruction="Please provide the following information about your institution.">
+    <question>
+        <text>Is there an ASSOCIATED LIVING COLLECTION?</text>
+        <shortText>Associated living collection</shortText>
+        <data>YES/NO</data>
+        <answer type="bool" dataType="bool" required="true"/>
         <question>
-            <text>MUSEUM and/or COLLECTION CODE:</text>
-            <answer type='text' required="true"/>
+            <text>If YES then please give details.</text>
+            <shortText>Details</shortText>
+            <answer type='textarea' requiredIf="..=yes"/>
         </question>
     </question>
 
     <!-- Q5 -->
-    <question instruction="Please provide the following information about your institution.">
-        <question>
-            <text>MUSEUM and/or COLLECTION CODE:</text>
-            <answer type='text' required="true"/>
+    <question>
+        <text>FUNCTIONS:</text>
+        <subtext>What are the primary functions of the collections?</subtext>
+        <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
+            <question><text>Biosecurity/Quarantine</text></question>
+            <question><text>Data Provision (incl. identification)</text></question>
+            <question><text>Exhibition/Displays</text></question>
+            <question><text>Teaching</text></question>
+            <question><text>Public Programs</text></question>
+            <question><text>Research</text></question>
+            <question><text>Other</text></question>
         </question>
+        <question>
+            <text>If other please specify:</text>
+            <answer datatype="text" type="textarea" requiredIf="../1/7=on|Other"/>
+        </question>
+    </question>
+
+    <!-- Q6 -->
+    <question>
+        <text>TAXONOMIC SCOPE:</text>
+        <subtext>Please provide the following information about collections held in your institution:</subtext>
+        <question type="matrix" datatype="text" defaultAnswerType="number" defaultDataType="number">
+            <text>TAXON</text>
+            <data>
+                <rows>
+                    <item>Mammals</item>
+                    <item>Birds</item>
+                    <item>Reptiles</item>
+                    <item>Amphibians</item>
+                    <item>Fish</item>
+                    <item>Cephalochordates</item>
+                    <item>Tunicates</item>
+                    <item>Hemichordates</item>
+                    <item>Echinoderms</item>
+                    <item>Minor Coelomate Phyla</item>
+                    <item>Insects</item>
+                    <item>Crustaceans</item>
+                    <item>Other Arthropods</item>
+                    <item>Molluscs</item>
+                    <item>Annelid Worms</item>
+                    <item>Aschelminths</item>
+                    <item>Nematodes</item>
+                    <item>Platyhelminths</item>
+                    <item>Minor Acoelomate Phyla</item>
+                    <item>Cnidarians</item>
+                    <item>Poriferans</item>
+                    <item>Protozoa</item>
+                    <item>Fossils</item>
+                </rows>
+                <cols>
+                    <item>Total No of Specimens (approx)</item>
+                    <item>Total No of Types (approx)</item>
+                    <item>Total No of Specimens Databased (approx)</item>
+                    <item>Total No of Species Databased (approx)</item>
+                </cols>
+            </data>
+        </question>
+        <question type="matrix" datatype="text" defaultAnswerType="number" defaultDataType="number">
+            <data>
+                <rows>
+                    <item>Total Accessioned</item>
+                    <item>Total Unaccessioned</item>
+                </rows>
+                <cols>
+                    <item>Total No of Specimens (approx)</item>
+                    <item>Total No of Types (approx)</item>
+                </cols>
+            </data>
+        </question>
+        <question type="matrix" datatype="text" defaultAnswerType="number" defaultDataType="number">
+            <text>TAXON</text>
+            <data>
+                <rows>
+                    <item>Angiosperms</item>
+                    <item>- Dicotyledons</item>
+                    <item>- Monocotyledons</item>
+                    <item>Gymnosperms</item>
+                    <item>Pteridophytes</item>
+                    <item>Mosses</item>
+                    <item>Liverworts</item>
+                    <item>Lichens</item>
+                    <item>Fungi</item>
+                    <item>Algae</item>
+                    <item>Fossils</item>
+                    <item>Wood Samples</item>
+                </rows>
+                <cols>
+                    <item>Total No of Specimens (approx)</item>
+                    <item>Total No of Types (approx)</item>
+                    <item>Total No of Specimens Databased (approx)</item>
+                    <item>Total No of Species Databased (approx)</item>
+                </cols>
+            </data>
+        </question>
+        <question type="matrix" datatype="text" defaultAnswerType="number" defaultDataType="number">
+            <data>
+                <rows>
+                    <item>Total Accessioned</item>
+                    <item>Total Unaccessioned</item>
+                </rows>
+                <cols>
+                    <item>Total No of Specimens (approx)</item>
+                    <item>Total No of Types (approx)</item>
+                </cols>
+            </data>
+        </question>
+        <question type="matrix" datatype="text" defaultAnswerType="number" defaultDataType="number">
+            <text>TAXON</text>
+            <data>
+                <rows>
+                    <item>Bacteria</item>
+                    <item>Cyanobacteria</item>
+                    <item>Viruses</item>
+                    <item>Other</item>
+                </rows>
+                <cols>
+                    <item>Total No of Specimens (approx)</item>
+                    <item>Total No of Types (approx)</item>
+                    <item>Total No of Specimens Databased (approx)</item>
+                    <item>Total No of Species Databased (approx)</item>
+                </cols>
+            </data>
+        </question>
+        <question type="matrix" datatype="text" defaultAnswerType="number" defaultDataType="number">
+            <data>
+                <rows>
+                    <item>Total Accessioned</item>
+                    <item>Total Unaccessioned</item>
+                </rows>
+                <cols>
+                    <item>Total No of Specimens (approx)</item>
+                    <item>Total No of Types (approx)</item>
+                </cols>
+            </data>
+        </question>
+    </question>
+
+    <!-- Q7 -->
+    <question>
+        <text>COMPUTERISATION</text>
+        <subtext>Please provide the following information on your electronic data storage and accession methods.</subtext>
+        <validation>pseudo-radio</validation>
+        <question>
+            <text>Status:</text>
+            <subtext>What stage have you reached in your database development?</subtext>
+        </question>
+        <question>
+            <text>Collection fully databased</text>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>20/80</layoutHint>
+            <answer datatype="bool" type="bool"/>
+            <question>
+            </question>
+        </question>
+        <question>
+            <text>No functional database</text>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>20/80</layoutHint>
+            <answer datatype="bool" type="bool"/>
+            <question>
+            </question>
+        </question>
+        <question>
+            <text>Collection partially databased</text>
+            <subtext>(please specify details and % of specific collections databased)</subtext>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>0/100</layoutHint>
+            <answer datatype="bool" type="bool"/>
+            <question>
+                <answer datatype="text" type="textarea"/>
+            </question>
+        </question>
+        <question>
+            <text>Other (please specify)</text>
+            <subtext>(please specify)</subtext>
+            <displayHint>checkbox</displayHint>
+            <layoutHint>0/100</layoutHint>
+            <answer datatype="bool" type="bool"/>
+            <question>
+                <answer datatype="text" type="textarea"/>
+            </question>
+        </question>
+
+
     </question>
 
 </questionSet>
