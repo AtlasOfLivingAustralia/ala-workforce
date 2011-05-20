@@ -9,10 +9,16 @@
         @heightHint- an estimate of the laid-out height of the question for pagination (this is temporary as this will
             eventually be calculated)
         text - the question text
+        subtext - sub-heading to the question text
+        shortText - brief form of question text for reports
         data - any data associate with the type, eg. list of options or rows and columns in a matrix
         label - an outline-style label for the question, eg. (a), i, 1
         displayHint - the type of widget to use, eg radio buttons or drop-down or size of widget, eg. textbox size
         layoutHint - hints how nested questions should be laid out
+        validation - cross-question validation type; one of:
+            percent-total-lessThanOrEqual-100 - percentages in sub-questions must not exceed 100
+            ranking-group - numbers in sub-questions must comply with the rank answer metadata
+            pseudo-radio - treat checkboxes in sub-questions as exclusive
     Questions may also contain sub-questions - any number of nested questions to a depth of 3 levels overall.
     Question numbers are determined by their order in the qset, and their nesting. This gives questions the following
      implicit properties:
@@ -26,6 +32,8 @@
         @label - a label to show along with the answer, eg. %, hours per week, $
         @labelPlacement - beforeEach or afterEach the answer - defaults to after
         @required - if true, a value must be entered (defaults to not required)
+        @requiredIf - takes a relative path to another question and compares that answer to the value supplied; takes
+            an optional label to display in the validation error message; format is "{path}={value}|{optionalLabel}"
 -->
 <questionSet set="1">
     <title>Survey of Australian Taxonomic Workforce - Personal Survey</title>
@@ -311,7 +319,7 @@
     <question heightHint="5">
         <text>How many days of taxonomic field-work have you undertaken in the last two calendar years and how were they funded?</text>
         <shortText>Days of taxonomic field-work</shortText>
-        <question type="matrix" defaultDataType="number" defaultAnswerType="number">
+        <question type="matrix" defaultDataType="number" defaultAnswerType="number" >
             <text>Method of funding</text>
             <data>
                 <rows>
