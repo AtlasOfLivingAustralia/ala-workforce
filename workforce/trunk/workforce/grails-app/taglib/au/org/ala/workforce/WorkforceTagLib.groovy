@@ -588,6 +588,7 @@ class WorkforceTagLib {
         content += "</table>"
 
         return [secondColumnHtml: content, thirdColumnHtml: "", spanColumns2and3: true, question: q]
+
     }
     /*
      * A radio matrix question is really just a list of questions. They are treated as a matrix so
@@ -644,14 +645,21 @@ class WorkforceTagLib {
     }
 
     private Map layoutRadioMatrixForReport(QuestionModel q) {
-        String content = "<table class='shy'>"
+        
+        String labels = "<table class='shy'>"
+        String answers = "<table class='shy'>"
 
-        q.questions.each {
-            content += "<tr><td width='52%'>${getQuestionTextForReport(it)}</td><td><span class='answer'>${it.answerValueStr}</span></td></tr>"
+        q.questions.each {it ->
+            if (it.answerValueStr) {
+                labels += "<tr><td>${it.qtext}</td></tr>"
+                answers += "<tr><td>${layoutAnswer(it)}</td></tr>"
+            }
         }
-        content += "</table>"
 
-        return [secondColumnHtml: content, thirdColumnHtml: "", spanColumns2and3: true, question: q]
+        labels += "</table>"
+        answers += "</table>"
+
+        return [secondColumnHtml: labels, thirdColumnHtml: answers, spanColumns2and3: false, question: q]
     }
 
     private Map layoutGroup(QuestionModel q) {
@@ -685,7 +693,7 @@ class WorkforceTagLib {
             }
         }
 
-        return [secondColumnHtml: layoutListOfItemsForReport(items), thirdColumnHtml: "", spanColumns2and3: true, question: q]
+        return [secondColumnHtml: "", thirdColumnHtml: layoutListOfItemsForReport(items), spanColumns2and3: false, question: q]
     }
 
     private Map layoutRank(QuestionModel q) {
@@ -699,15 +707,20 @@ class WorkforceTagLib {
     }
 
     private Map layoutRankForReport(QuestionModel q) {
-        def choices = "<table class='shy'>"
-        q.questions.each {
+        String labels = "<table class='shy'>"
+        String answers = "<table class='shy'>"
+
+        q.questions.each {it ->
             if (it.answerValueStr) {
-                choices += "<tr><td width='85%'>${getQuestionTextForReport(it)}</td><td style='text-align:center;padding-left:40px;' width='15%'>${layoutAnswer(it)}</td></tr>"
+                labels += "<tr><td>${it.qtext}</td></tr>"
+                answers += "<tr><td>${layoutAnswer(it)}</td></tr>"
             }
         }
-        choices += "</table>"
 
-        return [secondColumnHtml: "", thirdColumnHtml: choices, spanColumns2and3: false, question: q]
+        labels += "</table>"
+        answers += "</table>"
+
+        return [secondColumnHtml: labels, thirdColumnHtml: answers, spanColumns2and3: false, question: q]
     }
 
     private String layoutLevel3(QuestionModel q) {
@@ -814,7 +827,7 @@ class WorkforceTagLib {
     private String layoutListOfItemsForReport(List items) {
          def result = "<table class='shy'>"
          for (int i = 0; i < items.size(); i++) {
-             result += "<tr><td width='52%'></td><td width='48%'>${items[i]}</td></tr>"
+             result += "<tr><td>${items[i]}</td></tr>"
          }
          result += "</table>"
          return result
