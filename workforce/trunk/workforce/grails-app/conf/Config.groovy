@@ -16,6 +16,9 @@
 if (!security.cas.urlPattern) {
     security.cas.urlPattern = "/.+"
 }
+if (!security.cas.urlExclusionPattern) {
+    security.cas.urlExclusionPattern = "/images.*,/css.*,/js.*"
+}
 if (!security.cas.loginUrl) {
     security.cas.loginUrl = "https://auth.ala.org.au/cas/login"
 }
