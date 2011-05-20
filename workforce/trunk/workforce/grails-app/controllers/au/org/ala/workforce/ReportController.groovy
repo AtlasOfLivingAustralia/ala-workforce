@@ -11,7 +11,6 @@ class ReportController {
     def answers = {
 
         def questionList = []
-        def questionId = 1;
         def setId = params.set.toInteger() ?: 1
         def qset = QuestionSet.findBySetId(setId)
         def userid = params.id as int ?: 1
@@ -35,14 +34,16 @@ class ReportController {
      */
     def singleQuestionAnswer = {
 
-        def questionId = params.id.toInteger() ?: 1;
+        def questionId = params.qid.toInteger() ?: 1;
         def setId = params.set.toInteger() ?: 1
         def qset = QuestionSet.findBySetId(setId)
+        def userid = params.id as int ?: 1
+        def user = User.findByUserid(userid)
 
-        def question = modelLoaderService.loadQuestionWithAnswer(setId, questionId, 1)
+        def question = modelLoaderService.loadQuestionWithAnswer(setId, questionId, userid)
 
         // render the page
-        render(view:'answer', model:[qset: qset, question: question])
+        render(view:'answer', model:[qset: qset, question: question, user: user])
     }
 
 }
