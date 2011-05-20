@@ -450,3 +450,7 @@ div.go-buttons img {
 a img {
     border: none;
 }
+
+span.subtext {
+    font-size: 13px;
+}
