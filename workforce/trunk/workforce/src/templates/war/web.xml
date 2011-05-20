@@ -17,6 +17,10 @@
     </context-param>
 
     <!-- ***** CAS security ***** -->
+    <listener>
+        <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+    </listener>
+
     <!-- CAS Authentication related properties -->
     <context-param>
         <!-- Parameter used by CAS filters -->
@@ -36,9 +40,12 @@
 
     <context-param>
         <param-name>uriFilterPattern</param-name>
-        <!--param-value>/Collectory/admin</param-value-->
-        <!--param-value>/admin</param-value-->
-        <param-value>/substitute-me</param-value>
+        <param-value>@security.cas.urlPattern@</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>uriExclusionFilterPattern</param-name>
+        <param-value>@security.cas.urlExclusionPattern@</param-value>
     </context-param>
 
     <!-- CAS Authentication Service filters -->
