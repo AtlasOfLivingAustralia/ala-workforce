@@ -14,6 +14,7 @@ class Question {
     int hash                        // an integer that is a unique hash of the set and levels - uniquely identifies this question
     String label                    // type of displayed label, eg none, 3, b), iii)
     String qtext                    // the question text
+    String subtext                  // sub-heading to the question text
     String shorttext                // abbreviated question text for answer report
     QuestionType qtype              // question type, eg ranked, matrix, pick-one
     String qdata                    // json string describing data - format depends on the qType
@@ -36,6 +37,7 @@ class Question {
         level3(min:0)
         label(nullable:true)
         qtext(nullable:true, maxSize:2048)
+        subtext(nullable:true, maxSize:2048)
         shorttext(nullable:true, maxSize:2048)
         qtype(nullable:false)
         qdata(nullable:true, maxSize:2048)
