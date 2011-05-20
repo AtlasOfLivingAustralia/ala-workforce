@@ -108,6 +108,7 @@ class DataLoaderService {
             }
             q.qdata = extractJsonString(it.data) as grails.converters.JSON
             q.qtext = it.text
+            q.subtext = it.subtext
             q.shorttext = it.shortText
             q.atype = valueOrDefault(it.answer?.@type, defaults) ? AnswerType.valueOf(valueOrDefault(it.answer?.@type, defaults) as String) : AnswerType.none
             def datatype = valueOrDefault(it.answer?.@dataType, defaults)
@@ -192,7 +193,7 @@ class DataLoaderService {
                 q.qtype = QuestionType.none
                 q.datatype = AnswerDataType.number//valueOf(defaults.defaultDataType) as AnswerDataType
                 q.atype = AnswerType.number//valueOf(defaults.defaultAnswerType) as AnswerType
-                q.required = true //TODO for now
+                q.required = false //TODO for now
                 q.adata = [row:row, col:col] as JSON
 
                 q.save()
