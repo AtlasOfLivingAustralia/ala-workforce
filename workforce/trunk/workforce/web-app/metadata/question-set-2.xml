@@ -10,6 +10,7 @@
     <!-- Q1 -->
     <question>
         <text>Please provide the following information about your institution.</text>
+        <shortText>INSTITUTION</shortText>
         <question>
             <text>MUSEUM and/or COLLECTION CODE:</text>
             <subtext>eg. NMMI</subtext>
