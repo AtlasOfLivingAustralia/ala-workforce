@@ -195,8 +195,8 @@ class QuestionModel {
                     def condition = opt[0].tokenize('=')
                     def conditionPath = condition[0]
                     def conditionValue = condition[1]
-                    println "evaluating 'requiredIf': path = ${conditionPath} testvalue = ${conditionValue} " +
-                            "answer = ${getQuestionFromPath(conditionPath)?.answerValueStr}"
+                    /*println "evaluating 'requiredIf': path = ${conditionPath} testvalue = ${conditionValue} " +
+                            "answer = ${getQuestionFromPath(conditionPath)?.answerValueStr}"*/
                     if (getQuestionFromPath(conditionPath)?.answerValueStr == conditionValue) {
                         valid = false
                         errorMessage = "An answer is required if you select '${optionalLabel ?: conditionValue}'"
