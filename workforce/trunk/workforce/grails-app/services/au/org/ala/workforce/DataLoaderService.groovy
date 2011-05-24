@@ -80,19 +80,21 @@ class DataLoaderService {
 
     private void loadXmlQuestions(questions, set, level, level1, level2, Map defaults) {
         questions.eachWithIndex { it, idx ->
-            //println "Set ${set} Level ${level}: ${it.text}"
+            // l1,l2,l3 are derived from the xml structure and used to label the question hierarchy
+            // ident is a temp id string to provide scope for defaults
             def l1, l2, l3
+            String ident
             switch (level) {
-                case 1: l1 = idx + 1; l2 = 0; l3 = 0; break;
-                case 2: l1 = level1; l2 = idx + 1; l3 = 0; break;
-                case 3: l1 = level1; l2 = level2; l3 = idx + 1; break;
+                case 1: l1 = idx + 1; l2 = 0; l3 = 0; ident=l1; break;
+                case 2: l1 = level1; l2 = idx + 1; l3 = 0; ident=l1 + "_" + l2; break;
+                case 3: l1 = level1; l2 = level2; l3 = idx + 1; ident=l1 + "_" + l2 + "_" + l3; break;
             }
             Question q = new Question(qset: set, level1: l1, level2: l2, level3: l3)
             // reset defaults for new top level question
             if (level == 1) {
                 defaults = [:]
             }
-            defaults = setDefaults(defaults, it)
+            defaults = setDefaults(defaults, it, ident)
 
             q.instruction = it.@instruction
             q.qtype = it.@type.toString() ? QuestionType.valueOf(it.@type.toString()) : QuestionType.none
@@ -101,8 +103,8 @@ class DataLoaderService {
                 q.validation = 'ranking-group'
             }
             q.label = it.label
-            q.layoutHint = valueOrDefault(it.layoutHint, defaults)
-            q.displayHint = valueOrDefault(it.displayHint, defaults)
+            q.layoutHint = valueOrDefault(it.layoutHint, defaults, ident)
+            q.displayHint = valueOrDefault(it.displayHint, defaults, ident)
             if (it.@heightHint.text()) {
                 q.heightHint = it.@heightHint.text() as int
             }
@@ -110,23 +112,9 @@ class DataLoaderService {
             q.qtext = it.text
             q.subtext = it.subtext
             q.shorttext = it.shortText
-            q.atype = valueOrDefault(it.answer?.@type, defaults) ? AnswerType.valueOf(valueOrDefault(it.answer?.@type, defaults) as String) : AnswerType.none
-            def datatype = valueOrDefault(it.answer?.@dataType, defaults)
-
-            /* --Special hack--
-             * Questions of type 'group' that contain questions with boolean answers use defaultDatatype=bool
-             * to save declaring datatype on every answer.
-             * However this default is applied to the question in which it is defined which is not intended (here
-             * at least) and which activates the 'checkbox blocking rule' ie. the processor thinks the child answers
-             * are irrelevant because parent is a boolean which is not 'on'.
-             * TODO: The fix is to refactor so that default does not apply to the question where it is declared - however
-             * needs extensive testing as it may break other scenarios.
-             * So for the moment just set the datatype and answer type of group questions to avoid the issue.
-             */
-            if (q.qtype == QuestionType.group) {
-                datatype = 'text'
-                q.atype = AnswerType.none
-            }
+            def atype = valueOrDefault(it.answer?.@type, defaults, ident)
+            q.atype = atype ? AnswerType.valueOf(atype as String) : AnswerType.none
+            def datatype = valueOrDefault(it.answer?.@dataType, defaults, ident)
 
             if (datatype) {
                 q.datatype = AnswerDataType.valueOf(datatype as String)
@@ -279,36 +267,80 @@ class DataLoaderService {
         return result
     }
 
-    def Map setDefaults(defaults, node) {
+    /**
+     * Store any default values so they can be accessed by child questions.
+     *
+     * Use a key that is a combination of value type and the question ident. The latter makes
+     * sure the values are only applied to child questions.
+     *
+     * @param defaults the map of default values
+     * @param node xml node being processed
+     * @param ident a string representation of the position of the question in the question hierarchy
+     * @return the map with additional defaults from the question
+     */
+    def Map setDefaults(defaults, node, ident) {
         if (node.@defaultAnswerType.text()) {
             //println "Setting default answerType to ${node.@defaultAnswerType.text()}"
-            defaults.defaultType = node.@defaultAnswerType.text()
+            defaults."${ident + 'defaultType'}" = node.@defaultAnswerType.text()
         }
         if (node.@defaultDataType.text()) {
             //println "Setting default dataType to ${node.@defaultDataType.text()}"
-            defaults.defaultDataType = node.@defaultDataType.text()
+            defaults."${ident + 'defaultDataType'}" = node.@defaultDataType.text()
         }
         if (node.@defaultDisplayHint.text()) {
             //println "Setting default displayHint to ${node.@defaultDisplayHint.text()}"
-            defaults.defaultDisplayHint = node.@defaultDisplayHint.text()
+            defaults."${ident + 'defaultDisplayHint'}" = node.@defaultDisplayHint.text()
         }
         if (node.@defaultLayoutHint.text()) {
             //println "Setting default layoutHint to ${node.@defaultLayoutHint.text()}"
-            defaults.defaultLayoutHint = node.@defaultLayoutHint.text()
+            defaults."${ident + 'defaultLayoutHint'}" = node.@defaultLayoutHint.text()
         }
         return defaults
     }
 
-    def valueOrDefault(node, defaults) {
+    /**
+     * Extract default values from the defaults map if there is no explicit value.
+     *
+     * Only use defaults set by a parent question.
+     * @param node xml node being processed
+     * @param defaults map of default values
+     * @param ident a string representation of the position of the question in the question hierarchy
+     * @return the explicit value or any applicable defaults
+     */
+    def valueOrDefault(node, defaults, ident) {
         def name = node.name()
         //println "name = " + name
         //defaults.each { key, value -> println "${key}=${value}"}
         if (node?.text()) {
             node.text()
-        } else if (defaults."default${name[0].toUpperCase()+name.substring(1)}") {
-            return defaults."default${name[0].toUpperCase()+name.substring(1)}"
         } else {
-            return null
+            def levels = ident.tokenize('_')
+            switch (levels.size()) {
+                case 1: // top level question so no defaults apply
+                    return null
+                case 2: // second level question try parent
+                    def parentIdent = levels[0]
+                    if (defaults."${parentIdent}default${name[0].toUpperCase()+name.substring(1)}") {
+                        return defaults."${parentIdent}default${name[0].toUpperCase()+name.substring(1)}"
+                    }
+                    else {
+                        return null
+                    }
+                case 3: // third level question try parent then grandparent
+                    def parentIdent = levels[0]
+                    if (defaults."${parentIdent}default${name[0].toUpperCase()+name.substring(1)}") {
+                        return defaults."${parentIdent}default${name[0].toUpperCase()+name.substring(1)}"
+                    }
+                    else {
+                        def grandparentIdent = levels[0] + '_' + levels[1]
+                        if (defaults."${grandparentIdent}default${name[0].toUpperCase()+name.substring(1)}") {
+                            return defaults."${grandparentIdent}default${name[0].toUpperCase()+name.substring(1)}"
+                        }
+                        else {
+                            return null
+                        }
+                    }
+            }
         }
     }
 
