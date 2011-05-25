@@ -115,7 +115,7 @@ class WorkforceTagLib {
         if (model.instruction && model.instructionPosition == 'bottom') {
             // add in bottom row
             out << "<tr>"
-                out << "<td colspan=2><strong><em>${model.instruction}</em></strong></td>"
+                out << "<td colspan=2><span class='instruction'>${model.instruction}</span></td>"
             out << "</tr>"
         }
     }
