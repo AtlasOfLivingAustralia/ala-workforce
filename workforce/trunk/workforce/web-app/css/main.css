@@ -454,3 +454,8 @@ a img {
 span.subtext {
     font-size: 13px;
 }
+
+.instruction {
+    font-weight: bold;
+    font-style: italic;
+}
