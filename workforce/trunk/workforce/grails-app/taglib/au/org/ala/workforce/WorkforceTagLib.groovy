@@ -484,7 +484,11 @@ class WorkforceTagLib {
                 result += q.answerValueStr + "%"
                 break
             case AnswerType.range:
-                result += q.answerValueStr
+                if (q.answerValueStr.endsWith("-")) {
+                    result += "${q.answerValueStr.replace('-', '')} and over"
+                } else {
+                    result += q.answerValueStr
+                }
                 break
             case AnswerType.rank:
                 result += q.answerValueStr
