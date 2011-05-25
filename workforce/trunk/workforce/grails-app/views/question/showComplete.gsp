@@ -21,7 +21,9 @@
           </div>
           </g:if>
 
-          <p>Thank you ${request.userPrincipal.attributes?.firstname}.</p>
+          <p>Thank you ${request.userPrincipal.attributes?.firstname}.
+            <g:link controller="report" action="answers" id="${user}" params="${[set: qset.setId]}">Click here review yours answers</g:link>
+          </p>
         </div>
 
         <div class="go-buttons">
