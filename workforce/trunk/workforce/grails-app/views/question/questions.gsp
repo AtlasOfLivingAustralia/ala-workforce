@@ -54,9 +54,11 @@
                       <colgroup><col width="4%"><col width="33%"><col width="70%"></colgroup>
                       <tbody>
 
-                        <g:each var='question' in="${questions}">
+                        <g:each var='question' in="${questions}" status="count">
                           <wf:question question="${question}"/>
-                          <tr><td colspan='3'></td></tr>
+                          <g:if test="${count < questions.size() - 1}">
+                              <tr><td colspan='3'></td></tr>
+                          </g:if>
                         </g:each>
 
                       </tbody>
