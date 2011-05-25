@@ -664,7 +664,7 @@
                 <interval value="int">5</interval>
                 <start value="int">20</start>
                 <end value="int">59</end>
-                <over>60 and over</over>
+                <over>and over</over>
                 <unit/>
                 <alt>Prefer not to answer</alt>
             </data>
@@ -680,7 +680,7 @@
                 <interval value="int">5000</interval>
                 <start value="int">0</start>
                 <end value="int">79999</end>
-                <over>$80,000 and over</over>
+                <over>and over</over>
                 <unit>$</unit>
                 <unitPlacement>beforeEach</unitPlacement>
                 <alt>Prefer not to answer</alt>

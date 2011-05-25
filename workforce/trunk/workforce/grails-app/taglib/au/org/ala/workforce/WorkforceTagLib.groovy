@@ -254,7 +254,7 @@ class WorkforceTagLib {
             result = layoutGroup(q)
         }
 
-        else if (q.atype == AnswerType.rank) {
+        else if (q.qtype == QuestionType.rank) {
             result = layoutRank(q)
         }
 
@@ -310,7 +310,7 @@ class WorkforceTagLib {
             result = layoutGroupForReport(q)
         }
 
-        else if (q.atype == AnswerType.rank) {
+        else if (q.qtype == QuestionType.rank) {
             result = layoutRankForReport(q)
         }
 
@@ -400,25 +400,17 @@ class WorkforceTagLib {
                     def value = "${i}-${i + q.adata.interval - 1}"
                     def fromValue = String.format('%,d', i)
                     def toValue = String.format('%,d', i + q.adata.interval - 1)
-                    if (q.adata.unit && q.adata.unitPlacement) {
-                        switch (q.adata.unitPlacement) {
-                            case 'beforeEach':
-                                items << [label:"${q.adata.unit}${fromValue} - ${q.adata.unit}${toValue}",
-                                           value:value]
-                                break
-                            default:
-                                items << [label:"${fromValue} - ${toValue} ${q.adata.unit}", value:value]
-                                break
-                        }
-                    } else {
-                        items << [label:"${fromValue} - ${toValue} ${q.adata.unit}", value:value]
-                    }
+                    def decoratedRange = "${decorateValue(fromValue, q.adata.unit, q.adata.unitPlacement)} - " +
+                            "${decorateValue(toValue, q.adata.unit, q.adata.unitPlacement)}"
+                    items << [label: decoratedRange, value: value]
                 }
                 if (q.adata.over) {
-                    items << [label:q.adata.over, value:"over"]
+                    def value = String.format('%,d', q.adata.end + 1)
+                    def decoratedRange = decorateValue(value, q.adata.unit, q.adata.unitPlacement) + " " + q.adata.over
+                    items << [label: decoratedRange, value:"${q.adata.end + 1}-"]
                 }
                 if (q.adata.alt) {
-                    items << [label:q.adata.alt, value:"alt"]
+                    items << [label:q.adata.alt, value:q.adata.alt]
                 }
 
                 def widgets = []
@@ -447,6 +439,23 @@ class WorkforceTagLib {
             result = "<div class='errors'>" + result + "</div>"
         }
 
+        return result
+    }
+
+    /**
+     * Decorates value with the unit if defined. unitPlacement affects whether the unit is placed
+     * before of after the value.
+     *
+     * @param value to decorate
+     * @param unit to add
+     * @param unitPlacement where to add the unit
+     * @return decorated value
+     */
+    private String decorateValue(value, unit, unitPlacement) {
+        def result = value
+        if (unit) {
+            result = unitPlacement == 'beforeEach' ? unit + value : value + unit
+        }
         return result
     }
 
