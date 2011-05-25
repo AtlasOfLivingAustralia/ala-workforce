@@ -168,7 +168,15 @@ class QuestionModel {
                                 errorMessage = "A number range must contain two valid numbers"  // not a message that a user should see
                             }
                         }
-                        else if (answerValueStr == "over" || answerValueStr == "alt") {
+                        else if (answerValueStr[-1] == '-') {
+                            try {
+                                NumberFormat.getInstance().parse(numbers[0] as String)
+                            } catch (ParseException e) {
+                                valid = false
+                                errorMessage = "A number range must contain at least one valid number"  // not a message that a user should see
+                            }
+                        }
+                        else if (answerValueStr == adata.alt) {
                             valid = true
                         }
                         else {
