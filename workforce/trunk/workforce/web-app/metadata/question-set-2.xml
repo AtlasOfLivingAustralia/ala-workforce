@@ -6,6 +6,8 @@
         <page>4-5</page>
         <page>6-6</page>
         <page>7-7</page>
+        <page>8-8</page>
+        <page>9-9</page>
     </pageSequence>
     <!-- Q1 -->
     <question>
@@ -32,7 +34,12 @@
     </question>
 
     <!-- Q2 -->
-    <question>
+    <question instruction="We will only record your email address(es) if you agree. However it is desirable that at
+    least your generic institutional address be made available in the published form of this survey. You may choose to
+    keep personal email addresses confidential. In these cases please tick “Email is not for publication”. They will
+    only be used for the purpose for which you have provided them and our own statistical purposes, and will not be
+    added to a mailing list. We will not use your email addresses for any other purpose, and will not disclose them,
+    without your consent.">
         <text>CONTACT DETAILS</text>
         <question>
             <text>Street Address:</text>
@@ -68,6 +75,12 @@
         <question>
             <text>Email:</text>
             <answer type='text' required="true"/>
+        </question>
+        <question>
+            <text>Email is not for publication</text>
+            <subtext></subtext>
+            <displayHint>checkbox</displayHint>
+            <answer type="bool"/>
         </question>
         <question>
             <text>Location</text>
@@ -304,7 +317,7 @@
             </question>
         </question>
         <question>
-            <text>Other (please specify)</text>
+            <text>Other</text>
             <subtext>(please specify)</subtext>
             <displayHint>checkbox</displayHint>
             <layoutHint>0/100</layoutHint>
@@ -313,8 +326,137 @@
                 <answer datatype="text" type="textarea"/>
             </question>
         </question>
-
-
     </question>
 
+    <!-- Q8 -->
+    <question instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) please indicate
+    Taxonomist as 0.5, and Administrator as 0.5. Similarly with part-time staff please indicate proportion of full time duties undertaken."
+            defaultAnswerType="number" defaultDataType="number">
+        <text>STAFF AND SUPPORT</text>
+        <subtext>Please provide the following details against category on total numbers of taxonomic staff and support.
+        </subtext>
+        <question>
+            <text>Scientist/Taxonomist (permanent)</text>
+        </question>
+        <question>
+            <text>Scientist/Taxonomist (not permanent)</text>
+        </question>
+        <question>
+            <text>Technical (permanent)</text>
+        </question>
+        <question>
+            <text>Technical (not permanent)</text>
+        </question>
+        <question>
+            <text>Administrator/Manager</text>
+        </question>
+        <question>
+            <text>Volunteer/Associate (retired)</text>
+        </question>
+        <question>
+            <text>Volunteer/Associate (not retired)</text>
+        </question>
+        <question>
+            <text>TOTAL No of Staff</text>
+        </question>
+    </question>
+
+    <!-- Q9 -->
+    <question instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) and spends
+    half their research time, for example, on mammals please indicate this as Mammals Scientist/Taxonomist as 0.25
+    (ie half their research time). Similarly with part-time staff please indicate proportion of full time duties
+    undertaken. The number of publications field includes scientific articles, books and reports for the surveyed period"
+    instructionPosition="top">
+        <text>Please provide the following details against specialty on your taxonomic staff, support and publications.</text>
+        <question type="matrix" defaultAnswerType="number" defaultDataType="number">
+            <text>SPECIALTY</text>
+            <data>
+                <rows>
+                    <item>Mammals</item>
+                    <item>Birds</item>
+                    <item>Reptiles</item>
+                    <item>Amphibians</item>
+                    <item>Fish</item>
+                    <item>Cephalochordates</item>
+                    <item>Tunicates</item>
+                    <item>Hemichordates</item>
+                    <item>Echinoderms</item>
+                    <item>Minor Coelomate Phyla</item>
+                    <item>Insects</item>
+                    <item>Crustaceans</item>
+                    <item>Other Arthropods</item>
+                    <item>Molluscs</item>
+                    <item>Annelid Worms</item>
+                    <item>Aschelminths</item>
+                    <item>Nematodes</item>
+                    <item>Platyhelminths</item>
+                    <item>Minor Acoelomate Phyla</item>
+                    <item>Cnidarians</item>
+                    <item>Poriferans</item>
+                    <item>Protozoa</item>
+                    <item>Fossils</item>
+                </rows>
+                <cols>
+                    <item>Scientist/ Taxonomist (permanent)</item>
+                    <item>Scientist/ Taxonomist (not permanent)</item>
+                    <item>Technical (permanent)</item>
+                    <item>Technical (not permanent)</item>
+                    <item>Administrator/ Manager</item>
+                    <item>Volunteer/ Associate (retired)</item>
+                    <item>Volunteer/ Associate (not retired)</item>
+                    <item>Number of Publications 2009-2011</item>
+                </cols>
+            </data>
+        </question>
+        <question type="matrix" defaultAnswerType="number" defaultDataType="number">
+            <text>SPECIALTY</text>
+            <data>
+                <rows>
+                    <item>Angiosperms</item>
+                    <item>- Dicotyledons</item>
+                    <item>- Monocotyledons</item>
+                    <item>Gymnosperms</item>
+                    <item>Pteridophytes</item>
+                    <item>Mosses</item>
+                    <item>Liverworts</item>
+                    <item>Lichens</item>
+                    <item>Fungi</item>
+                    <item>Algae</item>
+                    <item>Fossils</item>
+                    <item>Wood Samples</item>
+                </rows>
+                <cols>
+                    <item>Scientist/ Taxonomist (permanent)</item>
+                    <item>Scientist/ Taxonomist (not permanent)</item>
+                    <item>Technical (permanent)</item>
+                    <item>Technical (not permanent)</item>
+                    <item>Administrator/ Manager</item>
+                    <item>Volunteer/ Associate (retired)</item>
+                    <item>Volunteer/ Associate (not retired)</item>
+                    <item>Number of Publications 2009-2011</item>
+                </cols>
+            </data>
+        </question>
+        <question type="matrix" defaultAnswerType="number" defaultDataType="number">
+            <text>SPECIALTY</text>
+            <data>
+                <rows>
+                    <item>Bacteria</item>
+                    <item>Cyanobacteria</item>
+                    <item>Viruses</item>
+                    <item>Other</item>
+                </rows>
+                <cols>
+                    <item>Scientist/ Taxonomist (permanent)</item>
+                    <item>Scientist/ Taxonomist (not permanent)</item>
+                    <item>Technical (permanent)</item>
+                    <item>Technical (not permanent)</item>
+                    <item>Administrator/ Manager</item>
+                    <item>Volunteer/ Associate (retired)</item>
+                    <item>Volunteer/ Associate (not retired)</item>
+                    <item>Number of Publications 2009-2011</item>
+                </cols>
+            </data>
+        </question>
+    </question>
 </questionSet>
