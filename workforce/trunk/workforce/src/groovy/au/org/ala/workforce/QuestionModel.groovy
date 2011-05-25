@@ -24,6 +24,8 @@ class QuestionModel {
     QuestionType qtype              // question type, eg rank, pick, range, matrix, group, none
     Object qdata                    // json string describing data - format depends on the qType
     String instruction              // optional instructions
+    String instructionPosition = 'bottom'
+                                    // optional positioning for instructions eg "top", default is "bottom"
     AnswerType atype = AnswerType.text
                                     // the type of the answer widget, eg range, radio, percent, text, rank, boolean, none
     AnswerDataType datatype = AnswerDataType.text
@@ -75,7 +77,7 @@ class QuestionModel {
         
         // other properties
         ['atype','qtype','label','qtext','shorttext','instruction','alabel','displayHint','layoutHint','datatype',
-                'subtext','required','requiredIf','validation','hash','heightHint'].each {
+                'subtext','required','requiredIf','validation','hash','heightHint','instructionPosition'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
             }

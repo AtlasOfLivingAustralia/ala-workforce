@@ -97,6 +97,7 @@ class DataLoaderService {
             defaults = setDefaults(defaults, it, ident)
 
             q.instruction = it.@instruction
+            q.instructionPosition = it.@instructionPosition
             q.qtype = it.@type.toString() ? QuestionType.valueOf(it.@type.toString()) : QuestionType.none
             q.validation = it.validation
             if (!q.validation && q.qtype == QuestionType.rank) {
