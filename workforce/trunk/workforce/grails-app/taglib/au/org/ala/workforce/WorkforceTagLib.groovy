@@ -205,10 +205,9 @@ class WorkforceTagLib {
         }
 
         contents.each {
-            QuestionModel q = it.question
-
-            // new row
             out << "<tr>"
+
+//            QuestionModel q = it.question
 
             // add cell with optional label unless the very first cell is spanning all rows
 //            if (firstCellRowSpan == 1) {
@@ -224,7 +223,6 @@ class WorkforceTagLib {
                 out << "<td${style}>" + it.secondColumnHtml + "</td><td>" + it.thirdColumnHtml + "</td>"
             }
 
-            // end row
             out << "</tr>"
         }
     }
@@ -335,8 +333,7 @@ class WorkforceTagLib {
                 result.secondColumnHtml = getQuestionTextForReport(q)
                 result.thirdColumnHtml = layoutAnswer(q)
             } else {
-                result.secondColumnHtml = layoutAnswer(q)
-                result.spanColumns2and3 = true
+                result.thirdColumnHtml = layoutAnswer(q)
             }
         }
         return result
@@ -472,7 +469,7 @@ class WorkforceTagLib {
             case AnswerType.none:
                 break
             case AnswerType.number:
-                result += q.answerValueStr
+                result += q.answerValueStr ?: ""
                 break
             case AnswerType.radio:
                 result += q.answerValueStr
@@ -487,11 +484,7 @@ class WorkforceTagLib {
                 result += q.answerValueStr + "%"
                 break
             case AnswerType.range:
-                if (q.adata.unitPlacement == 'beforeEach') {
-                    result += "${q.adata.unit}${q.answerValueStr}"
-                } else {
-                    result += "${q.answerValueStr} ${q.adata.unit}"
-                }
+                result += q.answerValueStr
                 break
             case AnswerType.rank:
                 result += q.answerValueStr
@@ -581,18 +574,30 @@ class WorkforceTagLib {
         content += "</tr>"
 
         rows.each { row ->
-            content += "<tr><td>${row}</td>"
-            cols.each { col ->
-                def qm = q.questions[questionIdx]
-                if (qm) {
-                    content += "<td style='text-align:center'>" + layoutAnswer(qm) + "</td>"
+            // Check if there are any answers for this row
+            def isAnswer = false
+            q.questions[questionIdx .. questionIdx + cols.size() - 1].each {
+                if (it.answerValueStr) {
+                    isAnswer = true
                 }
-                else {
-                    println "question not linked (${row}/${col})"
-                }
-                questionIdx++
             }
-            content += "</tr>"
+
+            if (isAnswer) {
+                content += "<tr><td>${row}</td>"
+                cols.each { col ->
+                    def qm = q.questions[questionIdx]
+                    if (qm) {
+                        content += "<td style='text-align:center'>" + layoutAnswer(qm) + "</td>"
+                    }
+                    else {
+                        println "question not linked (${row}/${col})"
+                    }
+                    questionIdx++
+                }
+                content += "</tr>"
+            } else {
+                questionIdx += cols.size()
+            }
         }
         content += "</table>"
 
@@ -975,11 +980,19 @@ class WorkforceTagLib {
     }
 
     private String getQuestionTextForReport(QuestionModel q) {
+        def answer
         if (q.shorttext) {
-            return q.shorttext
+            answer = q.shorttext
         } else {
-            return q.qtext
+            answer = q.qtext
         }
+
+        if (q.atype == AnswerType.range) {
+            if (q.adata.unit) {
+                answer += " (${q.adata.unit})"
+            }
+        }
+        return answer
     }
 
     /**
