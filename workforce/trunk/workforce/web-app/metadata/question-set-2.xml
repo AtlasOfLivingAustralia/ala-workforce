@@ -368,6 +368,7 @@
     undertaken. The number of publications field includes scientific articles, books and reports for the surveyed period"
     instructionPosition="top">
         <text>Please provide the following details against specialty on your taxonomic staff, support and publications.</text>
+        <shortText>Proportion of duties</shortText>
         <question type="matrix" defaultAnswerType="number" defaultDataType="number">
             <text>SPECIALTY</text>
             <data>
