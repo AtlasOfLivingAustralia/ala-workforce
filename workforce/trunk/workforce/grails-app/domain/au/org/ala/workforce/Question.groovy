@@ -19,6 +19,7 @@ class Question {
     QuestionType qtype              // question type, eg ranked, matrix, pick-one
     String qdata                    // json string describing data - format depends on the qType
     String instruction              // optional instructions
+    String instructionPosition      // optional positioning for instructions eg "top", default is "bottom"
     AnswerType atype                // the type of the answer widget, eg range, radio, percent, text, rank, boolean, none
     AnswerDataType datatype         // the data type of the answer, eg bool, number, percent, text
     String alabel                   // text that labels the answer widget - may be units eg 'hours per week'
@@ -42,6 +43,7 @@ class Question {
         qtype(nullable:false)
         qdata(nullable:true, maxSize:2048)
         instruction(nullable:true, maxSize:2048)
+        instructionPosition(nullable:true, maxSize:48)
         atype(nullable:false)
         datatype(nullable:false)
         alabel(nullable:true)

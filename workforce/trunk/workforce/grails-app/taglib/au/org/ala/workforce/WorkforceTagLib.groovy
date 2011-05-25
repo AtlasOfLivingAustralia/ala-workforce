@@ -112,7 +112,7 @@ class WorkforceTagLib {
         }
 
         // instruction
-        if (model.instruction) {
+        if (model.instruction && model.instructionPosition == 'bottom') {
             // add in bottom row
             out << "<tr>"
                 out << "<td colspan=2><strong><em>${model.instruction}</em></strong></td>"
@@ -978,12 +978,14 @@ class WorkforceTagLib {
      * @return
      */
     private String buildText(QuestionModel q) {
+        def text = q.qtext
         if (q.subtext) {
-            return q.qtext + "<br/><span class='subtext'>${q.subtext}</span>"
+            text += "<br/><span class='subtext'>${q.subtext}</span>"
         }
-        else {
-            return q.qtext
+        if (q.instruction && q.instructionPosition == 'top') {
+            text += "<br/><span class='instruction'>${q.instruction}</span>"
         }
+        return text
     }
 
 }
