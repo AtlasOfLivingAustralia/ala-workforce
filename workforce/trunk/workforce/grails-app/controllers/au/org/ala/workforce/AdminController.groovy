@@ -13,4 +13,8 @@ class AdminController {
         // render the page
         render(view:'dashboard', model:[qset: qset, user: userId])
     }
+
+    def index = {
+        render(view:'../index', model:[admin:true])
+    }
 }
