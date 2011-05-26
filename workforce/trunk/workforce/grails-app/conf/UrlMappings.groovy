@@ -15,6 +15,8 @@ class UrlMappings {
         "/report/$set/user/$id" (controller: 'report', action: 'answers')
         "/report/$set/q/$qid/user/$id" (controller: 'report', action: 'singleQuestionAnswer')
 
+        "/admin/set/$set" (controller: 'admin', action: 'dashboard')
+
 		"/"(view:"/index")
 		"500"(view:'/error')
 	}
