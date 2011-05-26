@@ -189,6 +189,7 @@ class WorkforceTagLib {
         } else {
             if (model.qtext) {
                 // real question - with text and answer
+                firstCellRowSpan++
                 out << "<tr>"
                     out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
                     out << "<td>${getQuestionTextForReport(model)}</td>"
@@ -579,14 +580,14 @@ class WorkforceTagLib {
 
         rows.each { row ->
             // Check if there are any answers for this row
-            def isAnswer = false
+            def areAnswers = false
             q.questions[questionIdx .. questionIdx + cols.size() - 1].each {
                 if (it.answerValueStr) {
-                    isAnswer = true
+                    areAnswers = true
                 }
             }
 
-            if (isAnswer) {
+            if (areAnswers) {
                 content += "<tr><td>${row}</td>"
                 cols.each { col ->
                     def qm = q.questions[questionIdx]
