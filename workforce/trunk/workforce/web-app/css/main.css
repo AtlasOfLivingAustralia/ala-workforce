@@ -258,6 +258,14 @@ table.answers label {
     padding-left: 5px;
 }
 
+table.dashboard {
+    width: auto;
+    margin:25px 0px;
+}
+
+table.dashboard td {
+    text-align: center;
+}
 
 /* LIST */
 
