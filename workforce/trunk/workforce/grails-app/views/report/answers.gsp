@@ -14,7 +14,8 @@
             <div class="message">${flash.message}</div>
             </g:if>
             <g:if test="${user}">
-                <p>Answers for ${user.name}</p>
+                <p>Answers for ${user.name} <span style="padding-left:50px;">
+                    <g:link action="answers" params="${[set:1,id:31]}">Next>></g:link></span></p>
             </g:if>
             <div class="list">
                 <table class="answers">
@@ -27,10 +28,6 @@
 
                     </tbody>
                 </table>
-            </div>
-            <div class="buttons">
-                <g:form>
-                </g:form>
             </div>
         </div>
     </body>
