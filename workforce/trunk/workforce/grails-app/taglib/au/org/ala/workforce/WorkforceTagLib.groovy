@@ -398,8 +398,16 @@ class WorkforceTagLib {
                     def value = "${i}-${i + q.adata.interval - 1}"
                     def fromValue = String.format('%,d', i)
                     def toValue = String.format('%,d', i + q.adata.interval - 1)
-                    def decoratedRange = "${decorateValue(fromValue, q.adata.unit, q.adata.unitPlacement)} - " +
-                            "${decorateValue(toValue, q.adata.unit, q.adata.unitPlacement)}"
+                    /* HACK HERE til after demo*/
+                    def decoratedRange
+                    if (q.adata.unitPlacement == 'beforeEach') {
+                        decoratedRange = "${decorateValue(fromValue, q.adata.unit, q.adata.unitPlacement)} - " +
+                                "${decorateValue(toValue, q.adata.unit, q.adata.unitPlacement)}"
+                    }
+                    else {
+                        decoratedRange = "${fromValue} - " +
+                                "${decorateValue(toValue, q.adata.unit, q.adata.unitPlacement)}"
+                    }
                     items << [label: decoratedRange, value: value]
                 }
                 if (q.adata.over) {
@@ -452,7 +460,7 @@ class WorkforceTagLib {
     private String decorateValue(value, unit, unitPlacement) {
         def result = value
         if (unit) {
-            result = unitPlacement == 'beforeEach' ? unit + value : value + unit
+            result = unitPlacement == 'beforeEach' ? unit + value : value + ' ' + unit
         }
         return result
     }
