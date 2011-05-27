@@ -13,9 +13,25 @@
             <p>If you are responsible for an Australian natural science collection, please complete the
             <g:link controller="question" action="page" params='[set:2,page:1]'><strong>Resources of Australian Natural Science Collections Survey</strong></g:link>.</p>
         </div>
-        <div class="go-buttons">
-            <g:link controller="question" action="page" params='[set:1,page:1]'><img src="${resource(dir:'images/abrsskin',file:'personal-button.png')}"/></g:link>
-            <g:link controller="question" action="page" params='[set:2,page:1]'><img src="${resource(dir:'images/abrsskin',file:'collections-button.png')}"/></g:link>
-        </div>
+        <g:if test="${admin}">
+            <div class="go-buttons">
+                <g:link controller="admin" action="dashboard" params='[set:1]'><img src="${resource(dir:'images/abrsskin',file:'personal-admin.png')}"/></g:link>
+                <g:link controller="admin" action="dashboard" params='[set:2]'><img src="${resource(dir:'images/abrsskin',file:'collections-admin.png')}"/></g:link>
+            </div>
+        </g:if>
+        <g:else>
+            <div class="go-buttons">
+                <g:link controller="question" action="page" params='[set:1,page:1]'><img src="${resource(dir:'images/abrsskin',file:'personal-button.png')}"/></g:link>
+                <g:link controller="question" action="page" params='[set:2,page:1]'><img src="${resource(dir:'images/abrsskin',file:'collections-button.png')}"/></g:link>
+            </div>
+        </g:else>
+
+        <g:if test="${admin}">
+            <p><a href="${createLink(uri: '/')}">Home</a></p>
+        </g:if>
+        <g:else>
+            <p><g:link controller="admin" action="index">Admin</g:link></p>
+        </g:else>
+
     </body>
 </html>
