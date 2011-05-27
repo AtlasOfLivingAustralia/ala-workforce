@@ -447,7 +447,7 @@ p {
 }
 
 div.go-buttons {
-    padding-bottom: 100px;
+    padding-bottom: 60px;
     text-align: center;
 }
 
@@ -466,4 +466,22 @@ span.subtext {
 .instruction {
     font-weight: bold;
     font-style: italic;
+}
+
+body > p {
+    padding-left: 80px;
+}
+
+ul.respondents {
+    list-style: none;
+}
+
+ul.respondents li {
+    padding-bottom: 3px;
+}
+
+ul.respondents li a {
+    font-weight: normal;
+    color: #333;
+
 }
