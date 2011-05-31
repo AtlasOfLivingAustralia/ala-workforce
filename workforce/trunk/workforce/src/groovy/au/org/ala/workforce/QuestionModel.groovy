@@ -16,7 +16,7 @@ class QuestionModel {
 
     int questionNumber              // the ordinal for this level of question
     int level                       // the level this question has in the hierarchy
-    int hash                        // the unique identifier for the question (used by DB to link answers)
+    String guid                     // a unique identifier of the question - independent of question set or question hierarchy
     String label                    // type of displayed label, eg none, 3, b), iii)
     String qtext                    // the question text
     String subtext                  // sub-heading to the question text
@@ -34,7 +34,6 @@ class QuestionModel {
     Object adata                    // data for a answer , eg a pick list - may be a reference to an external list eg states of australia
     String displayHint              // suggested form of display, eg dropdown, radio, checkbox
     String layoutHint               // directs layout of child questions
-    int heightHint = 1              // an estimate of the laid-out height of the question for pagination (this is
     boolean required                // the answer may not be blank
     String requiredIf               // the answer may not be blank if the condition is met
     String validation               // cross-question validation
@@ -77,7 +76,7 @@ class QuestionModel {
         
         // other properties
         ['atype','qtype','label','qtext','shorttext','instruction','alabel','displayHint','layoutHint','datatype',
-                'subtext','required','requiredIf','validation','hash','heightHint','instructionPosition'].each {
+                'subtext','required','requiredIf','validation','instructionPosition','guid'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
             }
@@ -450,7 +449,7 @@ class QuestionModel {
     def saveAnswer(userId) {
         def saveAnswer = true
         // get all answers for the question for this user
-        def answers = Answer.findAllByUserIdAndQuestionId(userId, hash, [sort:'lastUpdated',order:'desc'])
+        def answers = Answer.findAllByUserIdAndGuid(userId, guid, [sort:'lastUpdated',order:'desc'])
         if (answers) {
             def answer = answers[0] // the most recent
             //println "Question ${ident()}: comparing ${answer.answerValue} to ${answerValueStr}"
@@ -466,7 +465,7 @@ class QuestionModel {
             saveAnswer = answerValueStr
         }
         if (saveAnswer) {
-            Answer a = new Answer(questionId: hash, userId: userId, answerValue: answerValueStr)
+            Answer a = new Answer(guid: guid, userId: userId, answerValue: answerValueStr)
             return a.save()
         }
         return saveAnswer

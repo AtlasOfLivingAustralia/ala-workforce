@@ -84,7 +84,7 @@ class ModelLoaderService {
      */
     def loadAnswers(QuestionModel model, int userId) {
         // get all answers for the question for this user
-        def answers = Answer.findAllByUserIdAndQuestionId(userId, model.hash, [sort:'lastUpdated',order:'desc'])
+        def answers = Answer.findAllByUserIdAndGuid(userId, model.guid, [sort:'lastUpdated',order:'desc'])
 
         if (answers) {
             // select the most recent answer
