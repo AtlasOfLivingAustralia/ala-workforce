@@ -6,8 +6,6 @@
     Questions properties are:
         @type - the class of question - one of rank, pick, range, matrix, group or none
         @instruction - an additional instruction such as 'if you answered x to the above go to question 6'
-        @heightHint- an estimate of the laid-out height of the question for pagination (this is temporary as this will
-            eventually be calculated)
         text - the question text
         subtext - sub-heading to the question text
         shortText - brief form of question text for reports
@@ -335,7 +333,7 @@
     </question>
     
     <!-- Q9 -->
-    <question heightHint="19" defaultLayoutHint="align-with-level3"><!-- the answer widget for level 2 questions should be aligned with those for level 3 -->
+    <question defaultLayoutHint="align-with-level3"><!-- the answer widget for level 2 questions should be aligned with those for level 3 -->
         <text>Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?</text>
         <shortText>Percentage of full time work</shortText>
         <validation>percent-total-lessThanOrEqual-100</validation>
@@ -454,7 +452,7 @@
     </question>
 
     <!-- Q10 -->
-    <question heightHint="27">
+    <question>
         <text>To assist ABRS to identify research and skills gaps please indicate on which taxa of Australian living or fossil organisms you currently conduct taxonomic research.</text>
         <shortText>Taxa of Australian living or fossil organisms</shortText>
         <question type="group" defaultAnswerType="bool" defaultDisplayHint="checkbox" defaultDataType="bool">
