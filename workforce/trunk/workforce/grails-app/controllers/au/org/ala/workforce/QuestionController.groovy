@@ -25,39 +25,23 @@ class QuestionController {
     def scaffold = true;
 
     /**
-     * Load a specific question set. DEVT only.
+     * Reload a specific question set.
      */
     def loadQuestionSetXML = {
         def set = params.set ?: 1
-        loadXML(set)
+        dataLoaderService.loadQuestionSet(set)
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
         render "XML question set loaded - ${list}"
     }
 
     /**
-     * Reload all questions sets. DEVT only.
+     * Reload all questions sets.
      */
     def reload = {
         dataLoaderService.clearQuestionSets()
-        loadXML(1)
-        loadXML(2)
+        dataLoaderService.loadQuestionSet(1)
+        dataLoaderService.loadQuestionSet(2)
         render "Done."
-    }
-
-    def singleQuestion = {
-        def set = params.set ?: 1
-        // during development reload question set each time - remove later
-        if (!params.noreload) {
-            loadXML(set)
-            //loadJSON()
-        }
-
-        def level1 = params.id ? params.id : 1
-        def model = modelLoaderService.loadQuestion(set, level1 as int)
-        if (!model) {
-            flash.message = "No such question"
-        }
-        [question: model]
     }
 
     /**
@@ -85,6 +69,9 @@ class QuestionController {
         render(view:'questions', model:[qset: params.qset, pagination: pg, questions: questionList])
     }
 
+    /**
+     * Leave the last page of questions.
+     */
     def finish = {
         // set the destination page
         params.chainTo = [action: 'showComplete', params:[set:params.set]]
@@ -146,6 +133,9 @@ class QuestionController {
         }
     }
 
+    /**
+     * Validate all answers and show the completion page if all good.
+     */
     def showComplete = {
         /* validate all pages and display any problems */
         QuestionSet qset = params.qset
@@ -181,23 +171,27 @@ class QuestionController {
         }
     }
 
-    def loadJSON(set) {
-        dataLoaderService.loadQuestionSet(servletContext.getResource("metadata/question-set-${set}.json").text, set)
-    }
-
-    def loadXML(set) {
+    /**
+     * Manually invoke injectGuidsAndSave for the specified question set.
+     */
+    def injectGuids = {
+        def set = params.set
+        assert set
         def filename = "metadata/question-set-${set}.xml"
         def qsetFile = servletContext.getResource(filename)
-        assert qsetFile : "file not found - ${filename}"
-        dataLoaderService.loadQuestionSetXML(qsetFile.text)
+
+        dataLoaderService.injectGuidsAndSave(set, qsetFile)
+
+        render "Done"
     }
 
+    // DEVT only
     def loadTestXML() {
         dataLoaderService.loadTestXML(servletContext.getResource('metadata/test.xml').text)
     }
 
     /**
-     * 
+     * DEVT only
      */
     def submit = {
         def result = validate(params.from as int, params.to as int, params)
@@ -228,6 +222,11 @@ class QuestionController {
         }
     }
 
+    /**
+     * Assembles the pagination parameters into a single pagination model.
+     * @param params
+     * @return map of pagination parameters
+     */
     Map buildPagination(params) {
         return [from:params.from as int, to:params.to as int,
                 pageNumber:params.pageNumber as int, totalPages:params.totalPages as int]
@@ -262,6 +261,13 @@ class QuestionController {
         return [questionList:questionList, errors:errors]
     }
 
+    /**
+     * Injects submitted answers into the appropriate question model.
+     *
+     * @param questions
+     * @param answers
+     * @return
+     */
     def injectAnswers(questions, answers) {
         questions.each {
             if (it.atype != AnswerType.none) {
@@ -271,6 +277,7 @@ class QuestionController {
         }
     }
 
+    // DEVT only
     def dumpQuestion(q) {
         def dump = q.toString()
         if (q.errorMessage || q.answerValueStr) {
@@ -280,12 +287,18 @@ class QuestionController {
         }
     }
 
+    /**
+     * Cancels the questionaire. NOT CURRENTLY USED.
+     */
     def cancel = {
         redirect(url: "/workforce")
     }
 
+    /**
+     * Returns the userid attribute of the current authenticated user.
+     * @return userid
+     */
     int userId() {
         return request.getUserPrincipal().attributes.userid as int
-        //User.getUser(request.getUserPrincipal()).userid
     }
 }
