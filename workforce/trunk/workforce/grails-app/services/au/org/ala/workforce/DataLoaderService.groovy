@@ -3,11 +3,16 @@ package au.org.ala.workforce
 import groovy.sql.Sql
 import grails.converters.JSON
 import org.xml.sax.SAXException
+import grails.converters.XML
+import org.springframework.context.ApplicationContextAware
+import org.springframework.context.ApplicationContext
+import groovy.xml.XmlUtil
 
-class DataLoaderService {
+class DataLoaderService implements ApplicationContextAware {
 
     static transactional = false
     javax.sql.DataSource dataSource
+    ApplicationContext applicationContext
 
     /**
      * Clear existing questions in a set.
@@ -32,6 +37,126 @@ class DataLoaderService {
         def sql = new Sql(dataSource)
         sql.execute("delete from question")
         sql.execute("delete from question_set")
+    }
+
+    /**
+     * Load the specified question set.
+     *
+     * Looks for the GUID-annotated version first, then the raw version; external files first then internal.
+     * @param set the integer identifier of the set
+     */
+    def loadQuestionSet(set) {
+        // first try external file with guids
+        def qsetFile = new File("/data/workforce/metadata/question-set-with-guids-${set}.xml")
+        if (!qsetFile) {
+            // second try external file without guids
+            qsetFile = new File("/data/workforce/metadata/question-${set}.xml")
+        }
+        if (!qsetFile) {
+            // third try internal file with guids
+            qsetFile = applicationContext.getResource("metadata/question-set-with-guids-${set}.xml")
+        }
+        if (!qsetFile) {
+            // fourth try internal file without guids
+            qsetFile = applicationContext.getResource("metadata/question-set-${set}.xml")
+        }
+        assert qsetFile : "question set definition not found"
+
+        // inject any missing guids
+        def file = injectGuidsAndSave(set, qsetFile)
+        assert file : "unable to write question set file with guids"
+
+        loadQuestionSetXML(file.text)
+    }
+
+    /**
+     * Add any missing guids to the specified question set and re-save the question set xml with the
+     * assigned guids.
+     */
+    File injectGuidsAndSave(set, qsetFile) {
+        def qset = injectGuids(qsetFile.text)
+
+        def file = new File("/data/workforce/metadata/question-set-with-guids-${set}.xml")
+        def writer = new FileWriter(file)
+        writer << XmlUtil.serialize(qset)
+        writer.close()
+
+        return file
+    }
+
+    /**
+     * Inject any missing guids into a question set.
+     */
+    def injectGuids(fileContents) {
+        def qset
+        try {
+            qset= new XmlSlurper().parseText(fileContents)
+        } catch (IOException e) {
+            println e
+            return
+        } catch (SAXException e) {
+            println e
+            return
+        }
+
+        injectIntoQuestions(qset.question, false)
+
+        return qset
+    }
+
+    /**
+     * Recursively injects missing guids into the specified list of questions.
+     *
+     * Only add guids to questions with an answer or where alwaysInject is true.
+     * The param alwaysInject is used where the presence of an answer is implied by the question type
+     * or the presence of a default answer property.
+     *
+     * @param questions the list of questions
+     * @param alwaysInject if true add a guid regardless of whether an explicit answer is present
+     */
+    private void injectIntoQuestions(questions, alwaysInject) {
+        questions.each {
+            //println "Q-${it.text} ${it.answer.size() ? 'has' : 'has no'} answer"
+
+            // add guid if the question has an answer
+            if ((it.answer.size() || alwaysInject) && (!it.@id.toString())) {
+                it.@id = UUID.randomUUID().toString()
+            }
+
+            // handle matrix questions - these not only imply an answer but also dynamically
+            //  generate the child questions so the guids are stored as a list to be assigned
+            //  to the questions when they are loaded
+            if (it.@type == 'matrix' && it.data.guids.size() == 0) {
+                // generate MxN guids
+                def list = []
+                int rows = it.data.rows.item.size()
+                int cols = it.data.cols.item.size()
+                // for matrix questions of type radio, the cols are the choices not separate questions
+                // therefore the number of questions = the number of rows (aka cols = 1)
+                if (it.answer.@type == 'radio') {
+                    cols = 1
+                }
+                rows.times {
+                    cols.times {
+                        list << UUID.randomUUID().toString()
+                    }
+                }
+                it.data.appendNode {
+                    guids list.join(',')
+                }
+            }
+
+            // call recursively on child questions
+            if (it.question) {
+                boolean always = false
+                // handle default answers - these imply an answer for all child questions
+                if (it.@defaultAnswerType.toString()) {
+                    // assume all child questions will have an answer
+                    always = true
+                }
+                injectIntoQuestions(it.question, always)
+            }
+        }
     }
 
     /**
@@ -82,6 +207,7 @@ class DataLoaderService {
         questions.eachWithIndex { it, idx ->
             // l1,l2,l3 are derived from the xml structure and used to label the question hierarchy
             // ident is a temp id string to provide scope for defaults
+
             def l1, l2, l3
             String ident
             switch (level) {
@@ -96,6 +222,7 @@ class DataLoaderService {
             }
             defaults = setDefaults(defaults, it, ident)
 
+            q.guid = it.@id
             q.instruction = it.@instruction
             q.instructionPosition = it.@instructionPosition
             q.qtype = it.@type.toString() ? QuestionType.valueOf(it.@type.toString()) : QuestionType.none
@@ -106,9 +233,6 @@ class DataLoaderService {
             q.label = it.label
             q.layoutHint = valueOrDefault(it.layoutHint, defaults, ident)
             q.displayHint = valueOrDefault(it.displayHint, defaults, ident)
-            if (it.@heightHint.text()) {
-                q.heightHint = it.@heightHint.text() as int
-            }
             q.qdata = extractJsonString(it.data) as grails.converters.JSON
             q.qtext = it.text
             q.subtext = it.subtext
@@ -171,6 +295,9 @@ class DataLoaderService {
         def qdata = JSON.parse(matrixQuestion.qdata)
         def rows = qdata.rows
         def cols = qdata.cols
+        assert qdata.guids : "no guids for question ${matrixQuestion.ident()}"
+        def guids = qdata.guids.tokenize(',')
+        def guidCounter = 0
         def questionIdx = 1
 
         // iterate through cells - rows first
@@ -184,6 +311,7 @@ class DataLoaderService {
                 q.atype = AnswerType.number//valueOf(defaults.defaultAnswerType) as AnswerType
                 q.required = false //TODO for now
                 q.adata = [row:row, col:col] as JSON
+                q.guid = guids[guidCounter++]
 
                 q.save()
                 if (q.hasErrors()) {
@@ -198,6 +326,8 @@ class DataLoaderService {
     def loadListOfQuestions(matrixQuestion, set, defaults) {
         def qdata = JSON.parse(matrixQuestion.qdata)
         def rows = qdata.rows
+        def guids = qdata.guids.tokenize(',')
+        def guidCounter = 0
 
         // iterate through rows
         rows.eachWithIndex { row, questionIdx ->
@@ -211,6 +341,7 @@ class DataLoaderService {
             q.atype = AnswerType.text//valueOf(defaults.defaultAnswerType) as AnswerType
             q.required = true //TODO for now
             q.qtext = row
+            q.guid = guids[guidCounter++]
 
             q.save()
             if (q.hasErrors()) {
