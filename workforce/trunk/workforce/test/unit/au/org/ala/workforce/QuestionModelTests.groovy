@@ -10,32 +10,34 @@ import grails.test.GrailsUnitTestCase
 class QuestionModelTests extends GrailsUnitTestCase {
 
     QuestionModel qm1, qm2, qm3, qm4
+    String guid3
 
     protected void setUp() {
         super.setUp()
         qm1 = new QuestionModel()
         qm1.level = 1
         qm1.questionNumber = 1
-        qm1.hash = 2**24 + 2**16
+        qm1.guid = UUID.randomUUID()
 
         qm2 = new QuestionModel()
         qm2.level = 2
         qm2.questionNumber = 1
-        qm2.hash = 2**24 + 2**16 + 2**8
+        qm2.guid = UUID.randomUUID()
         qm2.owner = qm1
         qm1.questions = [qm2]
 
         qm3 = new QuestionModel()
         qm3.level = 3
         qm3.questionNumber = 1
-        qm3.hash = 2**24 + 2**16 + 2**8 + 1
+        guid3 = UUID.randomUUID()
+        qm3.guid = guid3
         qm3.owner = qm2
         qm2.questions = [qm3]
 
         qm4 = new QuestionModel()
         qm4.level = 3
         qm4.questionNumber = 2
-        qm4.hash = 2**24 + 2**16 + 2*2**8 + 1
+        qm4.guid = UUID.randomUUID()
         qm4.owner = qm2
         qm2.questions << qm4
     }
@@ -88,7 +90,7 @@ class QuestionModelTests extends GrailsUnitTestCase {
         assert qm3.saveAnswer(1)
 
         assert Answer.get(1).answerValue == '666'
-        assert Answer.get(1).questionId == qm3.hash
+        assert Answer.get(1).guid == guid3
     }
 
     void testEstimateHeight() {
