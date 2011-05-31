@@ -4,8 +4,8 @@ class BootStrap {
 
     def init = { servletContext ->
         dataLoaderService.clearQuestionSets()
-        dataLoaderService.loadQuestionSetXML(servletContext.getResource('metadata/question-set-1.xml').text)
-        dataLoaderService.loadQuestionSetXML(servletContext.getResource('metadata/question-set-2.xml').text)
+        dataLoaderService.loadQuestionSet(1)
+        dataLoaderService.loadQuestionSet(2)
     }
 
     def destroy = {
