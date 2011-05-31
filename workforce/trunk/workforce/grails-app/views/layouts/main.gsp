@@ -44,10 +44,10 @@
             <g:set var="username" value="${wf.loggedInName()}"/>
             <g:if test="${username}">
                 <span id="logged-in">Logged in as ${username}</span>
-                <a href="http://auth.ala.org.au/cas/logout?url=${ConfigurationHolder.config.security.cas.serverName}/${ConfigurationHolder.config.security.cas.contextPath}">Logout</a>
+                <a href="${ConfigurationHolder.config.security.cas.logoutUrl}?url=${ConfigurationHolder.config.security.cas.serverName}${ConfigurationHolder.config.security.cas.contextPath}/">Logout</a>
             </g:if>
             <g:else>
-                <a href="http://auth.ala.org.au/cas/login?service=${ConfigurationHolder.config.security.cas.serverName}/${ConfigurationHolder.config.security.cas.contextPath}">Login</a>
+                <a href="${ConfigurationHolder.config.security.cas.loginUrl}?service=${ConfigurationHolder.config.security.cas.serverName}${ConfigurationHolder.config.security.cas.contextPath}/">Login</a>
             </g:else>
         </div>
         <g:layoutBody />
