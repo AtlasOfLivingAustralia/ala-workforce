@@ -50,8 +50,7 @@
     </pageSequence>
 
     <!-- Q1 -->
-    <question heightHint="11"
-            instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
+    <question instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
         <question>
             <text>Is curatorial and/or taxonomic work your major responsibility in your organisation?</text>
             <shortText>Curatorial and/or taxonomic work your major responsibility</shortText>
@@ -106,7 +105,7 @@
     </question>
 
     <!-- Q2 -->
-    <question heightHint="14">
+    <question>
         <text>Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?</text>
         <shortText>Organisation and location</shortText>
         <question>
@@ -233,7 +232,7 @@
     </question>
 
     <!-- Q3 -->
-    <question heightHint="7">
+    <question>
         <text>What is your employment status at this organisation?</text>
         <shortText>Employment status</shortText>
         <question type="pick" datatype="text">
@@ -261,7 +260,7 @@
     </question>
 
     <!-- Q4 -->
-    <question heightHint="1">
+    <question>
         <text>In your position, how many hours per week do you work on average?</text>
         <shortText>Hours per week worked</shortText>
         <answer type="number" required="true">
@@ -274,7 +273,7 @@
     </question>
 
     <!-- Q5 -->
-    <question type="range" heightHint="5">
+    <question type="range">
         <text>How long have you been working in the field of taxonomy?</text>
         <shortText>Years in taxonomy</shortText>
         <answer type="range" dataType="numberRange" required="true">
@@ -290,14 +289,14 @@
     </question>
 
     <!-- Q6 -->
-    <question heightHint="1">
+    <question>
         <text>And do you intend to be working in this field in 12 months time?</text>
         <shortText>Working in taxonomy in 12 months</shortText>
         <answer type='bool' required="true"/>
     </question>
 
     <!-- Q7 -->
-    <question heightHint="6">
+    <question>
         <text>And thinking about your longer-term future, how likely is it that you will continue your career in taxonomy?</text>
         <shortText>Likelihood of continuing in taxonomy</shortText>
         <question type="pick" datatype="text">
@@ -316,7 +315,7 @@
     </question>
 
     <!-- Q8 -->
-    <question heightHint="5">
+    <question>
         <text>How many days of taxonomic field-work have you undertaken in the last two calendar years and how were they funded?</text>
         <shortText>Days of taxonomic field-work</shortText>
         <question type="matrix" defaultDataType="number" defaultAnswerType="number" >
@@ -514,7 +513,7 @@
     </question>
 
     <!-- Q11 -->
-    <question heightHint="3">
+    <question>
         <text>Please identify the groups you work on, if possible at Family level, if not then at Order level.</text>
         <shortText>Taxonomic groups</shortText>
         <question>
@@ -532,7 +531,7 @@
     </question>
 
     <!-- Q12 -->
-    <question heightHint="10">
+    <question>
         <text>Below is a list of things that previous survey respondents have identified as being important to increasing their taxonomic productivity. Thinking about your current position please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase your productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
         <shortText>Importance for personal taxonomic productivity</shortText>
         <question type="rank" defaultAnswerType="rank" defaultDataType="rank">
@@ -556,7 +555,7 @@
     </question>
 
     <!-- Q13 -->
-    <question heightHint="10">
+    <question>
         <text>As for the previous question, but this time please consider the answer in terms of the needs for taxonomy in Australia (rather than for you personally). Please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase Australia's taxonomic productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
         <shortText>Importance for Australian taxonomic productivity</shortText>
         <question type="rank" defaultAnswerType="rank" defaultDataType="rank">
@@ -580,7 +579,7 @@
     </question>
 
     <!-- Q14 -->
-    <question heightHint="12">
+    <question>
         <text>Below is a list of things related to the costs and opportunities in Taxonomy. Please indicate how much you think these issues impact on the taxonomic workforce.&lt;br/&gt;Do they impact &lt;strong&gt;a lot&lt;/strong&gt;, &lt;strong&gt;a little&lt;/strong&gt; or &lt;strong&gt;not at all&lt;/strong&gt;?</text>
         <shortText>Impact on the taxonomic workforce</shortText>
         <question type="matrix">
@@ -612,7 +611,7 @@
     </question>
 
     <!-- Q15 -->
-    <question heightHint="9">
+    <question>
         <text>What was the highest level you achieved in your formal education?</text>
         <shortText>Highest level of formal education</shortText>
         <question type="pick">
@@ -644,7 +643,7 @@
     </question>
 
     <!-- Q16 -->
-    <question heightHint="1">
+    <question>
         <text>Are you male or female?</text>
         <shortText>Gender</shortText>
         <answer type="radio" required="true">
@@ -656,7 +655,7 @@
     </question>
 
     <!-- Q17 -->
-    <question heightHint="5" type="range">
+    <question type="range">
         <text>Which of the following age categories are you in?</text>
         <shortText>Age range</shortText>
         <answer type="range" dataType="numberRange" required="true">
@@ -672,7 +671,7 @@
     </question>
 
     <!-- Q18 -->
-    <question heightHint="9" type="range">
+    <question type="range">
         <text>Which of the following best describes your approximate annual income before tax?</text>
         <shortText>Income range</shortText>
         <answer type="range" dataType="numberRange" required="true">
