@@ -11,7 +11,7 @@ class Question {
     int level1                      // main question number as in Q1, Q2, etc
     int level2                      // question number within main question
     int level3                      // sub-question within a question
-    int hash                        // an integer that is a unique hash of the set and levels - uniquely identifies this question
+    String guid                     // a unique identifier of the question - independent of question set or question hierarchy
     String label                    // type of displayed label, eg none, 3, b), iii)
     String qtext                    // the question text
     String subtext                  // sub-heading to the question text
@@ -29,19 +29,18 @@ class Question {
     boolean required                // the answer (if there is one) may not be blank
     String requiredIf               // must have an answer if the condition is true
     String validation               // cross-question validation
-    int heightHint                  // an estimate of the laid-out height of the question for pagination (this is
-                                    // temporary as this will eventually be calculated)
 
     static constraints = {
         level1(min:0)
         level2(min:0)
         level3(min:0)
+        guid(nullable:true, maxSize:36)
         label(nullable:true)
         qtext(nullable:true, maxSize:2048)
         subtext(nullable:true, maxSize:2048)
         shorttext(nullable:true, maxSize:2048)
         qtype(nullable:false)
-        qdata(nullable:true, maxSize:2048)
+        qdata(nullable:true, maxSize:20000)
         instruction(nullable:true, maxSize:2048)
         instructionPosition(nullable:true, maxSize:48)
         atype(nullable:false)
@@ -56,16 +55,7 @@ class Question {
 
     // make the hash an index
     static mapping = {
-        hash index:'hash_idx'
+        guid index:'guid_idx'
     }
 
-    // calculate the hash before initial save
-    def beforeInsert() {
-        hash = makeHash()
-    }
-
-    // make a unique integer identifier from the set and levels values
-    int makeHash() {
-        return qset * 16777216 + level1 * 65536 + level2 * 256 + level3
-    }
 }
