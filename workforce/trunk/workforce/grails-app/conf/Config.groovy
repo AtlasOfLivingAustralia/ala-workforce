@@ -19,8 +19,17 @@ if (!security.cas.urlPattern) {
 if (!security.cas.urlExclusionPattern) {
     security.cas.urlExclusionPattern = "/images.*,/css.*,/js.*"
 }
+if (!security.cas.authenticateOnlyIfLoggedInPattern) {
+    security.cas.authenticateOnlyIfLoggedInPattern = "/"
+}
+if (!security.cas.casServerName) {
+    security.cas.casServerName = "https://auth.ala.org.au"
+}
 if (!security.cas.loginUrl) {
-    security.cas.loginUrl = "https://auth.ala.org.au/cas/login"
+    security.cas.loginUrl = "${security.cas.casServerName}/cas/login"
+}
+if (!security.cas.logoutUrl) {
+    security.cas.logoutUrl = "${security.cas.casServerName}/cas/logout"
 }
 if (!security.cas.contextPath) {
     security.cas.contextPath = "/workforce" //"""${appName}"
@@ -82,8 +91,8 @@ environments {
         security.cas.serverName = "http://woodfired.ala.org.au:8090"
     }
     testserver {
-        grails.serverURL = "http://ala-testweb1.vm.csiro.au:8080/${appName}"
-        security.cas.serverName = "http://ala-testweb1.vm.csiro.au:8080"
+        grails.serverURL = "http://ala-testweb1.vm.csiro.au/${appName}"
+        security.cas.serverName = "http://ala-testweb1.vm.csiro.au"
     }
     test {
         grails.serverURL = "http://localhost:8090/${appName}"
@@ -108,6 +117,7 @@ log4j = {
            'org.codehaus.groovy.grails.commons', // core / classloading
            'org.codehaus.groovy.grails.plugins', // plugins
            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+           'org.apache.commons',
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
