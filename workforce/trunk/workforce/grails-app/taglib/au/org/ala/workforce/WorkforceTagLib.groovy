@@ -164,11 +164,16 @@ class WorkforceTagLib {
         if (model.atype == AnswerType.none) {
             // there is no answer but there may be text
             if (model.qtext) {
-                // question text should span q & a columns
+                // question text should span q & a columns only if there are answers
                 firstCellRowSpan++
+                int colSpan = firstCellRowSpan == 1 ? 1 : 2
                 out << "<tr>"
                     out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                    out << "<td colspan=2>${getQuestionTextForReport(model)}</td>"
+                    if (colSpan == 2) {
+                        out << "<td colspan='${colSpan}'>${getQuestionTextForReport(model)}</td>"
+                    } else {
+                        out << "<td>${getQuestionTextForReport(model)}</td><td/>"
+                    }
                 out << "</tr>"
 
             } else {
@@ -370,7 +375,7 @@ class WorkforceTagLib {
                 }
                 if (items.size() == 2) {
                     // treat as boolean with arbitrary labels
-                    result += items.join()
+                    result += items.join
                 }
                 else {
                     result += layoutListOfItems(items, 7)
@@ -481,7 +486,7 @@ class WorkforceTagLib {
                 result += q.answerValueStr ?: ""
                 break
             case AnswerType.radio:
-                result += q.answerValueStr
+                result += q.answerValueStr ?: ""
                 break
             case AnswerType.text:
                 result += q.answerValueStr
@@ -493,10 +498,12 @@ class WorkforceTagLib {
                 result += q.answerValueStr + "%"
                 break
             case AnswerType.range:
-                if (q.answerValueStr.endsWith("-")) {
-                    result += "${q.answerValueStr.replace('-', '')} and over"
-                } else {
-                    result += q.answerValueStr
+                if (q.answerValueStr) {
+                    if (q.answerValueStr.endsWith("-")) {
+                        result += "${q.answerValueStr.replace('-', '')} and over"
+                    } else {
+                        result += q.answerValueStr
+                    }
                 }
                 break
             case AnswerType.rank:
@@ -634,7 +641,6 @@ class WorkforceTagLib {
     private Map layoutRadioMatrix(QuestionModel q) {
         def text = q.qtext ?: ""
 
-        def rows = q.qdata.rows
         def cols = q.qdata.cols
 
         String content = "<table class='shy'>"
@@ -978,6 +984,26 @@ class WorkforceTagLib {
         if (!AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
             out << body()
         }
+    }
+
+    def reportNavigation = { attrs ->
+        User user = attrs.user
+        def users = attrs.users
+        def userIndex = users.findIndexOf { user }
+        def result = ''
+
+        if (userIndex != -1) {
+            result = "<div style='float: right'>"
+            if (userIndex > 0) {
+                result += "<span><a href='${resource(file:'/report/'+ params.set +'/user/' + users[userIndex-1].userid)}'>prev</a></span>"
+            }
+            if (userIndex < users.size() - 1) {
+                result += "<span style='padding-left: 20px'><a href='${resource(file:'/report/'+ params.set +'/user/' + users[userIndex+1].userid)}'>next</a></span>"
+            }
+            result += "</div>"
+        }
+
+        out << result
     }
 
     private boolean areAnswers(QuestionModel q) {
