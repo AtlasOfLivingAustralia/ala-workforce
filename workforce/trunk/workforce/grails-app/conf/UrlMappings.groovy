@@ -10,7 +10,6 @@ class UrlMappings {
         "/set/$set/page/$page" (controller: 'question', action: 'page')
 
         "/question/load/xml/$set" (controller: 'question', action: 'loadQuestionSetXML')
-        "/question/$set/$id" (controller:'question', action:'singleQuestion')
 
         "/report/$set/user/$id" (controller: 'report', action: 'answers')
         "/report/$set/q/$qid/user/$id" (controller: 'report', action: 'singleQuestionAnswer')
