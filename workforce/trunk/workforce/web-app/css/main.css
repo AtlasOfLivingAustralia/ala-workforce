@@ -408,8 +408,12 @@ div.login-info {
 
 span.navButton {
     font-size: 16px;
-    padding: 0 120px 0 20px;
     margin-bottom: 12px;
+    color: #666;
+}
+
+div.nav span.navbutton:first-child {
+    padding-left: 20px;
 }
 
 .navButton a {
@@ -488,5 +492,9 @@ ul.respondents li {
 ul.respondents li a {
     font-weight: normal;
     color: #333;
+}
 
+#breadcrumb a {
+    background:url(../images/abrsskin/breadcrumb-separator.png) right center no-repeat;
+    padding-right:20px;
 }
