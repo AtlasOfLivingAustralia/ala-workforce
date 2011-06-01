@@ -150,6 +150,22 @@ class QuestionModel {
                                 valid = false
                                 errorMessage = "A percentage must be between 0 and 100. Value is ${val}"
                             }
+                            if (adata?.has('min')) {
+                                println "min = ${adata.min}"
+                                def min = adata.min
+                                if (val < min) {
+                                    valid = false
+                                    errorMessage = "Number must not be less than ${min}"
+                                }
+                            }
+                            if (adata?.has('max')) {
+                                println "max = ${adata.max}"
+                                def max = adata.max
+                                if (val > max) {
+                                    valid = false
+                                    errorMessage = "Number must not be greater than ${max}"
+                                }
+                            }
                         }
                         else {
                             valid = false
