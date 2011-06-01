@@ -20,6 +20,8 @@ class QuestionController {
                 params.page = params.qset.findPageByQuestionNumber(params.question.toInteger()).pageNumber
             }
         }
+        // this is called to make sure we have a full record of the user in the user store
+        if (request.getUserPrincipal()) { User.getUser(request.getUserPrincipal())}
     }
 
     def scaffold = true;
