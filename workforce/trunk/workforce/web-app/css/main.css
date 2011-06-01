@@ -73,6 +73,11 @@ input:focus, select:focus, textarea:focus {
     /*text-align: center;*/
 }
 
+.nav-bottom {
+    padding-top: 10px;
+    margin-left: 33px;
+}
+
 .menuButton {
     font-size: 10px;
     padding: 0 5px;
