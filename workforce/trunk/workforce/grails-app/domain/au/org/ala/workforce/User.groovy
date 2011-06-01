@@ -4,6 +4,8 @@ class User {
 
     String name
     int userid
+    String firstName
+    String lastName
 
     static mapping = {
         userid index:'userid_idx'
@@ -11,6 +13,8 @@ class User {
     
     static constraints = {
         userid(unique: true)
+        firstName(nullable:true)
+        lastName(nullable:true)
     }
 
     static transients = ['user']
@@ -25,6 +29,8 @@ class User {
         User u = User.findByUserid(userPrincipal.attributes.userid as int)
         if (!u) {
             u = new User(userid: userPrincipal.attributes.userid as int, name: userPrincipal.name)
+            u.firstName = userPrincipal.attributes.firstname ?: null
+            u.lastName = userPrincipal.attributes.lastname ?: null
             u.save(flush:true)
         }
         return u
