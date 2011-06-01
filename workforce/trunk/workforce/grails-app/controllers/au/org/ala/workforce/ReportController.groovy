@@ -15,6 +15,7 @@ class ReportController {
         def qset = QuestionSet.findBySetId(setId)
         def userid = params.id as int ?: 1
         def user = User.findByUserid(userid)
+        def users = User.findAll()
 
         def questions = Question.findAllByLevel2AndQset(0, setId)
 
@@ -25,7 +26,7 @@ class ReportController {
         assert questionList
 
         // render the page
-        [qset: qset, questions: questionList, user: user]
+        [qset: qset, questions: questionList, users: users, user: user]
     }
 
     /**
