@@ -438,18 +438,12 @@ class WorkforceTagLib {
                 break
             case AnswerType.externalRef:
                 if (q.adata =~ 'state') {
-                    def states = ['Select a state or territory']
-                    states.addAll(ListLoaderService.states)
-                    println "state answer = ${q.answerValueStr}"
-                    states.each {
-                        if (it == q.answerValueStr) { println "selected"}
-                    }
-                    result += select(name: q.ident(), from: states, value: q.answerValueStr)
+                    result += select(name: q.ident(), from: ListLoaderService.states, value: q.answerValueStr,
+                            noSelection: ['':'Select a state or territory'])
                 }
                 if (q.adata =~ 'university') {
-                    def unis = ['Select a university']
-                    unis.addAll(ListLoaderService.universities)
-                    result += select(name: q.ident(), from: unis, value: q.answerValueStr)
+                    result += select(name: q.ident(), from: ListLoaderService.universities, value: q.answerValueStr,
+                            noSelection: ['':'Select a university'])
                 }
                 break
         }
