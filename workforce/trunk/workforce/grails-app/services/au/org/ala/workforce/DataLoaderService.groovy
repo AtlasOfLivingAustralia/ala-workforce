@@ -48,17 +48,17 @@ class DataLoaderService implements ApplicationContextAware {
     def loadQuestionSet(set) {
         // first try external file with guids
         def qsetFile = new File("/data/workforce/metadata/question-set-with-guids-${set}.xml")
-        if (!qsetFile) {
+        if (!qsetFile.exists()) {
             // second try external file without guids
             qsetFile = new File("/data/workforce/metadata/question-${set}.xml")
         }
-        if (!qsetFile) {
+        if (!qsetFile.exists()) {
             // third try internal file with guids
-            qsetFile = applicationContext.getResource("metadata/question-set-with-guids-${set}.xml")
+            qsetFile = applicationContext.getResource("metadata/question-set-with-guids-${set}.xml").getFile()
         }
-        if (!qsetFile) {
+        if (!qsetFile.exists()) {
             // fourth try internal file without guids
-            qsetFile = applicationContext.getResource("metadata/question-set-${set}.xml")
+            qsetFile = applicationContext.getResource("metadata/question-set-${set}.xml").getFile()
         }
         assert qsetFile : "question set definition not found"
 
