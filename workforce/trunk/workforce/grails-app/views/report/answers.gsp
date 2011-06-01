@@ -14,9 +14,9 @@
             <div class="message">${flash.message}</div>
             </g:if>
             <g:if test="${user}">
-                <p>Answers for ${user.name} <span style="padding-left:50px;">
-                    <g:link action="answers" params="${[set:1,id:31]}">Next>></g:link></span></p>
+                <div style='float: left; padding: 25px 0px'>Answers for ${user.name}</div>
             </g:if>
+            <wf:reportNavigation users= "${users}" user="${user}"/>
             <div class="list">
                 <table class="answers">
                     <colgroup><col width="4%"><col width="50%"><col width="46%"></colgroup>
