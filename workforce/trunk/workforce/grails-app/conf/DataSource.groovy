@@ -1,6 +1,6 @@
 dataSource {
     pooled = true
-    driverClassName = "org.hsqldb.jdbcDriver"
+    driverClassName = "com.mysql.jdbc.Driver"
     username = "wfadmin"
     password = "monga"
 }
@@ -19,6 +19,7 @@ environments {
     }
     test {
         dataSource {
+            driverClassName = "org.hsqldb.jdbcDriver"
             dbCreate = "update"
             url = "jdbc:hsqldb:mem:testDb"
         }
@@ -34,7 +35,7 @@ environments {
     production {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:hsqldb:file:prodDb;shutdown=true"
+            url = "jdbc:mysql://localhost:3306/workforce?autoreconnect=true"
         }
     }
 }
