@@ -7,11 +7,13 @@ class QuestionSet {
 
     int setId                       // the number of the set (integer identifier)
     String title                    // name of the set
+    String shortName                // short display name for reports, breadcrumb trails, etc
     String pageSequence             // pagination of questions eg [{from:1,to:1},{from:2,to:6}]
 
     static constraints = {
         setId(unique:true)
         pageSequence(nullable:true)
+        shortName(nullable:true)
     }
 
     static transients = ['paginationData','page','totalPages']

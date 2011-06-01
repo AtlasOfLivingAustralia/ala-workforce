@@ -183,6 +183,7 @@ class DataLoaderService implements ApplicationContextAware {
     private int loadSetMetadata(qset) {
         int set = qset.@set.text().toInteger()
         def title = qset.title.text()
+        def shortName = qset.shortName.text()
         def pageSequence = []
         if (qset.pageSequence.text()) {
             qset.pageSequence.page.each { page ->
@@ -195,7 +196,7 @@ class DataLoaderService implements ApplicationContextAware {
                 }
             }
         }
-        def qs = new QuestionSet(setId:set, title:title, pageSequence:(pageSequence as JSON).toString())
+        def qs = new QuestionSet(setId:set, title:title, shortName: shortName, pageSequence:(pageSequence as JSON).toString())
         if (!qs.save()) {
             qs.errors.each { println it }
         }

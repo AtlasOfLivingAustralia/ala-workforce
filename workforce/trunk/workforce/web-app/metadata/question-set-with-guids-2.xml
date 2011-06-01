@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <questionSet set="2">
   <title>Resources of Australian Natural Science Collections</title>
+  <shortName>Institutional Survey</shortName>
   <pageSequence>
     <page>1-2</page>
     <page>3-3</page>
