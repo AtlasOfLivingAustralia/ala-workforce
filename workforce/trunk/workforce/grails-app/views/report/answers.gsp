@@ -6,15 +6,22 @@
         <title>${qset.title}</title>
     </head>
     <body>
-        <div class="nav">
-            <span class="navButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
+        <div class="nav" id="breadcrumb">
+            <span class="navButton"><a class="home" href="${createLink(uri: '/admin')}"><g:message code="default.home.label"/></a></span>
+            <span class="navButton"><a href="${createLink(uri: '/admin/set/' + qset.setId)}">${qset.shortName}</a></span>
+            <span class="navButton">${user.name}</span>
         </div>
         <div class="body">
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
             <g:if test="${user}">
-                <div style='float: left; padding: 25px 0px'>Answers for ${user.name}</div>
+                <g:if test="${user.firstName && user.lastName}">
+                    <div style='float: left; padding: 25px 0px'>Answers for ${user.firstName} ${user.lastName}</div>
+                </g:if>
+                <g:else>
+                    <div style='float: left; padding: 25px 0px'>Answers for ${user.name}</div>
+                </g:else>
                 <wf:reportNavigation users= "${users}" user="${user}"/>
             </g:if>
             <div class="list">
