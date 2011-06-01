@@ -197,7 +197,7 @@ class QuestionModel {
                     // extract the optional label
                     def optionalLabel = ""
                     def opt = requiredIf.tokenize('|')
-                    if (opt.size > 1) {
+                    if (opt.size() > 1) {
                         optionalLabel = opt[1]
                     }
                     // see if condition is satisfied
