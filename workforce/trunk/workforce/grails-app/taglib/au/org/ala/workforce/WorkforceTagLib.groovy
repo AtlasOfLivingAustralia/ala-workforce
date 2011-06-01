@@ -512,15 +512,14 @@ class WorkforceTagLib {
                     } else {
                         result += q.answerValueStr
                     }
-                }
-                break
-            case AnswerType.rank:
-                result += q.answerValueStr
-                break
-            case AnswerType.externalRef:
-                result += q.answerValueStr
-                break
-        }
+                    break
+                case AnswerType.rank:
+                    result += q.answerValueStr
+                    break
+                case AnswerType.externalRef:
+                    result += q.answerValueStr
+                    break
+            }
 
             return result + "</span>"
         } else {
