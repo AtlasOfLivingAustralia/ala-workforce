@@ -166,11 +166,10 @@ class WorkforceTagLib {
             if (model.qtext) {
                 // question text should span q & a columns only if there are answers
                 firstCellRowSpan++
-                int colSpan = firstCellRowSpan == 1 ? 1 : 2
                 out << "<tr>"
                     out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-                    if (colSpan == 2) {
-                        out << "<td colspan='${colSpan}'>${getQuestionTextForReport(model)}</td>"
+                    if (firstCellRowSpan > 1) {
+                        out << "<td colspan='2'>${getQuestionTextForReport(model)}</td>"
                     } else {
                         out << "<td>${getQuestionTextForReport(model)}</td><td/>"
                     }
@@ -480,34 +479,34 @@ class WorkforceTagLib {
     }
 
     private String layoutAnswer(QuestionModel q) {
-        String result = "<span class='answer'>"
-        switch (q.atype) {
-            case AnswerType.bool:
-                if (q.answerValueStr?.toLowerCase() in ['yes', 'true', 'on']) {
-                    result += "Yes"
-                } else if (q.answerValueStr?.toLowerCase() in ['no', 'false']) {
-                    result += "No"
-                }
-                break
-            case AnswerType.none:
-                break
-            case AnswerType.number:
-                result += q.answerValueStr ?: ""
-                break
-            case AnswerType.radio:
-                result += q.answerValueStr ?: ""
-                break
-            case AnswerType.text:
-                result += q.answerValueStr
-                break
-            case AnswerType.textarea:
-                result += q.answerValueStr
-                break
-            case AnswerType.percent:
-                result += q.answerValueStr + "%"
-                break
-            case AnswerType.range:
-                if (q.answerValueStr) {
+        if (q.answerValueStr) {
+            String result = "<span class='answer'>"
+            switch (q.atype) {
+                case AnswerType.bool:
+                    if (q.answerValueStr?.toLowerCase() in ['yes', 'true', 'on']) {
+                        result += "Yes"
+                    } else if (q.answerValueStr?.toLowerCase() in ['no', 'false']) {
+                        result += "No"
+                    }
+                    break
+                case AnswerType.none:
+                    break
+                case AnswerType.number:
+                    result += q.answerValueStr
+                    break
+                case AnswerType.radio:
+                    result += q.answerValueStr
+                    break
+                case AnswerType.text:
+                    result += q.answerValueStr
+                    break
+                case AnswerType.textarea:
+                    result += q.answerValueStr
+                    break
+                case AnswerType.percent:
+                    result += q.answerValueStr + "%"
+                    break
+                case AnswerType.range:
                     if (q.answerValueStr.endsWith("-")) {
                         result += "${q.answerValueStr.replace('-', '')} and over"
                     } else {
@@ -523,7 +522,10 @@ class WorkforceTagLib {
                 break
         }
 
-        return result + "</span>"
+            return result + "</span>"
+        } else {
+            return ""
+        }
     }
 
     /*
