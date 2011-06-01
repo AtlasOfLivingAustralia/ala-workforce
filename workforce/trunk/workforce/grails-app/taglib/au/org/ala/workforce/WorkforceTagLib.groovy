@@ -997,11 +997,11 @@ class WorkforceTagLib {
     def reportNavigation = { attrs ->
         User user = attrs.user
         def users = attrs.users
-        def userIndex = users.findIndexOf { user }
+        def userIndex = users.findIndexOf{ it == user }
         def result = ''
 
         if (userIndex != -1) {
-            result = "<div style='float: right'>"
+            result = "<div style='float: right; padding: 25px 0px'>"
             if (userIndex > 0) {
                 result += "<span><a href='${resource(file:'/report/'+ params.set +'/user/' + users[userIndex-1].userid)}'>prev</a></span>"
             }
