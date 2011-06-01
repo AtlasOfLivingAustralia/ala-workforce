@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/workforce.iml" filepath="$PROJECT_DIR$/workforce.iml" />
       <module fileurl="file://$PROJECT_DIR$/workforce-grailsPlugins.iml" filepath="$PROJECT_DIR$/workforce-grailsPlugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/workforce-grailsPlugins.iml" filepath="$PROJECT_DIR$/workforce-grailsPlugins.iml" />
     </modules>
   </component>
 </project>
