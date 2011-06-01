@@ -339,8 +339,8 @@ class DataLoaderService implements ApplicationContextAware {
             q.qtype = QuestionType.none
             q.datatype = AnswerDataType.text//valueOf(defaults.defaultDataType) as AnswerDataType
             q.atype = AnswerType.text//valueOf(defaults.defaultAnswerType) as AnswerType
-            q.required = true //TODO for now
             q.qtext = row
+            q.required = !(q.qtext.toLowerCase() =~ 'other') //TODO for now
             q.guid = guids[guidCounter++]
 
             q.save()
