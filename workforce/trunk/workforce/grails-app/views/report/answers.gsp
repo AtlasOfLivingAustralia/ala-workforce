@@ -15,8 +15,8 @@
             </g:if>
             <g:if test="${user}">
                 <div style='float: left; padding: 25px 0px'>Answers for ${user.name}</div>
+                <wf:reportNavigation users= "${users}" user="${user}"/>
             </g:if>
-            <wf:reportNavigation users= "${users}" user="${user}"/>
             <div class="list">
                 <table class="answers">
                     <colgroup><col width="4%"><col width="50%"><col width="46%"></colgroup>
@@ -29,6 +29,7 @@
                     </tbody>
                 </table>
             </div>
+            <wf:reportNavigation users= "${users}" user="${user}"/>
         </div>
     </body>
 </html>
