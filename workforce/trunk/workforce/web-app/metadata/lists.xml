@@ -1,0 +1,53 @@
+<lists>
+    <statesList>
+        <item>Australian Capital Territory</item>
+        <item>New South Wales</item>
+        <item>Queensland</item>
+        <item>Northern Territory</item>
+        <item>Western Australia</item>
+        <item>South Australia</item>
+        <item>Tasmania</item>
+        <item>Victoria</item>
+    </statesList>
+    <universities>
+        <item>Australian Catholic University</item>
+        <item>Australian National University</item>
+        <item>Bond University</item>
+        <item>Central Queensland University</item>
+        <item>Charles Darwin University</item>
+        <item>Charles Sturt University</item>
+        <item>Curtin University of Technology</item>
+        <item>Deakin University</item>
+        <item>Edith Cowan University</item>
+        <item>Flinders University</item>
+        <item>Griffith University</item>
+        <item>James Cook University</item>
+        <item>La Trobe University</item>
+        <item>Macquarie University</item>
+        <item>Monash University</item>
+        <item>Murdoch University</item>
+        <item>Queensland University of Technology</item>
+        <item>RMIT University</item>
+        <item>Southern Cross University</item>
+        <item>Swinburne University of Technology</item>
+        <item>University of Adelaide</item>
+        <item>University of Ballarat</item>
+        <item>University of Canberra</item>
+        <item>University of Melbourne</item>
+        <item>University of New England</item>
+        <item>University of New South Wales</item>
+        <item>University of Newcastle</item>
+        <item>University of Notre Dame Australia - The</item>
+        <item>University of Queensland</item>
+        <item>University of South Australia</item>
+        <item>University of Southern Queensland</item>
+        <item>University of Sydney</item>
+        <item>University of Tasmania</item>
+        <item>University of Technology Sydney</item>
+        <item>University of the Sunshine Coast</item>
+        <item>University of Western Australia</item>
+        <item>University of Western Sydney</item>
+        <item>University of Wollongong</item>
+        <item>Victoria University</item>
+    </universities>
+</lists>

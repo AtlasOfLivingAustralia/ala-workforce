@@ -7,7 +7,7 @@ class WorkforceTagLib {
 
     static namespace = 'wf'
 
-    def modelLoaderService
+    def modelLoaderService, listLoaderService
 
     /**
      * Return html for a single question.
@@ -345,8 +345,6 @@ class WorkforceTagLib {
         return result
     }
 
-    static statesList = ['Select a state or territory', 'Australian Capital Territory', 'New South Wales', 'Queensland', 'Northern Territory', 'Western Australia', 'South Australia', 'Tasmania', 'Victoria']
-
     private String layoutWidget(QuestionModel q) {
         String result = ''
 
@@ -375,7 +373,7 @@ class WorkforceTagLib {
                 }
                 if (items.size() == 2) {
                     // treat as boolean with arbitrary labels
-                    result += items.join
+                    result += items.join()
                 }
                 else {
                     result += layoutListOfItems(items, 7)
@@ -441,7 +439,18 @@ class WorkforceTagLib {
                 break
             case AnswerType.externalRef:
                 if (q.adata =~ 'state') {
-                    result += select(name: q.ident(), from: statesList, value: q.answerValueStr)
+                    def states = ['Select a state or territory']
+                    states.addAll(ListLoaderService.states)
+                    println "state answer = ${q.answerValueStr}"
+                    states.each {
+                        if (it == q.answerValueStr) { println "selected"}
+                    }
+                    result += select(name: q.ident(), from: states, value: q.answerValueStr)
+                }
+                if (q.adata =~ 'university') {
+                    def unis = ['Select a university']
+                    unis.addAll(ListLoaderService.universities)
+                    result += select(name: q.ident(), from: unis, value: q.answerValueStr)
                 }
                 break
         }
@@ -510,9 +519,7 @@ class WorkforceTagLib {
                 result += q.answerValueStr
                 break
             case AnswerType.externalRef:
-                if (q.adata =~ 'state') {
-                    result += q.answerValueStr
-                }
+                result += q.answerValueStr
                 break
         }
 
