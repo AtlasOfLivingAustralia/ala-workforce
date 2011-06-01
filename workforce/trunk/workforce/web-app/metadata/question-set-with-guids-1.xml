@@ -65,7 +65,7 @@
       </answer>
     </question>
   </question>
-  <question heightHint="14">
+  <question instruction="If you work for an non-Australian institution please tick 'Other' and enter your country, state and name of institution. ">
     <text>Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?</text>
     <shortText>Organisation and location</shortText>
     <question id="fd7d56cf-ae3d-4673-a1b5-1ad299f62a53">
@@ -106,10 +106,12 @@
           <data>state</data>
         </answer>
       </question>
-      <question id="426755ba-ed3e-4799-ae57-7b9318d281c1">
+      <question id="426755ba-ed3e-4799-ae57-7b9318d281c1" type="pick">
         <text>Name</text>
-        <displayHint>45</displayHint>
-        <answer type="text"/>
+        <displayHint>dropdown</displayHint>
+        <answer type="externalRef">
+          <data>university</data>
+        </answer>
       </question>
       <question id="a4437690-423f-4693-8a06-eb8f025cce1b">
         <text>Dept</text>
@@ -176,12 +178,15 @@
       <displayHint>checkbox</displayHint>
       <layoutHint>20/80</layoutHint>
       <answer type="bool"/>
-      <question id="237bc5f3-7677-4a6a-a27a-f775587aae69" type="pick">
+      <question>
+        <text>Country</text>
+        <displayHint>45</displayHint>
+        <answer type="text"/>
+      </question>
+      <question id="237bc5f3-7677-4a6a-a27a-f775587aae69">
         <text>State</text>
-        <displayHint>dropdown</displayHint>
-        <answer type="externalRef">
-          <data>state</data>
-        </answer>
+        <displayHint>45</displayHint>
+        <answer type="text"/>
       </question>
       <question id="9564144c-a6e6-47b8-820b-3b6382b8a0b2">
         <text>Please specify:</text>
