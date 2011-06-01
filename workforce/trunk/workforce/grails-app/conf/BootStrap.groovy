@@ -1,8 +1,9 @@
 class BootStrap {
 
-    def dataLoaderService
+    def dataLoaderService, listLoaderService
 
     def init = { servletContext ->
+        listLoaderService.load()
         dataLoaderService.clearQuestionSets()
         dataLoaderService.loadQuestionSet(1)
         dataLoaderService.loadQuestionSet(2)
