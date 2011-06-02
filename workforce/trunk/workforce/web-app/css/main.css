@@ -196,7 +196,7 @@ table.questions {
     border-spacing: 0;
     border-collapse: collapse;
     color: black;
-    background-color: #f2e796;
+    background-color: #f2ebbd;
     width: 880px;
 }
 
@@ -416,10 +416,23 @@ div.nav span.navbutton:first-child {
     padding-left: 20px;
 }
 
+input.prev {
+    padding-left: 120px;
+}
+
+input.prevBottom {
+    padding-left: 141px;
+}
+
 .navButton a {
     color: #dd8844;
     font-weight: normal;
     padding-bottom: 2px;
+}
+
+span.home a {
+    margin-bottom: 10px;
+    vertical-align: text-top;
 }
 
 input.navButton {
@@ -430,7 +443,6 @@ input.navButton {
     border: none;
     background-color: transparent;
     margin: 0;
-    padding: 0 2px 2px 2px;
     vertical-align: bottom;
 }
 
