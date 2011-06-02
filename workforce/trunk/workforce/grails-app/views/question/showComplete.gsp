@@ -21,13 +21,12 @@
           </div>
           </g:if>
 
-          <p>Thank you ${request.userPrincipal.attributes?.firstname}.
-            <g:link controller="report" action="answers" id="${user}" params="${[set: qset.setId]}">Click here review yours answers</g:link>
+          <p>Thank you for completing the survey.</p>
+          <p>You can still make changes to your answers if you wish.</p>
+          <p class="textLinks">
+            <g:link controller="report" action="answers" id="${user}" params="${[set: qset.setId]}">Click here to see a quick summary of your answers.</g:link><br/>
+            <g:link action="page" params="${[set: qset.setId, page: 1]}">Click here to change you answers.</g:link>
           </p>
-        </div>
-
-        <div class="go-buttons">
-            <a href="${ConfigurationHolder.config.grails.serverURL}"><img src="${resource(dir:'images/abrsskin',file:'home-button.png')}"/></a>
         </div>
 
     </body>
