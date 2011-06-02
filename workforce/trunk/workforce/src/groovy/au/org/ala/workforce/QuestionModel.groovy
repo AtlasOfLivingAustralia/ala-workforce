@@ -14,6 +14,7 @@ import java.text.ParseException
  */
 class QuestionModel {
 
+    int qset                        // a unique int that identifies the question qset
     int questionNumber              // the ordinal for this level of question
     int level                       // the level this question has in the hierarchy
     String guid                     // a unique identifier of the question - independent of question set or question hierarchy
@@ -76,7 +77,7 @@ class QuestionModel {
         
         // other properties
         ['atype','qtype','label','qtext','shorttext','instruction','alabel','displayHint','layoutHint','datatype',
-                'subtext','required','requiredIf','validation','instructionPosition','guid'].each {
+                'subtext','required','requiredIf','validation','instructionPosition','guid','qset'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
             }
@@ -479,7 +480,7 @@ class QuestionModel {
             saveAnswer = answerValueStr
         }
         if (saveAnswer) {
-            Answer a = new Answer(guid: guid, userId: userId, answerValue: answerValueStr)
+            Answer a = new Answer(guid: guid, userId: userId, setId: qset, answerValue: answerValueStr)
             return a.save()
         }
         return saveAnswer
