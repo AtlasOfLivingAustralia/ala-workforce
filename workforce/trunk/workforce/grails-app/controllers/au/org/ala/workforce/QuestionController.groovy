@@ -169,6 +169,9 @@ class QuestionController {
         }
 
         if (noErrors) {
+            // create completion event
+            Event.complete(userId(), params.qset.setId)
+            // show thank you page
             [qset: params.qset, user: userId()]
         }
     }
