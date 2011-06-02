@@ -264,12 +264,23 @@ table.answers label {
 }
 
 table.dashboard {
-    width: auto;
-    margin:25px 0px;
+    width: 90%;
+    margin-top: 20px;
+    border: none;
 }
 
-table.dashboard td {
+table.dashboard tr td:first-child {
+    width: 50%;
+}
+
+table.stats td {
     text-align: center;
+}
+
+table.stats {
+    width: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 /* LIST */
@@ -509,4 +520,33 @@ ul.respondents li a {
 #breadcrumb a {
     background:url(../images/abrsskin/breadcrumb-separator.png) right center no-repeat;
     padding-right:20px;
+}
+
+.textLinks a {
+    text-decoration: underline;
+}
+
+div.progress-container {
+  border: 1px solid #ccc;
+  width: 270px;
+  padding: 1px;
+  float: left;
+  background: white;
+}
+
+div.progress-container > div:first-child {
+  background-image:url(../images/abrsskin/bargraph.gif);
+  background-position:right center;
+  background-repeat:repeat-x;
+  border-right:#538e02 1px solid;
+  text-align: center;
+  color: white;
+  background-color: #00cc33;
+  height: 14px;
+  float: left;
+}
+
+div.progress-container > div {
+  background-color: #99ff99;
+  height: 14px
 }
