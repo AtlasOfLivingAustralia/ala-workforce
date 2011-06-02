@@ -30,7 +30,7 @@
             <p><a href="${createLink(uri: '/')}">Home</a></p>
         </g:if>
         <g:else>
-            <p><g:link controller="admin" action="index">Admin</g:link></p>
+            <p><g:link controller="admin" action="index">Dashboard</g:link></p>
         </g:else>
 
     </body>
