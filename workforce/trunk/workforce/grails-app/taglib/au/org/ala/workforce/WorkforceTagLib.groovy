@@ -990,7 +990,7 @@ class WorkforceTagLib {
 
     def reportNavigation = { attrs ->
         User user = attrs.user
-        def users = attrs.users
+        def users = User.list([sort:'name'])
         def userIndex = users.findIndexOf{ it == user }
         def result = ''
 
