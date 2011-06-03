@@ -11,15 +11,23 @@ class ReportController {
     def answers = {
 
         def questionList = []
-        def setId = params.set.toInteger() ?: 1
+
+        def setId = params.set as int ?: 1
         def qset = QuestionSet.findBySetId(setId)
-        def userid = params.id as int ?: User.list(sort:'name')[0].userid
+
+        def loggedInUserId = request.userPrincipal.attributes.userid as int
+        def userid = params.id as int ?: loggedInUserId
+        if (userid != loggedInUserId && !request.isUserInRole('ROLE_ABRS_ADMIN')) {
+            userid = loggedInUserId
+        }
         def user = User.findByUserid(userid)
 
         def questions = Question.findAllByLevel2AndQset(0, setId)
 
+        def year = DateUtil.getYear(params.year)
+
         questions.each {
-            questionList <<  modelLoaderService.loadQuestionWithAnswer(setId, it.level1, userid)
+            questionList <<  modelLoaderService.loadQuestionWithAnswer(setId, it.level1, userid, year)
         }
 
         assert questionList
@@ -28,6 +36,7 @@ class ReportController {
         [qset: qset, questions: questionList, user: user]
     }
 
+    
     /**
      * Display a single question with answers.
      *
@@ -37,10 +46,15 @@ class ReportController {
         def questionId = params.qid.toInteger() ?: 1;
         def setId = params.set.toInteger() ?: 1
         def qset = QuestionSet.findBySetId(setId)
-        def userid = params.id as int ?: 1
+        def loggedInUserId = request.userPrincipal.attributes.userid as int
+        def userid = params.id as int ?: loggedInUserId
+        if (userid != loggedInUserId && !request.isUserInRole('ROLE_ABRS_ADMIN')) {
+            userid = loggedInUserId
+        }
         def user = User.findByUserid(userid)
+        def year = DateUtil.getYear(params.year)
 
-        def question = modelLoaderService.loadQuestionWithAnswer(setId, questionId, userid)
+        def question = modelLoaderService.loadQuestionWithAnswer(setId, questionId, userid, year)
 
         // render the page
         render(view:'answer', model:[qset: qset, question: question, user: user])
