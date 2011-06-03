@@ -84,19 +84,19 @@ grails.spring.bean.packages = []
 environments {
     production {
         grails.serverURL = "http://abrs.ala.org.au:8080"
-        security.cas.serverName = "http://abrs.ala.org.au:8080"
+        security.cas.appServerName = "http://abrs.ala.org.au:8080"
     }
     development {
         grails.serverURL = "http://localhost:8090/${appName}"
-        security.cas.serverName = "http://woodfired.ala.org.au:8090"
+        security.cas.appServerName = "http://woodfired.ala.org.au:8090"
     }
     testserver {
         grails.serverURL = "http://ala-testweb1.vm.csiro.au/${appName}"
-        security.cas.serverName = "http://ala-testweb1.vm.csiro.au"
+        security.cas.appServerName = "http://ala-testweb1.vm.csiro.au"
     }
     test {
         grails.serverURL = "http://localhost:8090/${appName}"
-        security.cas.serverName = "http://woodfired.ala.org.au:8090"
+        security.cas.appServerName = "http://woodfired.ala.org.au:8090"
     }
 }
 
