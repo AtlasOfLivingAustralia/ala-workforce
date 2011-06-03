@@ -57,6 +57,7 @@ class QuestionController {
 
         // grab the required page number
         def pageNumber = params.page.isInteger() ? params.page.toInteger() : 1
+        def year = DateUtil.getYear(params.year)
         assert params.qset
         assert pageNumber >= 1 && pageNumber <= params.qset.totalPages
 
@@ -65,7 +66,7 @@ class QuestionController {
         assert pg
 
         // load the question metadata for each question on the page
-        def questionList = (pg.from..pg.to).collect { modelLoaderService.loadQuestionWithAnswer(params.qset.setId, it, userId()) }
+        def questionList = (pg.from..pg.to).collect { modelLoaderService.loadQuestionWithAnswer(params.qset.setId, it, userId(), year) }
 
         // render the page
         render(view:'questions', model:[qset: params.qset, pagination: pg, questions: questionList])
@@ -141,6 +142,7 @@ class QuestionController {
     def showComplete = {
         /* validate all pages and display any problems */
         QuestionSet qset = params.qset
+        def year = DateUtil.getYear(params.year)
 
         boolean noErrors = true
 
@@ -148,7 +150,7 @@ class QuestionController {
         for (page in qset.getPaginationData()) {
 
             // load the question metadata for each question on the page
-            def questionList = (page.from..page.to).collect { modelLoaderService.loadQuestionWithAnswer(qset.setId, it, userId()) }
+            def questionList = (page.from..page.to).collect { modelLoaderService.loadQuestionWithAnswer(qset.setId, it, userId(), year) }
 
             // validate answers against each question on the page
             Map<String, String> errors = new HashMap<String, String>()
