@@ -25,7 +25,7 @@ class ReportController {
         def questions = Question.findAllByLevel2AndQset(0, setId)
 
         def year = DateUtil.getYear(params.year)
-
+        def answers = Answer.getAnswers(setId, userId, year)
         questions.each {
             questionList <<  modelLoaderService.loadQuestionWithAnswer(setId, it.level1, userid, year)
         }
@@ -53,8 +53,8 @@ class ReportController {
         }
         def user = User.findByUserid(userid)
         def year = DateUtil.getYear(params.year)
-
-        def question = modelLoaderService.loadQuestionWithAnswer(setId, questionId, userid, year)
+        def answers = Answer.getAnswers(setId, userId, year)
+        def question = modelLoaderService.loadQuestionWithAnswer(setId, questionId, answers)
 
         // render the page
         render(view:'answer', model:[qset: qset, question: question, user: user])
