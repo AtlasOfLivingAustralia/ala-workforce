@@ -60,18 +60,17 @@ class ModelLoaderService {
      *
      * @param set the question set
      * @param questionNumber the question
-     * @param userId the user
-     * @param year the year
+     * @param answers map of answers for this set/user/year
      * @return question model with latest answer (if any)
      */
-    def loadQuestionWithAnswer(int set, int questionNumber, int userId, int year) {
+    def loadQuestionWithAnswer(int set, int questionNumber, Map answers) {
 
         // load the question model
         QuestionModel model = loadQuestion(set, questionNumber)
         assert model
 
         // find the answers
-        loadAnswers(model, userId, year)
+        loadAnswers(model, answers)
 
         return model
     }
@@ -80,36 +79,17 @@ class ModelLoaderService {
      * Find and inject the latest answer for the question and all its child questions.
      *
      * @param model the question model
-     * @param userId the user
-     * @param year the year
+     * @param answers map of answers for this set/user/year
      * @return model populated with most recent answers
      */
-    def loadAnswers(QuestionModel model, int userId, int year) {
-        // get all answers for the question for this user
-        def result
-        if (model.guid) {
-            def from = new GregorianCalendar(year, Calendar.JANUARY, 1)
-            def to = new GregorianCalendar(year+1, Calendar.JANUARY, 1)
-            result = Answer.executeQuery(
-                    "select answerValue from Answer " +
-                    "where setId = :set " +
-                    "and guid = :guid " +
-                    "and userId = :user " +
-                    "and lastUpdated >= :from and lastUpdated < :to " +
-                    "order by lastUpdated desc", [set: model.qset, guid: model.guid, user: userId, from: from.time, to: to.time])
-        }
+    def loadAnswers(QuestionModel model, answers) {
 
-        if (result) {
-            // select the most recent answer
-            def answer = result[0]
-
-            // inject answer into question model
-            model.setAnswerValueStr(answer)
-        }
+        // inject answer into question model
+        model.setAnswerValueStr(answers[model.guid])
 
         // call recursively for child questions
         model.questions.each {
-            loadAnswers(it, userId, year)
+            loadAnswers(it, answers)
         }
     }
 }
