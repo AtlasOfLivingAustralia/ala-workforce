@@ -30,4 +30,22 @@ class Answer {
         return count[0]
     }
 
+    static Map getAnswers(int setId, int userId, int year) {
+         def from = new GregorianCalendar(year, Calendar.JANUARY, 1)
+         def to = new GregorianCalendar(year+1, Calendar.JANUARY, 1)
+         def result = Answer.executeQuery(
+                 "select guid, answerValue from Answer " +
+                 "where setId = :set " +
+                 "and userId = :user " +
+                 "and lastUpdated >= :from and lastUpdated < :to " +
+                 "order by lastUpdated", [set: setId, user: userId, from: from.time, to: to.time])
+        def answers = [:]
+
+        // populate map with most recent answers
+        result.each { it ->
+            answers[it[0]] = it[1]
+        }
+
+        return answers
+    }
 }
