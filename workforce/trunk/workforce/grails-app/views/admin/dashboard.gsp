@@ -27,12 +27,12 @@
                             </tr>
                         </table>
                         <div class="progress-container">
-                            <div style="width: ${(completed*100)/10}%">
+                            <div title="${completed} completed" style="width: ${(completed*100)/10}%">
                                 <g:if test="${qset.setId==2}">
                                     ${(completed*100)/10}%
                                 </g:if>
                             </div>
-                            <div style="width: ${(started*100)/10}%"></div>
+                            <div title="${started-completed} started but not completed" style="width: ${(started*100)/10}%"></div>
                         </div>
                         <div style="clear:both"></div>
 
@@ -55,7 +55,7 @@
                         </g:if>
                     </td>
                     <td>
-                        <p><g:link controller="report" action="answers" params="${[set:qset.setId]}"><strong>Show all answers</strong></g:link></p>
+                        <p><g:link controller="report" action="answers" params="${[set:qset.setId]}"><strong>Browse all answers</strong></g:link></p>
                         <p><a href="${createLink(uri: '/')}">CSV Download</a></p>
                         <p><a href="${createLink(uri: '/')}">Generate Charts</a></p>
 
