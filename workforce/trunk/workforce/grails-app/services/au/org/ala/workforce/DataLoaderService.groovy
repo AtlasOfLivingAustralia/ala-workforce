@@ -24,6 +24,7 @@ class DataLoaderService implements ApplicationContextAware {
         def sql = new Sql(dataSource)
         sql.execute("delete from question where qset = ${set}")
         sql.execute("delete from question_set where qset = ${set}")
+        sql.execute("delete from institution where setId = ${set}")
     }
 
     /**
@@ -37,6 +38,7 @@ class DataLoaderService implements ApplicationContextAware {
         def sql = new Sql(dataSource)
         sql.execute("delete from question")
         sql.execute("delete from question_set")
+        sql.execute("delete from institution")
     }
 
     /**
@@ -176,8 +178,21 @@ class DataLoaderService implements ApplicationContextAware {
         }
 
         int set = loadSetMetadata(qset)
+        loadInstitutionMetadata(qset, set)
         println "LoadQuestionSet ${set} ............."
         loadXmlQuestions(qset.question, set, 1, 0, 0, [:])
+    }
+
+    private loadInstitutionMetadata(qset, set) {
+        def accounts = qset.accounts.account
+        accounts.each { acc ->
+            def inst = new Institution(account: acc.user.text(), code: acc.code.text(), name: acc.institution.text(),
+                    uid: acc.uid.text(), setId: set)
+            inst.save(flush:true)
+            if (inst.hasErrors()) {
+                println inst.errors
+            }
+        }
     }
 
     private int loadSetMetadata(qset) {
