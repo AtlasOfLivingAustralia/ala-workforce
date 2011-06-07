@@ -21,7 +21,8 @@ class Event {
 
     static def numberCompletedForYear(int setId, String year) {
         def yearStart = year + "-01-01"
-        def count = Event.executeQuery("select count(distinct id) from Event where setId = :set and last_updated >= :year and name = 'complete'",
+        def count = Event.executeQuery(
+            "select count(distinct userid) from Event where setId = :set and last_updated >= :year and name = 'complete'",
             [set: setId, year: yearStart])
         return count[0]
     }
