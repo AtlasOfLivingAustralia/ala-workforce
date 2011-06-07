@@ -25,7 +25,7 @@
           <p>You can still make changes to your answers if you wish.</p>
           <p class="textLinks">
             <g:link controller="report" action="answers" id="${user}" params="${[set: qset.setId]}">Click here to see a quick summary of your answers.</g:link><br/>
-            <g:link action="page" params="${[set: qset.setId, page: 1]}">Click here to change you answers.</g:link>
+            <g:link action="page" params="${[set: qset.setId, page: 1]}">Click here to change your answers.</g:link>
           </p>
         </div>
 
