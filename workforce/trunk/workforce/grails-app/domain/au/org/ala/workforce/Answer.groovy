@@ -40,9 +40,9 @@ class Answer {
     }
 
     static Map getAnswers(int setId, int userId, int year) {
-         def from = new GregorianCalendar(year, Calendar.JANUARY, 1)
-         def to = new GregorianCalendar(year+1, Calendar.JANUARY, 1)
-         def result = Answer.executeQuery(
+        def from = new GregorianCalendar(year, Calendar.JANUARY, 1)
+        def to = new GregorianCalendar(year+1, Calendar.JANUARY, 1)
+        def result = Answer.executeQuery(
                  "select guid, answerValue from Answer " +
                  "where setId = :set " +
                  "and userId = :user " +
