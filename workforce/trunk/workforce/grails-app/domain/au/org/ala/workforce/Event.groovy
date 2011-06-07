@@ -26,4 +26,12 @@ class Event {
             [set: setId, year: yearStart])
         return count[0]
     }
+
+    static def usersCompletedForYear(int setId, String year) {
+        def yearStart = year + "-01-01"
+        def users = Event.executeQuery(
+            "select distinct userid from Event where setId = :set and last_updated >= :year and name = 'complete'",
+            [set: setId, year: yearStart])
+        return users
+    }
 }
