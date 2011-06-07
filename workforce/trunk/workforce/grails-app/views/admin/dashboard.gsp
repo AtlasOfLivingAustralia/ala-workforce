@@ -41,7 +41,8 @@
                         <div style="clear:both"></div>
 
                         <g:if test="${qset.setId == 1}">
-                            <p style="margin-bottom: 5px;">List of respondents</p>
+                            <h3>Respondents</h3>
+                            <p style="margin-top: 5px;">Click a name to show answers.</p>
                             <ul class="respondents">
                             <g:each in="${User.list(sort:'name')}" var="u">
                                 <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:u.userid]}">${u.name}</g:link></li>
