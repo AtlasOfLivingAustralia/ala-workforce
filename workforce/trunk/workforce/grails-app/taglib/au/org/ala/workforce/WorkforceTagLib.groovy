@@ -1069,7 +1069,7 @@ class WorkforceTagLib {
         def result = ''
 
         if (userIndex != -1) {
-            result = "<div style='float: right; padding: 25px 0px'>"
+            result = "<div style='float: right; padding: 25px 0px; margin-right: 0; *margin-right: 550px;'>"
             if (userIndex > 0) {
                 result += "<span><a href='${resource(file:'/report/'+ params.set +'/user/' + users[userIndex-1].userid)}'>prev</a></span>"
             }
