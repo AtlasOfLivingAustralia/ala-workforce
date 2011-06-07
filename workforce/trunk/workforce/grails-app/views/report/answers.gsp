@@ -7,8 +7,14 @@
     </head>
     <body>
         <div class="nav" id="breadcrumb">
-            <span class="navButton"><a class="home" href="${createLink(uri: '/admin')}"><g:message code="default.home.label"/></a></span>
-            <span class="navButton"><a href="${createLink(uri: '/admin/set/' + qset.setId)}">${qset.shortName}</a></span>
+            <wf:isABRSAdmin>
+                <span class="navButton"><a class="home" href="${createLink(uri: '/admin')}">Admin</a></span>
+                <span class="navButton"><a href="${createLink(uri: '/admin/set/' + qset.setId)}">${qset.shortName}</a></span>
+            </wf:isABRSAdmin>
+            <wf:isNotABRSAdmin>
+                <span class="navButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
+                <span class="navButton"><a href="${createLink(controller:'question', action:'showComplete', params:['set':qset.setId])}">Summary</a></span>
+            </wf:isNotABRSAdmin>
             <span class="navButton">${user.name}</span>
         </div>
         <div class="body">
