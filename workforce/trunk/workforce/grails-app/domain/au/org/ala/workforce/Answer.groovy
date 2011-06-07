@@ -23,11 +23,20 @@ class Answer {
         answerValue(nullable: true)
     }
 
-    static def numberStartedForYear(int setId, String year) {
+    static transients = ['started']
+
+    static numberStartedForYear(int setId, String year) {
         def yearStart = year + "-01-01"
         def count = Event.executeQuery("select count(distinct userId) from Answer where setId = :set and last_updated >= :year",
             [set: setId, year: yearStart])
         return count[0]
+    }
+
+    static boolean isStarted(int setId, String year, int userid) {
+        def yearStart = year + "-01-01"
+        def count = Event.executeQuery("select count(*) from Answer where setId = :set and last_updated >= :year and userid = :user",
+            [set: setId, year: yearStart, user: userid])
+        return count > 0
     }
 
     static Map getAnswers(int setId, int userId, int year) {
