@@ -30,7 +30,7 @@ class DownloadController {
         // write answers for each completed survey
         def users = Event.usersCompletedForYear(setId, year as String)
         users.each { userid ->
-            def answers = Answer.getAnswers(setId, userid, year)
+            def answers = Answer.getAnswers(setId, userid as int, year)
             def answerRow = [userid]
             questions = []
             topLevelQuestions.each { question ->
@@ -47,7 +47,7 @@ class DownloadController {
         return null
     }
 
-    List getHeaderRow(List questions) {
+    List getHeaderRow(List<QuestionModel> questions) {
         def headerRow = ['User']
 
         questions.each {
