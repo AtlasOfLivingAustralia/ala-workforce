@@ -65,9 +65,9 @@ input:focus, select:focus, textarea:focus {
 /* NAVIGATION MENU */
 
 .nav {
-    background: #fff url(../images/skin/shadow.jpg) bottom repeat-x;
+    /*background: #fff url(../images/skin/shadow.jpg) bottom repeat-x;
     border: 1px solid #ccc;
-    border-style: solid none solid none;
+    border-style: solid none solid none;*/
     margin-top: 20px;
     padding: 7px 12px;
     /*text-align: center;*/
@@ -436,7 +436,7 @@ input.prevBottom {
 }
 
 .navButton a {
-    color: #dd8844;
+    color: #48802c;
     font-weight: normal;
     padding-bottom: 2px;
 }
@@ -518,7 +518,7 @@ ul.respondents li a {
 }
 
 #breadcrumb a {
-    background:url(../images/abrsskin/breadcrumb-separator.png) right center no-repeat;
+    background:url(../images/abrsskin/breadcrumb-separator-2.png) right center no-repeat;
     padding-right:20px;
 }
 
@@ -550,3 +550,4 @@ div.progress-container > div {
   background-color: #99ff99;
   height: 14px
 }
+
