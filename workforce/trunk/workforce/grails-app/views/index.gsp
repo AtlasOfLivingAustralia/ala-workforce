@@ -21,8 +21,7 @@
         </g:if>
         <g:else>
             <div class="go-buttons">
-                <g:link controller="question" action="page" params='[set:1,page:1]'><img src="${resource(dir:'images/abrsskin',file:'personal-button.png')}"/></g:link>
-                <g:link controller="question" action="page" params='[set:2,page:1]'><img src="${resource(dir:'images/abrsskin',file:'collections-button.png')}"/></g:link>
+                <wf:selectSurvey/>
             </div>
         </g:else>
 
@@ -30,7 +29,9 @@
             <p><a href="${createLink(uri: '/')}">Home</a></p>
         </g:if>
         <g:else>
-            <p><g:link controller="admin" action="index">Dashboard</g:link></p>
+            <wf:isABRSAdmin>
+                <p><g:link controller="admin" action="index">Dashboard</g:link></p>
+            </wf:isABRSAdmin>
         </g:else>
 
     </body>
