@@ -1044,6 +1044,12 @@ class WorkforceTagLib {
         }
     }
 
+    def isNotABRSAdmin = { attrs, body ->
+        if  (!isAdmin()) {
+            out << body()
+        }
+    }
+
     private String username() {
         if (ConfigurationHolder.config.security.cas.bypass) {
             'cas bypassed'
