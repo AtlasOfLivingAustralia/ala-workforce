@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.workforce.User; au.org.ala.workforce.QuestionModel" %>
+<%@ page import="au.org.ala.workforce.Institution; au.org.ala.workforce.User; au.org.ala.workforce.QuestionModel" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -27,30 +27,41 @@
                             </tr>
                         </table>
                         <div class="progress-container">
-                            <div title="${completed} completed" style="width: ${(completed*100)/10}%">
-                                <g:if test="${qset.setId==2}">
-                                    ${(completed*100)/10}%
+                            <div title="${completed} completed" style="width: ${(completed*100)/total}%">
+                                <g:if test="${qset.setId==2 && completed > 2}">
+                                    ${String.format('%.1f',(completed*100)/total)}%
                                 </g:if>
                             </div>
-                            <div title="${started-completed} started but not completed" style="width: ${(started*100)/10}%"></div>
+                            <g:if test="${qset.setId==2 && completed < 3}">
+                                <span style="float:left; padding-left: 3px;">${String.format('%.1f',(completed*100)/total)}%</span>
+                            </g:if>
+                            <div title="${started-completed} started but not completed" style="width: ${(started*100)/total}%"></div>
                         </div>
+                        <span class="total">${total}</span>
                         <div style="clear:both"></div>
 
-                        <p style="margin-bottom: 5px;">List of respondents</p>
-                        <ul class="respondents">
-                        <g:each in="${User.list(sort:'name')}" var="u">
-                            <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:u.userid]}">${u.name}</g:link></li>
-                        </g:each>
-                        </ul>
+                        <g:if test="${qset.setId == 1}">
+                            <p style="margin-bottom: 5px;">List of respondents</p>
+                            <ul class="respondents">
+                            <g:each in="${User.list(sort:'name')}" var="u">
+                                <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:u.userid]}">${u.name}</g:link></li>
+                            </g:each>
+                            </ul>
+                        </g:if>
 
                         <g:if test="${qset.setId == 2}">
-                            <p style="margin-bottom: 5px;">List of collections</p>
+                            <h3>Institutions</h3>
+                            <p style="margin-top: 5px;">Click a name to show answers.</p>
                             <ul class="respondents">
-                                <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:21]}">Australian Museum</g:link></li>
-                                <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:21]}">Tasmanian Museum and Gallery</g:link></li>
-                                <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:21]}">Museum Victoria</g:link></li>
-                                <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:21]}">Australian National Wildlife Collection</g:link></li>
-                                <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:21]}">South Australian Museum</g:link></li>
+                                <g:each in="${Institution.findAllBySetId(qset.setId)}" var="i">
+                                    <g:set var="userid" value="${User.findByName(i.account)?.userid}"/>
+                                    <g:if test="${userid}">
+                                        <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:userid]}">${i.name}</g:link></li>
+                                    </g:if>
+                                    <g:else>
+                                        <li class="dull">${i.name}</li>
+                                    </g:else>
+                                </g:each>
                             </ul>
                         </g:if>
                     </td>
