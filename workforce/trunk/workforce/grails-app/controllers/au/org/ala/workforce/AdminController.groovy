@@ -11,9 +11,14 @@ class AdminController {
         def currentYear = new GregorianCalendar().get(Calendar.YEAR).toString()
         def numberStarted = Answer.numberStartedForYear(setId, currentYear)
         def numberCompleted = Event.numberCompletedForYear(setId, currentYear)
+        def total
+        switch (setId) {
+            case 2: total = Institution.countBySetId(2); break
+            default: total = ((numberCompleted/100 as int) + 1) * 100
+        }
 
         // render the page
-        [qset: qset, started: numberStarted, completed: numberCompleted]
+        [qset: qset, started: numberStarted, completed: numberCompleted, total: total]
     }
 
     def index = {
