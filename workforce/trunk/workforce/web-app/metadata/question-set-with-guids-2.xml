@@ -2,6 +2,7 @@
 <questionSet set="2">
   <title>Resources of Australian Natural Science Collections</title>
   <shortName>Institutional Survey</shortName>
+  <requiredRole>ROLE_ABRS_INSTITUTION</requiredRole>
   <pageSequence>
     <page>1-2</page>
     <page>3-3</page>
