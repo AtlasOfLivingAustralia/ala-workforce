@@ -548,6 +548,24 @@ div.progress-container > div:first-child {
 
 div.progress-container > div {
   background-color: #99ff99;
-  height: 14px
+  height: 14px;
 }
 
+.respondents a {
+    text-decoration: underline;
+}
+
+.dull {
+    color: #666
+}
+
+h3 {
+    color: #48802c;
+    margin: 30px 0 7px 0;
+}
+
+.dashboard span.total {
+    color: #ccc;
+    padding-left: 5px;
+    padding-top: 3px;
+}
