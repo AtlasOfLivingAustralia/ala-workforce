@@ -7,6 +7,8 @@ class WorkforceTagLib {
 
     static namespace = 'wf'
 
+    static final int INSTITUTION_SURVEY_QUESTION_SET_ID = 2;
+
     def modelLoaderService, listLoaderService
 
     /**
@@ -441,10 +443,68 @@ class WorkforceTagLib {
                     result += select(name: q.ident(), from: ListLoaderService.states, value: q.answerValueStr,
                             noSelection: ['':'Select a state or territory'])
                 }
-                if (q.adata =~ 'university') {
+                else if (q.adata =~ 'university') {
                     result += select(name: q.ident(), from: ListLoaderService.universities, value: q.answerValueStr,
                             noSelection: ['':'Select a university'])
                 }
+                else if (q.adata.domain) {
+                    /* this uses a list from a database field based on the answer data elements
+                      <domain>specifies the grails domain (table)</domain>
+                      <property>specifies which column to use</property>
+                      <questionSetProperty>indicates which column holds the question set id</questionSetProperty>
+                      <noSelectionText>optionally specifies the text to show for no selection</noSelectionText>
+                     */
+                    // create and instantiate the domain class
+                    def domainArtefact = grailsApplication.getDomainClass("au.org.ala.workforce.${q.adata.domain}")
+                    def dom = domainArtefact.clazz.newInstance()
+
+                    // get the set id column name
+                    def qsid = q.adata.questionSetProperty
+
+                    // find all domain instances for the current question set
+                    def objs = dom.findAll("from ${q.adata.domain} as d where d.${qsid} = :set", [set:q.qset])
+
+                    // extract the specified column values
+                    def list = objs.collect {
+                        it."${q.adata.property}"
+                    }
+
+                    // create the html select element
+                    def noSelText = q.adata.noSelectionText ?: 'Select one'
+                    result += select(name: q.ident(), from: list, value: q.answerValueStr,
+                            noSelection: ['':noSelText])
+                }
+                break
+            case AnswerType.preload:
+                /* this uses answer metadata to specify the database record and column that will provide the answer value
+                  <domain>specifies the grails domain (table)</domain>
+                  <property>specifies which column to get the answer from</property>
+                  <questionSetProperty>indicates which column holds the question set id</questionSetProperty>
+                  <match-property>specifies the column to use to match the row</match-property>
+                  <match>specifies the value to use to match the row (username is assumed for now)</match>
+                 */
+
+                // create and instantiate the domain class
+                def domainArtefact = grailsApplication.getDomainClass("au.org.ala.workforce.${q.adata.domain}")
+                def dom = domainArtefact.clazz.newInstance()
+
+                // get the set id column name
+                def qsid = q.adata.questionSetProperty
+
+                // select the row
+                def strToMatch = username()
+                def matchColumn = q.adata.matchProperty
+
+                // find all domain instances for the current question set
+                def obj = dom.find("from ${q.adata.domain} as d where d.${qsid} = :set and d.${matchColumn} = :match",
+                        [set:q.qset, match: strToMatch])
+                assert obj
+
+                // get the value to preload
+                def answer = obj."${q.adata.property}"
+                assert answer
+
+                result += hiddenField(name: q.ident(), value: answer) + answer + " " + (q.alabel ?: "")
                 break
         }
 
@@ -963,17 +1023,7 @@ class WorkforceTagLib {
     }
 
     def loggedInName = {
-        if (ConfigurationHolder.config.security.cas.bypass) {
-            out << 'cas bypassed'
-        }
-        else if (request.getUserPrincipal()) {
-            out << request.getUserPrincipal().getName()
-        }
-        else if (AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
-            out << AuthenticationCookieUtils.getUserName(request)
-        } else {
-            out << ""
-        }
+        out << username()
     }
 
     def isLoggedIn = { attrs, body ->
@@ -982,10 +1032,34 @@ class WorkforceTagLib {
         }
     }
 
-    def isNotLoggedIn = {attrs, body ->
+    def isNotLoggedIn = { attrs, body ->
         if (!AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
             out << body()
         }
+    }
+
+    def isABRSAdmin = { attrs, body ->
+        if  (isAdmin()) {
+            out << body()
+        }
+    }
+
+    private String username() {
+        if (ConfigurationHolder.config.security.cas.bypass) {
+            'cas bypassed'
+        }
+        else if (request.getUserPrincipal()) {
+            request.getUserPrincipal().getName()
+        }
+        else if (AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
+            AuthenticationCookieUtils.getUserName(request)
+        } else {
+            ""
+        }
+    }
+
+    private boolean isAdmin() {
+        (ConfigurationHolder.config.security.cas.bypass || request?.isUserInRole("ROLE_ABRS_ADMIN"))
     }
 
     def reportNavigation = { attrs ->
@@ -1006,6 +1080,21 @@ class WorkforceTagLib {
         }
 
         out << result
+    }
+
+    def selectSurvey = {
+
+        def institutions = Institution.listInstitutionsForSet(INSTITUTION_SURVEY_QUESTION_SET_ID)
+        if (institutions.any {it.account == username()}) {
+            // show institutional survey
+            out << link(controller:"question", action:"page", params:['set':2, 'page':1]) {
+                    "<img src='${resource(dir:'images/abrsskin',file:'collections-button.png')}'/>" }
+        }
+        else {
+            // show personal survey
+            out << link(controller:"question", action:"page", params:['set':1,'page':1]) {
+                    "<img src='${resource(dir:'images/abrsskin',file:'personal-button.png')}'/>" }
+        }
     }
 
     private boolean areAnswers(QuestionModel q) {
