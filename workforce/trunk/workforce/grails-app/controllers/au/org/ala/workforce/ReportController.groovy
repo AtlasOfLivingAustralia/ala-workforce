@@ -17,7 +17,7 @@ class ReportController {
 
         def loggedInUserId = request.userPrincipal.attributes.userid as int
         def userId = params.id as int ?: loggedInUserId
-        if (userId != loggedInUserId && !request.isUserInRole('ROLE_ABRS_ADMIN')) {
+        if (userId != loggedInUserId && !(request.isUserInRole('ROLE_ABRS_ADMIN') || request.isUserInRole('ROLE_ADMIN'))) {
             userId = loggedInUserId
         }
         def user = User.findByUserid(userId)
@@ -48,7 +48,7 @@ class ReportController {
         def qset = QuestionSet.findBySetId(setId)
         def loggedInUserId = request.userPrincipal.attributes.userid as int
         def userId = params.id as int ?: loggedInUserId
-        if (userId != loggedInUserId && !request.isUserInRole('ROLE_ABRS_ADMIN')) {
+        if (userId != loggedInUserId && !(request.isUserInRole('ROLE_ABRS_ADMIN') || request.isUserInRole('ROLE_ADMIN'))) {
             userId = loggedInUserId
         }
         def user = User.findByUserid(userId)
