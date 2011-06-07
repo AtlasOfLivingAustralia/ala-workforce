@@ -6,6 +6,10 @@
         <title>${qset.title}</title>
     </head>
     <body>
+        <div class="nav" id="breadcrumb">
+            <span class="navButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
+            <span class="navButton">Summary</span>
+        </div>
         <div class="links">
           <h1>${qset.title}</h1>
           <g:if test="${flash.message}">
