@@ -68,9 +68,8 @@
                     </td>
                     <td>
                         <p><g:link controller="report" action="answers" params="${[set:qset.setId]}"><strong>Browse all answers</strong></g:link></p>
-                        <p><a href="${createLink(uri: '/')}">CSV Download</a></p>
+                        <p><g:link controller="download" action="download" params="${[set:qset.setId]}"><strong>CSV Download</strong></g:link></p>
                         <p><a href="${createLink(uri: '/')}">Generate Charts</a></p>
-
                     </td>
                 </tr>
             </table>
