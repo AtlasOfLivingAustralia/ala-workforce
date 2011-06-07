@@ -9,11 +9,13 @@ class QuestionSet {
     String title                    // name of the set
     String shortName                // short display name for reports, breadcrumb trails, etc
     String pageSequence             // pagination of questions eg [{from:1,to:1},{from:2,to:6}]
+    String requiredRole             // the role that the user must have to access this survey - blank = everyone
 
     static constraints = {
         setId(unique:true)
         pageSequence(nullable:true)
         shortName(nullable:true)
+        requiredRole(nullable:true)
     }
 
     static transients = ['paginationData','page','totalPages']
