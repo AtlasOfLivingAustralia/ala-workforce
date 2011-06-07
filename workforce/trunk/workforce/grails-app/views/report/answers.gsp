@@ -28,7 +28,7 @@
                 <g:else>
                     <div style='float: left; padding: 25px 0px'>Answers for ${user.name}</div>
                 </g:else>
-                <g:if test="${request.isUserInRole('ROLE_ABRS_ADMIN')}">
+                <g:if test="${request.isUserInRole('ROLE_ABRS_ADMIN') || request.isUserInRole('ROLE_ADMIN')}">
                     <wf:reportNavigation users= "${users}" user="${user}"/>
                 </g:if>
             </g:if>
@@ -44,7 +44,7 @@
                     </tbody>
                 </table>
             </div>
-            <g:if test="${request.isUserInRole('ROLE_ABRS_ADMIN')}">
+            <g:if test="${request.isUserInRole('ROLE_ABRS_ADMIN') || request.isUserInRole('ROLE_ADMIN')}">
                 <wf:reportNavigation users= "${users}" user="${user}"/>
             </g:if>
         </div>
