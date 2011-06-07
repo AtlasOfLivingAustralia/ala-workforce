@@ -26,7 +26,7 @@
                     <wf:reportNavigation users= "${users}" user="${user}"/>
                 </g:if>
             </g:if>
-            <div class="list">
+            <div class="list" style='clear: both;'>
                 <table class="answers">
                     <colgroup><col width="4%"><col width="50%"><col width="46%"></colgroup>
                     <tbody>
