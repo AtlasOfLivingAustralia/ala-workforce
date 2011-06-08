@@ -544,6 +544,7 @@ class WorkforceTagLib {
                     }
                     break
                 case AnswerType.none:
+                    result += q.answerValueStr
                     break
                 case AnswerType.number:
                     result += q.answerValueStr
@@ -571,6 +572,9 @@ class WorkforceTagLib {
                     result += q.answerValueStr
                     break
                 case AnswerType.externalRef:
+                    result += q.answerValueStr
+                    break
+                case AnswerType.preload:
                     result += q.answerValueStr
                     break
             }
