@@ -23,6 +23,7 @@
     <question type="none">
       <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
       <shortText>Time spent on curatorial and/or taxonomic duties</shortText>
+      <validation>percent-total-lessThanOrEqual-100</validation>
       <question id="fdefd907-6690-4633-99d6-5f3497c379e3">
         <text>Scientist/Taxonomist (permanent)</text>
         <answer dataType="number" label="%" type="percent"/>
@@ -66,7 +67,7 @@
       </answer>
     </question>
   </question>
-  <question instruction="If you work for an non-Australian institution please tick 'Other' and enter your country, state and name of institution. ">
+  <question>
     <text>Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?</text>
     <shortText>Organisation and location</shortText>
     <question id="fd7d56cf-ae3d-4673-a1b5-1ad299f62a53">
@@ -77,7 +78,7 @@
       <question id="45c0892e-0bcd-4bc7-adf7-e86cb1bde5d3" type="pick">
         <text>State</text>
         <displayHint>dropdown</displayHint>
-        <answer type="externalRef">
+        <answer type="externalRef" requiredIf="..=on|Museum">
           <data>state</data>
         </answer>
       </question>
@@ -90,7 +91,7 @@
       <question id="65bddfea-98c9-4656-b098-f212f92125a7" type="pick">
         <text>State</text>
         <displayHint>dropdown</displayHint>
-        <answer type="externalRef">
+        <answer type="externalRef" requiredIf="..=on|Herbarium">
           <data>state</data>
         </answer>
       </question>
@@ -103,14 +104,14 @@
       <question id="f38fcc86-f15d-417d-9137-20041afdc2cd" type="pick">
         <text>State</text>
         <displayHint>dropdown</displayHint>
-        <answer type="externalRef">
+        <answer type="externalRef" requiredIf="..=on|University">
           <data>state</data>
         </answer>
       </question>
       <question id="426755ba-ed3e-4799-ae57-7b9318d281c1" type="pick">
         <text>Name</text>
         <displayHint>dropdown</displayHint>
-        <answer type="externalRef">
+        <answer type="externalRef" requiredIf="..=on|University">
           <data>university</data>
         </answer>
       </question>
@@ -128,7 +129,7 @@
       <question id="d16a568d-0c4d-4736-899d-911083cb6cbb" type="pick">
         <text>State</text>
         <displayHint>dropdown</displayHint>
-        <answer type="externalRef">
+        <answer type="externalRef" requiredIf="..=on|CSIRO">
           <data>state</data>
         </answer>
       </question>
@@ -146,7 +147,7 @@
       <question id="06d48664-3ddf-4d99-8afe-96f9ad30a46f" type="pick">
         <text>State</text>
         <displayHint>dropdown</displayHint>
-        <answer type="externalRef">
+        <answer type="externalRef" requiredIf="..=on|Commonwealth Department">
           <data>state</data>
         </answer>
       </question>
@@ -164,7 +165,7 @@
       <question id="57792b47-57ab-48f6-ae8b-d42b83befeaf" type="pick">
         <text>State</text>
         <displayHint>dropdown</displayHint>
-        <answer type="externalRef">
+        <answer type="externalRef" requiredIf="..=on|State Department">
           <data>state</data>
         </answer>
       </question>
@@ -179,10 +180,10 @@
       <displayHint>checkbox</displayHint>
       <layoutHint>20/80</layoutHint>
       <answer type="bool"/>
-      <question>
+      <question id="7026dec5-21c3-4893-a9d4-6c16e609ebda">
         <text>Country</text>
         <displayHint>45</displayHint>
-        <answer type="text"/>
+        <answer type="text" requiredIf="..=on|Other"/>
       </question>
       <question id="237bc5f3-7677-4a6a-a27a-f775587aae69">
         <text>State</text>
@@ -190,9 +191,9 @@
         <answer type="text"/>
       </question>
       <question id="9564144c-a6e6-47b8-820b-3b6382b8a0b2">
-        <text>Please specify:</text>
+        <text>Name</text>
         <displayHint>45</displayHint>
-        <answer type="text"/>
+        <answer type="text" requiredIf="..=on|Other"/>
       </question>
     </question>
   </question>
@@ -286,7 +287,7 @@
       </data>
     </question>
   </question>
-  <question heightHint="19" defaultLayoutHint="align-with-level3">
+  <question defaultLayoutHint="align-with-level3">
     <text>Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?</text>
     <shortText>Percentage of full time work</shortText>
     <validation>percent-total-lessThanOrEqual-100</validation>
