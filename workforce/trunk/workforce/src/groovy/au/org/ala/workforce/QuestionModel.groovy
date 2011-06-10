@@ -357,7 +357,7 @@ class QuestionModel {
             return null
         }
         def question = owner
-        if (bits.size == 1) {
+        if (bits.size() == 1) {
             // must be ..
             return question
         }
@@ -537,7 +537,7 @@ class QuestionModel {
         String s2 = "0"
         String s3 = "0"
         s1 = s1[1..-1] // dump the q
-        if (strs.size > 1) {
+        if (strs.size() > 1) {
             s2 = strs[1]
         }
         if (strs.size() > 2) {
