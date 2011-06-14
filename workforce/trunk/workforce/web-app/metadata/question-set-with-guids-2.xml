@@ -152,7 +152,7 @@
       <uid>in25</uid>
     </account>
     <account>
-      <user>survey@tmag.tas.gov.au</user>
+      <user>survey@qvmag.tas.gov.au</user>
       <institution>Queen Victoria Museum and Art Gallery</institution>
       <code>QVM</code>
       <uid>in13</uid>
@@ -224,7 +224,7 @@
       <uid></uid>
     </account>
     <account>
-      <user>survey@pilbara.dec.wa.gov.au/</user>
+      <user>survey@pilbara.dec.wa.gov.au</user>
       <institution>Pilbara Regional Herbarium</institution>
       <code>PRH</code>
       <uid></uid>
