@@ -44,6 +44,7 @@ input, select, textarea {
     margin: 2px 0;
     padding: 2px 4px;
 }
+
 select {
    padding: 2px 2px 2px 0;
 }
@@ -221,6 +222,12 @@ table.questions label {
 
 table.questions input[type='radio'] {
     margin-bottom: 10px;
+    background-color: #f2ebbd;
+    border: 0;
+}
+table.questions input[type='checkbox'] {
+    background-color: #f2ebbd;
+    border: 0;
 }
 
 table.questions textArea {
