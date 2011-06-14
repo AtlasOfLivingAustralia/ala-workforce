@@ -19,9 +19,8 @@ environments {
     }
     test {
         dataSource {
-            driverClassName = "org.hsqldb.jdbcDriver"
             dbCreate = "update"
-            url = "jdbc:hsqldb:mem:testDb"
+            url = "jdbc:mysql://localhost:3306/workforce?autoreconnect=true"
         }
     }
     testserver {
@@ -35,7 +34,7 @@ environments {
     production {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:mysql://localhost:3306/workforce?autoreconnect=true"
+            url = "jdbc:mysql://localhost:3306/workforce?autoreconnect=true&connectTimeout=0"
         }
     }
 }
