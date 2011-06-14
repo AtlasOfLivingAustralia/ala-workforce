@@ -11,4 +11,7 @@ class QuestionTests extends GrailsUnitTestCase {
         super.tearDown()
     }
 
+    void testSomething() {
+
+    }
 }
