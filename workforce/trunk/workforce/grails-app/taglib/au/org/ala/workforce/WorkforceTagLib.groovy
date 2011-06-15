@@ -2,6 +2,7 @@ package au.org.ala.workforce
 
 import au.org.ala.cas.util.AuthenticationCookieUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import java.text.NumberFormat
 
 class WorkforceTagLib {
 
@@ -363,7 +364,11 @@ class WorkforceTagLib {
             case AnswerType.none:
                 break
             case AnswerType.number:
-                result += textField(name: q.ident(), size: 4, value: q.answerValueStr) + " " + (q.alabel ?: "")
+                def atts = [name: q.ident(), size: 4, value: q.answerValueStr]
+                if (q.onchangeAction) {
+                    atts.put 'onchange', "${q.onchangeAction}();"
+                }
+                result += textField(atts) + " " + (q.alabel ?: "")
                 break
             case AnswerType.radio:
                 // display radio buttons with text from adata to select one chunk of text
@@ -496,6 +501,7 @@ class WorkforceTagLib {
                 def matchColumn = q.adata.matchProperty
 
                 // find all domain instances for the current question set
+                //println "from ${q.adata.domain} as d where d.${qsid} = ${q.qset} and d.${matchColumn} = ${strToMatch}"
                 def obj = dom.find("from ${q.adata.domain} as d where d.${qsid} = :set and d.${matchColumn} = :match",
                         [set:q.qset, match: strToMatch])
                 assert obj
@@ -505,6 +511,41 @@ class WorkforceTagLib {
                 assert answer
 
                 result += hiddenField(name: q.ident(), value: answer) + answer + " " + (q.alabel ?: "")
+                break
+            case AnswerType.calculate:
+                // only support adata = 'sum' for now - which sums the number answers from siblings
+                def sum = 0
+                q.owner.questions.each {
+                    if (it.atype == AnswerType.number && it.answerValueStr) {
+                        if (it.answerValueStr.isNumber()) {
+                            sum += NumberFormat.getInstance().parse(it.answerValueStr)
+                        }
+                    }
+                }
+                result += hiddenField(name: q.ident(), value: sum) + "<span id='s${q.ident()}'>${sum}</span> " + (q.alabel ?: "")
+                def questionRoot = q.ident()[0..q.ident().lastIndexOf('_')]
+                def start = 1
+                def end = q.owner.questions.size() - 1
+                def target = q.ident()
+                result += """
+<script>
+  function ${q.adata.action}() {
+    var questionRoot = '${questionRoot}';
+    var start = ${start};
+    var end = ${end};
+    var target = '${target}';
+    var sum = 0
+    for (var i = start; i <= end; i++) {
+      var num = parseFloat(\$('input#'+questionRoot+i).attr('value'));
+      if (!isNaN(num)) {
+        sum = sum + num
+      }
+    }
+    \$('input#'+target).attr('value',sum);
+    \$('span#s'+target).html(sum);
+  }
+</script>
+"""
                 break
         }
 
@@ -1093,17 +1134,23 @@ class WorkforceTagLib {
     }
 
     def selectSurvey = {
-
-        def institutions = Institution.listInstitutionsForSet(INSTITUTION_SURVEY_QUESTION_SET_ID)
-        if (institutions.any {it.account == username()}) {
-            // show institutional survey
-            out << link(controller:"question", action:"page", params:['set':2, 'page':1]) {
-                    "<img src='${resource(dir:'images/abrsskin',file:'collections-button.png')}'/>" }
+        if (username()) {
+            def institutions = Institution.listInstitutionsForSet(INSTITUTION_SURVEY_QUESTION_SET_ID)
+            if (institutions.any {it.account == username()}) {
+                // show institutional survey
+                /*out << link(controller:"question", action:"page", params:['set':2, 'page':1]) {
+                        "<img src='${resource(dir:'images/abrsskin',file:'collections-button.png')}'/>" }*/
+                out << 'institution'
+            }
+            else {
+                // show personal survey
+                /*out << link(controller:"question", action:"page", params:['set':1,'page':1]) {
+                        "<img src='${resource(dir:'images/abrsskin',file:'personal-button.png')}'/>" }*/
+                out << 'personal'
+            }
         }
         else {
-            // show personal survey
-            out << link(controller:"question", action:"page", params:['set':1,'page':1]) {
-                    "<img src='${resource(dir:'images/abrsskin',file:'personal-button.png')}'/>" }
+            out << 'login'
         }
     }
 
