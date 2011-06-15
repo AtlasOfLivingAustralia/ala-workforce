@@ -255,6 +255,7 @@ class DataLoaderService implements ApplicationContextAware {
             q.qtext = it.text
             q.subtext = it.subtext
             q.shorttext = it.shortText
+            q.onchangeAction = it.onchange
             def atype = valueOrDefault(it.answer?.@type, defaults, ident)
             q.atype = atype ? AnswerType.valueOf(atype as String) : AnswerType.none
             def datatype = valueOrDefault(it.answer?.@dataType, defaults, ident)
