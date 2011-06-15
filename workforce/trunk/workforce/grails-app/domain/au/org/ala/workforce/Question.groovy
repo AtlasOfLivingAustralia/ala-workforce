@@ -29,6 +29,7 @@ class Question {
     boolean required                // the answer (if there is one) may not be blank
     String requiredIf               // must have an answer if the condition is true
     String validation               // cross-question validation
+    String onchangeAction           // js function to call when answer value is changed
 
     static constraints = {
         level1(min:0)
@@ -51,6 +52,7 @@ class Question {
         layoutHint(nullable:true)
         requiredIf(nullable:true, maxSize:1024)
         validation(nullable:true, maxSize: 1024)
+        onchangeAction(nullable: true, maxSize: 1024)
     }
 
     // make the hash an index
