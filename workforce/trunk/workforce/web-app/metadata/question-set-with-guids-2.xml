@@ -185,7 +185,7 @@
       <user>survey@flinders.edu.au</user>
       <institution>Flinders University Smut Collection</institution>
       <code>FUSC</code>
-      <uid></uid>
+      <uid/>
     </account>
     <account>
       <user>survey@herbarium.anu.edu.au</user>
@@ -221,13 +221,13 @@
       <user>survey@cereal.sydney.edu.au</user>
       <institution>Cereal Rust Collection</institution>
       <code>PBICCRC</code>
-      <uid></uid>
+      <uid/>
     </account>
     <account>
       <user>survey@pilbara.dec.wa.gov.au</user>
       <institution>Pilbara Regional Herbarium</institution>
       <code>PRH</code>
-      <uid></uid>
+      <uid/>
     </account>
     <account>
       <user>survey@qrs.ath.org.au</user>
@@ -293,7 +293,7 @@
       <user>survey@museum.une.edu.au</user>
       <institution>Zoology Museum, University of New England</institution>
       <code>NEZ</code>
-      <uid></uid>
+      <uid/>
     </account>
     <account>
       <user>mark.woolston@csiro.au</user>
@@ -648,27 +648,39 @@
         </subtext>
     <question id="c994bf87-d861-4d52-9479-40ee13727cd6">
       <text>Scientist/Taxonomist (permanent)</text>
+      <onchange>updateSum</onchange>
     </question>
     <question id="93986d45-a525-454b-8bd4-fc6502022e6c">
       <text>Scientist/Taxonomist (not permanent)</text>
+      <onchange>updateSum</onchange>
     </question>
     <question id="f1276a67-a7f2-4ed3-a9ad-281c76b78603">
       <text>Technical (permanent)</text>
+      <onchange>updateSum</onchange>
     </question>
     <question id="fd749d29-e527-4d0c-b449-548c38b7ddc2">
       <text>Technical (not permanent)</text>
+      <onchange>updateSum</onchange>
     </question>
     <question id="005ff80b-a8da-4ac0-ad84-ff76cd15f6ef">
       <text>Administrator/Manager</text>
+      <onchange>updateSum</onchange>
     </question>
     <question id="1c574b87-5e01-4d4b-81b0-22edc5817fe2">
       <text>Volunteer/Associate (retired)</text>
+      <onchange>updateSum</onchange>
     </question>
     <question id="02dc3b27-0bc6-4a94-8af2-3456ac20fe67">
       <text>Volunteer/Associate (not retired)</text>
+      <onchange>updateSum</onchange>
     </question>
     <question id="02ecb353-a037-47d6-afab-702daffa5e1b">
       <text>TOTAL No of Staff</text>
+      <answer type="calculate">
+        <data>
+            <action>updateSum</action>
+        </data>
+      </answer>
     </question>
   </question>
   <question instructionPosition="top" instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) and spends     half their research time, for example, on mammals please indicate this as Mammals Scientist/Taxonomist as 0.25     (ie half their research time). Similarly with part-time staff please indicate proportion of full time duties     undertaken. The number of publications field includes scientific articles, books and reports for the surveyed period">
