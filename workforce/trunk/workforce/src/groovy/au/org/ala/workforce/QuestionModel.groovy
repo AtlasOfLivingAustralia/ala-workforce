@@ -4,6 +4,7 @@ import grails.converters.deep.JSON
 import static AnswerDataType.*
 import java.text.NumberFormat
 import java.text.ParseException
+import org.codehaus.groovy.grails.web.json.JSONObject
 
 /**
  * OO representation of a question.
@@ -38,6 +39,7 @@ class QuestionModel {
     boolean required                // the answer may not be blank
     String requiredIf               // the answer may not be blank if the condition is met
     String validation               // cross-question validation
+    String onchangeAction           // js function to call when answer value is changed
 
     String answerValueStr           // any answer that may be supplied for validation - this usually holds the answer supplied
                                     //  by a user. It is held here during validation and error feedback
@@ -77,7 +79,7 @@ class QuestionModel {
         
         // other properties
         ['atype','qtype','label','qtext','shorttext','instruction','alabel','displayHint','layoutHint','datatype',
-                'subtext','required','requiredIf','validation','instructionPosition','guid','qset'].each {
+                'subtext','required','requiredIf','validation','instructionPosition','guid','qset','onchangeAction'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
             }
@@ -151,14 +153,14 @@ class QuestionModel {
                                 valid = false
                                 errorMessage = "A percentage must be between 0 and 100. Value is ${val}"
                             }
-                            if (adata?.has('min')) {
+                            if (adata instanceof JSONObject && adata?.has('min')) {
                                 def min = adata.min
                                 if (val < min) {
                                     valid = false
                                     errorMessage = "Number must not be less than ${min}"
                                 }
                             }
-                            if (adata?.has('max')) {
+                            if (adata instanceof JSONObject && adata?.has('max')) {
                                 def max = adata.max
                                 if (val > max) {
                                     valid = false
