@@ -9,6 +9,7 @@
         <link rel="shortcut icon" href="${resource(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
         <g:layoutHead />
         <g:javascript library="application" />
+        <g:javascript library="jquery" plugin="jquery"/>
         <style type="text/css" media="screen">
             div.header {
                 background-color: #497136;
