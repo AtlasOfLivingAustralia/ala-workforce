@@ -1,5 +1,7 @@
 package au.org.ala.workforce
 
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+
 class QuestionController {
 
     def dataLoaderService, modelLoaderService
@@ -20,8 +22,21 @@ class QuestionController {
                 params.page = params.qset.findPageByQuestionNumber(params.question.toInteger()).pageNumber
             }
         }
-        // this is called to make sure we have a full record of the user in the user store
-        if (request.getUserPrincipal()) { User.getUser(request.getUserPrincipal())}
+        if (request.getUserPrincipal()) {
+            // this is called to make sure we have a full record of the user in the user store
+            User.getUser(request.getUserPrincipal())
+
+            // this checks that the user is allowed to access this survey
+            if (params.qset?.requiredRole) {
+                if (!request.isUserInRole(params.qset.requiredRole) &&
+                    !request.isUserInRole('ROLE_ABRS_ADMIN')) {
+                    println "rejecting user ${request.getUserPrincipal().name} - does not have role ${params.qset.requiredRole}"
+                    //println "redirecting to ${ConfigurationHolder.config.grails.serverURL}"
+                    flash.message = "You do not have the required role to access the ${params.qset.shortName}."
+                    redirect(uri: '/')
+                }
+            }
+        }
     }
 
     def scaffold = true;
