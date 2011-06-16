@@ -60,4 +60,14 @@ class Question {
         guid index:'guid_idx'
     }
 
+    String buildIdent() {
+        String ident = level1
+        if (level2) {
+            ident += "_" + level2
+        }
+        if (level3) {
+            ident += "_" + level3
+        }
+        return ident
+    }
 }
