@@ -390,12 +390,42 @@ span.errors {
     color: red;
 }
 
-span.pageProgress {
-    /*padding-left:160px;*/
+span.pageProgress input {
+    color: transparent;
+    border: none;
+    width: 20px;
+    cursor: pointer;
+    padding: 0 25px 0 25px;
+    background-repeat: no-repeat;
+    background-position: 0 60%;
 }
 
-span.pageProgress img {
-    padding: 1px 0 0 0;
+span.pageProgress input.step-off {
+    background-image: url(../images/abrsskin/step-off.png);
+}
+
+span.pageProgress input.step-on {
+    background-image: url(../images/abrsskin/step-on.png);
+}
+
+span.pageProgress input.first-step-off {
+    background-image: url(../images/abrsskin/first-step-off.png);
+    padding: 0 7px 0 25px;
+}
+
+span.pageProgress input.first-step-on {
+    background-image: url(../images/abrsskin/first-step-on.png);
+    padding: 0 7px 0 25px;
+}
+
+span.pageProgress input.last-step-off {
+    background-image: url(../images/abrsskin/last-step-off.png);
+    padding: 0 25px 0 7px;
+}
+
+span.pageProgress input.last-step-on {
+    background-image: url(../images/abrsskin/last-step-on.png);
+    padding: 0 25px 0 7px;
 }
 
 div.footer {
@@ -461,7 +491,6 @@ input.navButton {
     border: none;
     background-color: transparent;
     margin: 0;
-    vertical-align: bottom;
 }
 
 span.answer {
@@ -486,7 +515,7 @@ p {
 }
 
 div.go-buttons {
-    padding-bottom: 60px;
+    padding-bottom: 20px;
     text-align: center;
 }
 
@@ -581,4 +610,12 @@ h3 {
     color: #ccc;
     padding-left: 5px;
     padding-top: 3px;
+}
+
+input.number {
+    text-align: right;
+}
+
+span.calculated {
+    padding-left: 20px;
 }
