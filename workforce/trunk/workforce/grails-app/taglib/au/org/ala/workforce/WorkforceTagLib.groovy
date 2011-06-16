@@ -3,6 +3,7 @@ package au.org.ala.workforce
 import au.org.ala.cas.util.AuthenticationCookieUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import java.text.NumberFormat
+import java.text.DecimalFormat
 
 class WorkforceTagLib {
 
@@ -364,7 +365,8 @@ class WorkforceTagLib {
             case AnswerType.none:
                 break
             case AnswerType.number:
-                def atts = [name: q.ident(), size: 4, value: q.answerValueStr]
+                def answer = q.answerValueStr?.isNumber() ? NumberFormat.getInstance().format(q.answerValueStr.toFloat()) : q.answerValueStr
+                def atts = [name: q.ident(), size: 8, value: answer, 'class': 'number']
                 if (q.onchangeAction) {
                     atts.put 'onchange', "${q.onchangeAction}();"
                 }
@@ -522,7 +524,7 @@ class WorkforceTagLib {
                         }
                     }
                 }
-                result += hiddenField(name: q.ident(), value: sum) + "<span id='s${q.ident()}'>${sum}</span> " + (q.alabel ?: "")
+                result += hiddenField(name: q.ident(), value: sum) + "<span class='calculated' id='s${q.ident()}'>${sum}</span> " + (q.alabel ?: "")
                 def questionRoot = q.ident()[0..q.ident().lastIndexOf('_')]
                 def start = 1
                 def end = q.owner.questions.size() - 1
@@ -869,8 +871,10 @@ class WorkforceTagLib {
         if (q.questions) {
             // determine layout params
             def layoutParams = extractLayoutHints(q.layoutHint)
+            // determine displayHints
+            def style = q.displayHint?.startsWith('style=') ? " " + q.displayHint : ""
             // create inner table to layout questions and answers
-            result = "<table class='shy'><colgroup><col width='${layoutParams.textWidth}%'/><col width='${layoutParams.widgetWidth}%'/></colgroup>"
+            result = "<table class='shy'${style}><colgroup><col width='${layoutParams.textWidth}%'/><col width='${layoutParams.widgetWidth}%'/></colgroup>"
             q.questions.each {
                 def text = buildText(it) ?: ""
                 def label = makeLabel(it)
@@ -1052,17 +1056,22 @@ class WorkforceTagLib {
         def total = attrs.total
         def pageNumber = attrs.page
         if (pageNumber && total && total > 2) {
+
             def track = pageNumber == 1 ?
-                "<img src='${resource(dir:'/images/abrsskin/', file: 'first-step-on.png')}'/>" :
-                "<a href='${resource(file:'/set/'+ params.set +'/page/1')}'><img src='${resource(dir:'/images/abrsskin/', file: 'first-step-off.png')}'/></a>"
+                actionSubmit(action:'jumpPage', value: 1, class: 'first-step-on') :
+                actionSubmit(action:'jumpPage', value: 1, class: 'first-step-off')
+
             2.upto(total-1) { num ->
                 track += pageNumber == num ?
-                    "<img src='${resource(dir:'/images/abrsskin/', file: 'step-on.png')}'/>" :
-                    "<a href='${resource(file:'/set/'+ params.set +'/page/' + num)}'><img src='${resource(dir:'/images/abrsskin/', file: 'step-off.png')}'/></a>"
+                    actionSubmit(action:'jumpPage', value:num, class: 'step-on') :
+                    actionSubmit(action:'jumpPage', value:num, class: 'step-off')
+                    //"<a href='${resource(file:'/set/'+ params.set +'/page/' + num)}'><img src='${resource(dir:'/images/abrsskin/', file: 'step-off.png')}'/></a>"
             }
+
             track += pageNumber == total ?
-                "<img src='${resource(dir:'/images/abrsskin/', file: 'last-step-on.png')}'/>" :
-                "<a href='${resource(file:'/set/'+ params.set +'/page/'+ total)}'><img src='${resource(dir:'/images/abrsskin/', file: 'last-step-off.png')}'/></a>"
+                actionSubmit(action:'jumpPage', value:total, class: 'last-step-on') :
+                actionSubmit(action:'jumpPage', value:total, class: 'last-step-off')
+
             out << track
         }
     }
