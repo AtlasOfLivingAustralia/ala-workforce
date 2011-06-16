@@ -11,7 +11,8 @@
     <page>10-11</page>
     <page>12-13</page>
     <page>14-14</page>
-    <page>15-18</page>
+    <page>15-16</page>
+    <page>17-18</page>
   </pageSequence>
   <question instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
     <question id="1b591a08-6d45-404a-b483-3a80f64d0139">
@@ -26,35 +27,35 @@
       <validation>percent-total-lessThanOrEqual-100</validation>
       <question id="fdefd907-6690-4633-99d6-5f3497c379e3">
         <text>Scientist/Taxonomist (permanent)</text>
-        <answer dataType="number" label="%" type="percent"/>
+        <answer dataType="integer" label="%" type="percent"/>
       </question>
       <question id="0cd5ec90-f7c8-45a4-bb68-18355239f76f">
         <text>Scientist/Taxonomist (not permanent)</text>
-        <answer dataType="number" label="%" type="percent"/>
+        <answer dataType="integer" label="%" type="percent"/>
       </question>
       <question id="af26a8de-ae11-435f-8abe-dbc9e36f1635">
         <text>Technical (taxonomy) (permanent)</text>
-        <answer dataType="number" label="%" type="percent"/>
+        <answer dataType="integer" label="%" type="percent"/>
       </question>
       <question id="953c86db-eff8-46c7-a351-fb9c6d53b4b2">
         <text>Technical (taxonomy) (not permanent)</text>
-        <answer dataType="number" label="%" type="percent"/>
+        <answer dataType="integer" label="%" type="percent"/>
       </question>
       <question id="76a660b1-db8e-4370-b8cf-cc09ba34d0c0">
         <text>Administrator/Manager</text>
-        <answer dataType="number" label="%" type="percent"/>
+        <answer dataType="integer" label="%" type="percent"/>
       </question>
       <question id="79ba056d-2525-42f4-b547-bec692d8f74e">
         <text>Volunteer/Associate (retired)</text>
-        <answer dataType="number" label="%" type="percent"/>
+        <answer dataType="integer" label="%" type="percent"/>
       </question>
       <question id="926a929b-ae5c-4f53-8694-969f709d8c92">
         <text>Volunteer/Associate (not retired)</text>
-        <answer dataType="number" label="%" type="percent"/>
+        <answer dataType="integer" label="%" type="percent"/>
       </question>
       <question id="9bbb4a78-4904-4f4f-8fbb-285d73917333">
         <text>Other</text>
-        <answer dataType="number" label="%" type="percent"/>
+        <answer dataType="integer" label="%" type="percent"/>
       </question>
     </question>
     <question id="59fc3786-5dc9-4630-a01b-ca63a7bd8553">
@@ -400,7 +401,7 @@
         <answer type="percent"/>
       </question>
       <question id="bdbef96e-1b06-474d-a6e1-3575f25c4241">
-        <answer type="text"/>
+        <answer type="text" requiredIf="../1=*|Other"/>
       </question>
     </question>
   </question>
@@ -595,7 +596,7 @@
     </question>
     <question id="985bde7e-860f-4f4c-8971-3ae4b7c7283c">
       <text>If other please specify</text>
-      <answer dataType="text" type="textarea"/>
+      <answer dataType="text" type="textarea" requiredIf="../1/8=*|Other"/>
     </question>
   </question>
   <question heightHint="10">
@@ -633,13 +634,13 @@
     </question>
     <question id="85f2d7a3-f524-4bea-b3f9-24f3aca27470">
       <text>If other please specify</text>
-      <answer dataType="text" type="textarea"/>
+      <answer dataType="text" type="textarea" requiredIf="../1/8=*|Other"/>
     </question>
   </question>
   <question heightHint="12">
     <text>Below is a list of things related to the costs and opportunities in Taxonomy. Please indicate how much you think these issues impact on the taxonomic workforce.&lt;br/&gt;Do they impact &lt;strong&gt;a lot&lt;/strong&gt;, &lt;strong&gt;a little&lt;/strong&gt; or &lt;strong&gt;not at all&lt;/strong&gt;?</text>
     <shortText>Impact on the taxonomic workforce</shortText>
-    <question id="268da93e-08c5-40dd-8f11-735244c1fc27" type="matrix">
+    <question id="2d3512d4-4d9a-46d2-816b-ed1b208f9736" type="matrix">
       <data>
         <rows>
           <item>Lack of career opportunities</item>
@@ -663,7 +664,7 @@
     </question>
     <question id="3082cfe6-20bb-459f-be35-dfb9d16b82cc">
       <text>If other please specify</text>
-      <answer type="textarea"/>
+      <answer type="textarea" requiredIf="../1/9=*|Other"/>
       <data>
         <align>right</align>
       </data>
@@ -692,7 +693,7 @@
     <question id="00d7dfdd-3d0a-40bd-bb94-0645610604d7">
       <text>If other please specify</text>
       <shortText>Other</shortText>
-      <answer type="textarea"/>
+      <answer type="textarea" requiredIf="../1=~Other"/>
       <data>
         <align>right</align>
       </data>
@@ -710,6 +711,7 @@
       <data>
         <item>Male</item>
         <item>Female</item>
+        <item>Prefer not to answer</item>
       </data>
     </answer>
   </question>
