@@ -123,8 +123,6 @@ class QuestionController {
     }
 
     def jumpPage = {
-        params.each { println it }
-
         // set the destination page
         params.chainTo = [action: 'page', params:[set:params.set, page:params._action_jumpPage.toInteger()]]
 
