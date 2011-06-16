@@ -11,7 +11,15 @@ class QuestionTests extends GrailsUnitTestCase {
         super.tearDown()
     }
 
-    void testSomething() {
+    void testIdent() {
+        Question q = new Question(qset: 1, level1: 6, level2: 0, level3: 0)
+        assert q.buildIdent() == "6"
+
+        q = new Question(qset: 1, level1: 6, level2: 1, level3: 0)
+        assert q.buildIdent() == "6_1"
+
+        q = new Question(qset: 1, level1: 6, level2: 1, level3: 4)
+        assert q.buildIdent() == "6_1_4"
 
     }
 }
