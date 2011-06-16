@@ -106,8 +106,46 @@ class QuestionModel {
             return
         }
 
+        /* This handles the case where selecting other in the previous sibling question acts as a 'gatekeeper' to the
+         * 'If other please specify' text. We don't want to store any entered or default values from the 'if other'
+         * questions if the other option is not selected.
+         *
+         * Implemented by reversing the 'requiredIf' link.
+         */
+        if (requiredIf) {
+            def rif = parseRequiredIf()
+            def onlyIf = getQuestionFromPath(rif.path)
+            switch (rif.comparator) {
+                case "=":
+                    if (onlyIf && onlyIf.answerValueStr != rif.value) {
+                        // do not set the answer as they have not selected the gatekeeper option
+                        return
+                    }
+                    break
+                case "=~":
+                    if (onlyIf && !(onlyIf.answerValueStr =~ rif.value)) {
+                        // do not set the answer as they have not selected the gatekeeper option
+                        return
+                    }
+                    break
+                case "groovyTruth":
+                    if (onlyIf && !onlyIf?.answerValueStr) {
+                        // do not set the answer as they have not answered the gatekeeper option
+                        return
+                    }
+                    break
+            }
+        }
+
         // the default action is to set the property
         this.answerValueStr = answer
+    }
+
+    QuestionModel previousSibling() {
+        if (owner && questionNumber > 1) {
+            return owner.questions[questionNumber - 2]
+        }
+        return null
     }
     
     def validate() {
@@ -144,7 +182,10 @@ class QuestionModel {
                             errorMessage = "${answerValueStr} is not a valid integer"
                         }
                         break
-                    case number:
+                    case [number, integer]:
+                        // remove any commas
+                        answerValueStr = answerValueStr.findAll{it != ','}.join()
+
                         // must be a number
                         if (answerValueStr.isNumber()) {
                             def val = NumberFormat.getInstance().parse(answerValueStr)
@@ -153,11 +194,23 @@ class QuestionModel {
                                 valid = false
                                 errorMessage = "A percentage must be between 0 and 100. Value is ${val}"
                             }
+                            // check if it's an integer if the dataType integer
+                            if (datatype == integer  && !answerValueStr.isInteger()) {
+                                valid = false
+                                errorMessage = "Answer must be a whole number"
+                            }
                             if (adata instanceof JSONObject && adata?.has('min')) {
                                 def min = adata.min
                                 if (val < min) {
                                     valid = false
                                     errorMessage = "Number must not be less than ${min}"
+                                }
+                            }
+                            else {
+                                // default to a min of 0
+                                if (val < 0) {
+                                    valid = false
+                                    errorMessage = "Number cannot be less than 0"
                                 }
                             }
                             if (adata instanceof JSONObject && adata?.has('max')) {
@@ -211,21 +264,26 @@ class QuestionModel {
                     errorMessage = "An answer is required"
                 }
                 if (requiredIf) {
-                    // extract the optional label
-                    def optionalLabel = ""
-                    def opt = requiredIf.tokenize('|')
-                    if (opt.size() > 1) {
-                        optionalLabel = opt[1]
-                    }
-                    // see if condition is satisfied
-                    def condition = opt[0].tokenize('=')
-                    def conditionPath = condition[0]
-                    def conditionValue = condition[1]
-                    /*println "evaluating 'requiredIf': path = ${conditionPath} testvalue = ${conditionValue} " +
-                            "answer = ${getQuestionFromPath(conditionPath)?.answerValueStr}"*/
-                    if (getQuestionFromPath(conditionPath)?.answerValueStr == conditionValue) {
-                        valid = false
-                        errorMessage = "An answer is required if you select '${optionalLabel ?: conditionValue}'"
+                    def rif = parseRequiredIf()
+                    switch (rif.comparator) {
+                        case "=":
+                            if (getQuestionFromPath(rif.path)?.answerValueStr == rif.value) {
+                                valid = false
+                                errorMessage = "An answer is required if you select '${rif.label ?: rif.value}'"
+                            }
+                            break
+                        case "=~":
+                            if (getQuestionFromPath(rif.path)?.answerValueStr?.toLowerCase() =~ rif.value?.toLowerCase()) {
+                                valid = false
+                                errorMessage = "An answer is required if you select '${rif.label ?: rif.value}'"
+                            }
+                            break
+                        case "groovyTruth":
+                            if (getQuestionFromPath(rif.path)?.answerValueStr) {
+                                valid = false
+                                errorMessage = "An answer is required if you specify '${rif.label ?: rif.value}'"
+                            }
+                            break
                     }
                 }
             }
@@ -337,6 +395,31 @@ class QuestionModel {
 
     void clearErrors() {
         errorMessage = ""
+    }
+
+    Map parseRequiredIf() {
+        // extract the optional label
+        def optionalLabel = ""
+        def opt = requiredIf.tokenize('|')
+        if (opt.size() > 1) {
+            optionalLabel = opt[1]
+        }
+        def comparison = '='
+        def condition = opt[0].tokenize('=')
+        def conditionPath = condition[0]
+        def conditionValue = condition[1]
+        if (conditionValue.size() > 0 && conditionValue[0] == '~') {
+            // comparison is 'contains'
+            comparison = '=~'
+            conditionValue = conditionValue[1..-1]
+        }
+        if (conditionValue == '*') {
+            // value is anything (wildcard)
+            comparison = 'groovyTruth'
+        }
+        /*println "evaluating 'requiredIf': path = ${conditionPath} testvalue = ${conditionValue} " +
+                "answer = ${getQuestionFromPath(conditionPath)?.answerValueStr}"*/
+        [label: optionalLabel, path: conditionPath, value: conditionValue, comparator: comparison]
     }
 
     /**
