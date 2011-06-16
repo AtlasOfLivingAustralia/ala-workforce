@@ -346,7 +346,7 @@
       <answer type="text" required="true"/>
     </question>
   </question>
-  <question instruction="We will only record your email address(es) if you agree. However it is desirable that at     least your generic institutional address be made available in the published form of this survey. You may choose to     keep personal email addresses confidential. In these cases please tick �Email is not for publication�. They will     only be used for the purpose for which you have provided them and our own statistical purposes, and will not be     added to a mailing list. We will not use your email addresses for any other purpose, and will not disclose them,     without your consent.">
+  <question instruction="We will only record your email address(es) if you agree. However it is desirable that at least your generic institutional address be made available in the published form of this survey. You may choose to keep personal email addresses confidential. In these cases please tick &quot;Email is not for publication&quot;. They will only be used for the purpose for which you have provided them and our own statistical purposes, and will not be added to a mailing list. We will not use your email addresses for any other purpose, and will not disclose them, without your consent.">
     <text>CONTACT DETAILS</text>
     <question id="fd9c8fe0-099b-41fe-acfe-d4f5878973d3">
       <text>Street Address:</text>
