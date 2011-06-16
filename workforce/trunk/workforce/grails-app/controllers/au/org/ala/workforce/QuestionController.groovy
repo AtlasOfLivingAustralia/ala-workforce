@@ -122,6 +122,16 @@ class QuestionController {
         forward(action: 'leavePage', params:params)
     }
 
+    def jumpPage = {
+        params.each { println it }
+
+        // set the destination page
+        params.chainTo = [action: 'page', params:[set:params.set, page:params._action_jumpPage.toInteger()]]
+
+        // forward to page submission
+        forward(action: 'leavePage', params:params)
+    }
+
     /**
      * Processes page submission when the user leaves a page.
      *
