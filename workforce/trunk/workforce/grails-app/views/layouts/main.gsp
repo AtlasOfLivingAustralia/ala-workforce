@@ -3,6 +3,8 @@
 <html>
     <head>
         <title><g:layoutTitle default="ABRS Surveys" /></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8; IE=EmulateIE9">
         <meta name="app.version" content="${g.meta(name:'app.version')}"/>
         <meta name="app.build" content="${g.meta(name:'app.build')}"/>
         <link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}" />
