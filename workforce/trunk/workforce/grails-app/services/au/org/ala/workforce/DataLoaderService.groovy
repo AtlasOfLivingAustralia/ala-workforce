@@ -227,13 +227,14 @@ class DataLoaderService implements ApplicationContextAware {
             // ident is a temp id string to provide scope for defaults
 
             def l1, l2, l3
-            String ident
             switch (level) {
-                case 1: l1 = idx + 1; l2 = 0; l3 = 0; ident=l1; break;
-                case 2: l1 = level1; l2 = idx + 1; l3 = 0; ident=l1 + "_" + l2; break;
-                case 3: l1 = level1; l2 = level2; l3 = idx + 1; ident=l1 + "_" + l2 + "_" + l3; break;
+                case 1: l1 = idx + 1; l2 = 0; l3 = 0; break;
+                case 2: l1 = level1; l2 = idx + 1; l3 = 0; break;
+                case 3: l1 = level1; l2 = level2; l3 = idx + 1; break;
             }
             Question q = new Question(qset: set, level1: l1, level2: l2, level3: l3)
+            def ident = q.buildIdent()
+            assert ident: "qset: ${set}, level1: ${l1}, level2: ${l2}, level3: ${l3}"
             // reset defaults for new top level question
             if (level == 1) {
                 defaults = [:]
@@ -249,17 +250,16 @@ class DataLoaderService implements ApplicationContextAware {
                 q.validation = 'ranking-group'
             }
             q.label = it.label
-            q.layoutHint = valueOrDefault(it.layoutHint, defaults, ident)
-            q.displayHint = valueOrDefault(it.displayHint, defaults, ident)
+            q.layoutHint = valueOrDefault('layoutHint', it.layoutHint.text(), defaults, ident)
+            q.displayHint = valueOrDefault('displayHint', it.displayHint.text(), defaults, ident)
             q.qdata = extractJsonString(it.data) as grails.converters.JSON
             q.qtext = it.text
             q.subtext = it.subtext
             q.shorttext = it.shortText
             q.onchangeAction = it.onchange
-            def atype = valueOrDefault(it.answer?.@type, defaults, ident)
+            def atype = valueOrDefault('type', it.answer?.@type?.text(), defaults, ident)
             q.atype = atype ? AnswerType.valueOf(atype as String) : AnswerType.none
-            def datatype = valueOrDefault(it.answer?.@dataType, defaults, ident)
-
+            def datatype = valueOrDefault('dataType', it.answer?.@dataType?.text(), defaults, ident)
             if (datatype) {
                 q.datatype = AnswerDataType.valueOf(datatype as String)
             } else {
@@ -326,7 +326,12 @@ class DataLoaderService implements ApplicationContextAware {
                 // auto-generate a question for this cell of the matrix
                 Question q = new Question(qset: set, level1: matrixQuestion.level1, level2: matrixQuestion.level2, level3: questionIdx++)
                 q.qtype = QuestionType.none
-                q.datatype = AnswerDataType.number//valueOf(defaults.defaultDataType) as AnswerDataType
+                String datatype = valueOrDefault('dataType', '', defaults, q.buildIdent())
+                if (datatype) {
+                    q.datatype = AnswerDataType.valueOf(datatype) as AnswerDataType
+                } else {
+                    q.datatype = AnswerDataType.number
+                }
                 q.atype = AnswerType.number//valueOf(defaults.defaultAnswerType) as AnswerType
                 q.required = false //TODO for now
                 q.adata = [row:row, col:col] as JSON
@@ -435,11 +440,11 @@ class DataLoaderService implements ApplicationContextAware {
             defaults."${ident + 'defaultType'}" = node.@defaultAnswerType.text()
         }
         if (node.@defaultDataType.text()) {
-            //println "Setting default dataType to ${node.@defaultDataType.text()}"
+            //println "Setting default dataType (${ident + 'defaultDataType'}) to ${node.@defaultDataType.text()}"
             defaults."${ident + 'defaultDataType'}" = node.@defaultDataType.text()
         }
         if (node.@defaultDisplayHint.text()) {
-            //println "Setting default displayHint to ${node.@defaultDisplayHint.text()}"
+            //println "Setting default displayHint () to ${node.@defaultDisplayHint.text()}"
             defaults."${ident + 'defaultDisplayHint'}" = node.@defaultDisplayHint.text()
         }
         if (node.@defaultLayoutHint.text()) {
@@ -453,17 +458,18 @@ class DataLoaderService implements ApplicationContextAware {
      * Extract default values from the defaults map if there is no explicit value.
      *
      * Only use defaults set by a parent question.
-     * @param node xml node being processed
+     * @param name of element being processed
+     * @param text of the element - used if available
      * @param defaults map of default values
      * @param ident a string representation of the position of the question in the question hierarchy
      * @return the explicit value or any applicable defaults
      */
-    def valueOrDefault(node, defaults, ident) {
-        def name = node.name()
+    def valueOrDefault(name, text, defaults, ident) {
         //println "name = " + name
         //defaults.each { key, value -> println "${key}=${value}"}
-        if (node?.text()) {
-            node.text()
+        if (text) {
+            //println "using node text ${text}"
+            text
         } else {
             def levels = ident.tokenize('_')
             switch (levels.size()) {
