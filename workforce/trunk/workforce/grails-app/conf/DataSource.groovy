@@ -27,8 +27,8 @@ environments {
         dataSource {
             dbCreate = "update"
             //url = "jdbc:mysql://ala-testweb1.vm.csiro.au:3306/workforce?autoReconnect=true&connectTimeout=0"
-            url = "jdbc:mysql://ala-testdb1.vm.csiro.au:3306/workforce?autoReconnect=true&connectTimeout=0"
-            //url = "jdbc:mysql://localhost:3306/workforce?autoReconnect=true&connectTimeout=0"
+            //url = "jdbc:mysql://ala-testdb1.vm.csiro.au:3306/workforce?autoReconnect=true&connectTimeout=0"
+            url = "jdbc:mysql://localhost:3306/workforce?autoReconnect=true&connectTimeout=0"
         }
     }
     production {
