@@ -91,8 +91,8 @@ environments {
         security.cas.appServerName = "http://woodfired.ala.org.au:8090"
     }
     testserver {
-        grails.serverURL = "http://ala-testweb1.vm.csiro.au/${appName}"
-        security.cas.appServerName = "http://ala-testweb1.vm.csiro.au"
+        grails.serverURL = "http://hudson.ala.org.au:8080/${appName}"
+        security.cas.appServerName = "http://hudson.ala.org.au:8080"
     }
     test {
         grails.serverURL = "http://localhost:8090/${appName}"
