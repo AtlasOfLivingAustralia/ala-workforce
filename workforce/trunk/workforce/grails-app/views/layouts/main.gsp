@@ -41,7 +41,7 @@
     <body>
         <div class='header'>
             <img class="left" src="${resource(dir:'/images/abrsskin/', file: 'logo-environment.gif')}"/>
-            <img class="right" src="${resource(dir:'/images/abrsskin/', file: 'abrs-logo-white.png')}"/>
+            <img class="right" src="${resource(dir:'/images/abrsskin/', file: 'abrs-logo-white-on-green.png')}"/>
             <span>Australian Biological Resources Study</span>
         </div>
         <div class="login-info">
