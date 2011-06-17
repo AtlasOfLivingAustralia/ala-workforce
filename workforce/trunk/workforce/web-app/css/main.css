@@ -392,40 +392,48 @@ span.errors {
 
 span.pageProgress input {
     color: transparent;
+    _color: white;  /* IE6 */
     border: none;
     width: 20px;
     cursor: pointer;
-    padding: 0 25px 0 25px;
     background-repeat: no-repeat;
     background-position: 0 60%;
 }
 
 span.pageProgress input.step-off {
-    background-image: url(../images/abrsskin/step-off.png);
+    background-image: url(../images/abrsskin/step-off.gif);
+    padding: 0 25px 0 25px;
+    width: 50px;  /* IE6 */
 }
 
 span.pageProgress input.step-on {
-    background-image: url(../images/abrsskin/step-on.png);
+    background-image: url(../images/abrsskin/step-on.gif);
+    padding: 0 25px 0 25px;
+    width: 50px;  /* IE6 */
 }
 
 span.pageProgress input.first-step-off {
-    background-image: url(../images/abrsskin/first-step-off.png);
+    background-image: url(../images/abrsskin/first-step-off.gif);
     padding: 0 7px 0 25px;
+    width: 33px;  /* IE6 */
 }
 
 span.pageProgress input.first-step-on {
-    background-image: url(../images/abrsskin/first-step-on.png);
+    background-image: url(../images/abrsskin/first-step-on.gif);
     padding: 0 7px 0 25px;
+    width: 33px;  /* IE6 */
 }
 
 span.pageProgress input.last-step-off {
-    background-image: url(../images/abrsskin/last-step-off.png);
+    background-image: url(../images/abrsskin/last-step-off.gif);
     padding: 0 25px 0 7px;
+    width: 33px;  /* IE6 */
 }
 
 span.pageProgress input.last-step-on {
-    background-image: url(../images/abrsskin/last-step-on.png);
+    background-image: url(../images/abrsskin/last-step-on.gif);
     padding: 0 25px 0 7px;
+    width: 33px;  /* IE6 */
 }
 
 div.footer {
