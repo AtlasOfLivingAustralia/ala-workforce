@@ -578,6 +578,7 @@ class WorkforceTagLib {
     private String layoutAnswer(QuestionModel q) {
         if (q.answerValueStr) {
             String result = "<span class='answer'>"
+            
             switch (q.atype) {
                 case AnswerType.bool:
                     if (q.answerValueStr?.toLowerCase() in ['yes', 'true', 'on']) {
@@ -586,24 +587,10 @@ class WorkforceTagLib {
                         result += "No"
                     }
                     break
-                case AnswerType.none:
-                    result += q.answerValueStr
-                    break
-                case AnswerType.number:
-                    result += q.answerValueStr
-                    break
-                case AnswerType.radio:
-                    result += q.answerValueStr
-                    break
-                case AnswerType.text:
-                    result += q.answerValueStr
-                    break
-                case AnswerType.textarea:
-                    result += q.answerValueStr
-                    break
                 case AnswerType.percent:
                     result += q.answerValueStr + "%"
                     break
+
                 case AnswerType.range:
                     if (q.answerValueStr.endsWith("-")) {
                         result += "${q.answerValueStr.replace('-', '')} and over"
@@ -611,15 +598,8 @@ class WorkforceTagLib {
                         result += q.answerValueStr
                     }
                     break
-                case AnswerType.rank:
+                default:
                     result += q.answerValueStr
-                    break
-                case AnswerType.externalRef:
-                    result += q.answerValueStr
-                    break
-                case AnswerType.preload:
-                    result += q.answerValueStr
-                    break
             }
 
             return result + "</span>"
