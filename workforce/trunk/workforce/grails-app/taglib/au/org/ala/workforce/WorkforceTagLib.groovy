@@ -5,6 +5,13 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import java.text.NumberFormat
 import java.text.DecimalFormat
 
+/**
+ * Notes:
+ *
+ * radio buttons must have class='radio' to style background color and border as IE6 doesn't handle attribute selectors
+ * checkboxes must have class='checkbox' to style background color and border as IE6 doesn't handle attribute selectors
+ */
+
 class WorkforceTagLib {
 
     static namespace = 'wf'
@@ -356,10 +363,10 @@ class WorkforceTagLib {
                 def yesChecked = (q.answerValueStr?.toLowerCase() in ['yes', 'true', 'on']) ? 'checked' : ''
                 def noChecked = (q.answerValueStr?.toLowerCase() in ['no', 'false']) ? 'checked' : ''
                 if (q.displayHint == 'checkbox') {
-                    result += "<input type='checkbox' name='${q.ident()}' ${yesChecked}/>"
+                    result += "<input class='checkbox' type='checkbox' name='${q.ident()}' ${yesChecked}/>"
                 } else {
-                    result += "<input type='radio' name='${q.ident()}' id='yes' value='yes' ${yesChecked}/><label for='yes'>Yes</label>"
-                    result += "<input type='radio' name='${q.ident()}' id='no' value='no' ${noChecked}/><label for='no'>No</label>"
+                    result += "<input class='radio' class='radio' type='radio' name='${q.ident()}' id='yes' value='yes' ${yesChecked}/><label for='yes'>Yes</label>"
+                    result += "<input class='radio' type='radio' name='${q.ident()}' id='no' value='no' ${noChecked}/><label for='no'>No</label>"
                 }
                 break
             case AnswerType.none:
@@ -377,7 +384,7 @@ class WorkforceTagLib {
                 def items = []
                 q.adata.eachWithIndex { it, idx ->
                     def checked = it == q.answerValueStr ? 'checked' : ''
-                    items << "<input type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' value='${it}' ${checked}/><label for='${q.ident()}_${idx}'>${it}</label>"
+                    items << "<input class='radio' type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' value='${it}' ${checked}/><label for='${q.ident()}_${idx}'>${it}</label>"
                 }
                 if (items.size() == 2) {
                     // treat as boolean with arbitrary labels
@@ -434,7 +441,7 @@ class WorkforceTagLib {
                 items.eachWithIndex { it, idx ->
                     def checked = (it.value == q.answerValueStr) ? "checked" : ""
                     def id = "${q.ident()}_${idx}"
-                    widgets << "<input type='radio' name='${q.ident()}' id='${id}' ${checked} value='${it.value}'/>"+
+                    widgets << "<input class='radio' type='radio' name='${q.ident()}' id='${id}' ${checked} value='${it.value}'/>"+
                             "<label for='${id}'>${it.label}</label><br/>"
                 }
 
@@ -756,7 +763,7 @@ class WorkforceTagLib {
 
             cols.eachWithIndex { col, idx ->
                 def selected = (col == q2.answerValueStr) ? " checked" : ""
-                def widget = "<input type='radio'${selected} name='${ident}' id='${ident}_${idx}' value='${col}'/>" //TODO: handle error markup
+                def widget = "<input class='radio' type='radio'${selected} name='${ident}' id='${ident}_${idx}' value='${col}'/>" //TODO: handle error markup
                 content += "<td style='text-align:center' width='15%'>" + widget + "</td>"
             }
             content += "</tr>"
