@@ -393,7 +393,9 @@ span.errors {
 span.pageProgress input {
     color: transparent;
     _color: white;  /* IE6 */
-    border: none;
+    *padding-left: 1000px !important;  /* IE7 */
+    text-indent: -999px; /* IE8 */
+    border: none;  /* IE6 */
     width: 20px;
     cursor: pointer;
     background-repeat: no-repeat;
@@ -627,3 +629,16 @@ input.number {
 span.calculated {
     padding-left: 20px;
 }
+
+/* for IE6 - radio buttons must have class='radio' as IE6 doesn't handle attribute selectors */
+input.radio {
+    background-color: #f2ebbd;
+    border:  0;
+}
+
+/* for IE6 - checkboxes must have class='checkbox' as IE6 doesn't handle attribute selectors */
+input.checkbox {
+    background-color: #f2ebbd;
+    border:  0;
+}
+
