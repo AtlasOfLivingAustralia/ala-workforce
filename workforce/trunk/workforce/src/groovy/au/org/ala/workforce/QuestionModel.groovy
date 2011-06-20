@@ -220,6 +220,12 @@ class QuestionModel {
                                     errorMessage = "Number must not be greater than ${max}"
                                 }
                             }
+                            else if (datatype == integer) {
+                                if (val > 2000000000) {
+                                    valid = false
+                                    errorMessage = "Number must not be greater than 2 billion"
+                                }
+                            }
                         }
                         else {
                             valid = false
