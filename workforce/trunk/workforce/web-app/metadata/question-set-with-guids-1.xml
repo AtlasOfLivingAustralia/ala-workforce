@@ -288,7 +288,7 @@
       </data>
     </question>
   </question>
-  <question defaultLayoutHint="align-with-level3">
+  <question defaultLayoutHint="align-with-level3" defaultDataType="integer">
     <text>Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?</text>
     <shortText>Percentage of full time work</shortText>
     <validation>percent-total-lessThanOrEqual-100</validation>
