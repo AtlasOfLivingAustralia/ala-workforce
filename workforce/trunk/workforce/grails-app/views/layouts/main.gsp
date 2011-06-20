@@ -12,31 +12,6 @@
         <g:layoutHead />
         <g:javascript library="application" />
         <g:javascript library="jquery" plugin="jquery"/>
-        <style type="text/css" media="screen">
-            div.header {
-                background-color: #497136;
-                height: 120px;
-            }
-            img.left {
-                padding-right: 15px;
-                padding-top: 20px;
-                padding-left: 25px;
-            }
-            img.right {
-                padding-right: 15px;
-                padding-top: 10px;
-                padding-left: 20px;
-                float: right;
-            }
-            div.header span {
-                font-size: 17px;
-                font-weight: bold;
-                padding-top: 50px;
-                color: white;
-                float: right;
-            }
-        </style>
-
     </head>
     <body>
         <div class='header'>
@@ -56,7 +31,7 @@
         </div>
         <g:layoutBody />
         <div class='footer'>
-            <img src="${resource(dir:'images',file:'atlas-poweredby_rgb-lightbg.png')}"/>
+            <a href="http://www.ala.org.au"><img src="${resource(dir:'images',file:'atlas-poweredby_rgb-lightbg.png')}"/></a>
         </div>
     </body>
 </html>
