@@ -57,7 +57,7 @@
                         <g:each var='question' in="${questions}" status="count">
                           <wf:question question="${question}"/>
                           <g:if test="${count < questions.size() - 1}">
-                              <tr><td colspan='3'></td></tr>
+                              <tr><td colspan='3' style='*height: 14px'></td></tr>
                           </g:if>
                         </g:each>
 
