@@ -435,7 +435,7 @@
   </question>
   <question id="c294008f-94b8-4331-900a-624f86e7b892">
     <text>Is there an ASSOCIATED LIVING COLLECTION?</text>
-    <shortText>Associated living collection</shortText>
+    <shortText>ASSOCIATED LIVING COLLECTION</shortText>
     <data>YES/NO</data>
     <answer dataType="bool" type="bool" required="true"/>
     <question id="87134522-1d23-4688-9143-04bc871265f2">
@@ -664,9 +664,9 @@
       </answer>
     </question>
   </question>
-  <question instructionPosition="top" instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) and spends     half their research time, for example, on mammals please indicate this as Mammals Scientist/Taxonomist as 0.25     (ie half their research time). Similarly with part-time staff please indicate proportion of full time duties     undertaken. The number of publications field includes scientific articles, books and reports for the surveyed period">
+  <question instructionPosition="top" instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) and spends half their research time, for example, on mammals please indicate this as Mammals Scientist/Taxonomist as 0.25 (ie half their research time). Similarly with part-time staff please indicate proportion of full time duties     undertaken. The number of publications field includes scientific articles, books and reports for the surveyed period">
     <text>Please provide the following details against specialty on your taxonomic staff, support and publications.</text>
-    <shortText>Proportion of duties</shortText>
+    <shortText>PROPORTION OF DUTIES</shortText>
     <question defaultDataType="number" defaultAnswerType="number" type="matrix">
       <text>SPECIALTY</text>
       <data>
