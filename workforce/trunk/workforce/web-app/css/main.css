@@ -121,6 +121,10 @@ div.errors {
     margin: 10px 0 5px 0;
     padding: 5px 0 5px 0;
 }
+td div.errors {
+    margin:  0;
+    padding:  0;
+}
 div.errors ul {
     list-style: none;
     padding: 0;
@@ -213,6 +217,10 @@ table.questions td {
     padding: 6px;
     font-size: 14px;
     line-height: 15px;
+}
+
+table.questions td span.calculated {
+    font-size: 12px;
 }
 
 table.questions label {
@@ -642,5 +650,30 @@ input.radio {
 input.checkbox {
     background-color: #f2ebbd;
     border:  0;
+}
+
+div.header {
+    background-color: #497136;
+    height: 120px;
+}
+img.left {
+    padding-right: 15px;
+    padding-top: 20px;
+    padding-left: 25px;
+    float: left;
+}
+img.right {
+    padding-right: 15px;
+    padding-top: 10px;
+    padding-left: 20px;
+    float: right;
+}
+div.header span {
+    font-size: 17px;
+    font-weight: bold;
+    padding-top: 50px;
+    color: white;
+    float: right;
+    text-align: center;
 }
 
