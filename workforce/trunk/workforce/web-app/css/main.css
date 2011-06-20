@@ -222,10 +222,12 @@ table.questions label {
 
 table.questions input[type='radio'] {
     margin-bottom: 10px;
+    *margin-bottom: 0;
     background-color: #f2ebbd;
     border: 0;
 }
 table.questions input[type='checkbox'] {
+    *margin-bottom: 0;
     background-color: #f2ebbd;
     border: 0;
 }
