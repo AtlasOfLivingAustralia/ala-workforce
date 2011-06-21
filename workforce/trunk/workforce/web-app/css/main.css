@@ -115,6 +115,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 div.errors {
+    height: 22px;
     background: #fff3f3;
     border: 1px solid red;
     color: #cc0000;
