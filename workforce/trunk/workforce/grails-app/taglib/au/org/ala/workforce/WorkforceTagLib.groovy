@@ -559,7 +559,11 @@ class WorkforceTagLib {
         }
 
         if (q.errorMessage) {
-            result = "<div class='errors'>" + result + "</div>"
+            if (q.level == 3) {
+                result = "<div class='errors'>" + result + "</div>"
+            } else {
+                result = "<div class='errors' style='height:24px'>" + result + "</div>"
+            }
         }
 
         return result
