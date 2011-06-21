@@ -20,7 +20,7 @@ class Answer {
     // all properties are required but the answer may be blank
     static constraints = {
         guid(maxSize:36)
-        answerValue(nullable: true)
+        answerValue(nullable:true, maxSize:10000)
     }
 
     static transients = ['started']
