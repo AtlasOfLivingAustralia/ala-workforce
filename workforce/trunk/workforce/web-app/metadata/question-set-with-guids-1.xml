@@ -401,7 +401,7 @@
         <answer type="percent"/>
       </question>
       <question id="bdbef96e-1b06-474d-a6e1-3575f25c4241">
-        <answer type="text" requiredIf="../1=*|Other"/>
+        <answer type="text" dataType="text" requiredIf="../1=*|Other"/>
       </question>
     </question>
   </question>
