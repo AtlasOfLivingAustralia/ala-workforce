@@ -561,7 +561,7 @@ class WorkforceTagLib {
         if (q.errorMessage) {
             if (q.level == 3) {
                 result = "<div class='errors'>" + result + "</div>"
-            } else {
+            } else if (q.level == 2 && q.atype != AnswerType.none) {
                 result = "<div class='errors' style='height:24px'>" + result + "</div>"
             }
         }
