@@ -372,7 +372,8 @@ class WorkforceTagLib {
             case AnswerType.none:
                 break
             case AnswerType.number:
-                def answer = q.answerValueStr?.isNumber() ? NumberFormat.getInstance().format(q.answerValueStr.toFloat()) : q.answerValueStr
+                def answer = q.answerValueStr?.isNumber() ? NumberFormat.getInstance().format(q.answerValueStr.toDouble()) : q.answerValueStr
+                println "answer str is ${q.answerValueStr}; formatted answer is ${answer}" 
                 def atts = [name: q.ident(), size: 8, value: answer, 'class': 'number']
                 if (q.onchangeAction) {
                     atts.put 'onchange', "${q.onchangeAction}();"
