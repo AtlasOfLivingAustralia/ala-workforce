@@ -559,9 +559,9 @@ class WorkforceTagLib {
         }
 
         if (q.errorMessage) {
-            if (q.level == 3) {
+            if (q.level == 3 || q.atype == AnswerType.textarea) {
                 result = "<div class='errors'>" + result + "</div>"
-            } else if (q.level == 2 && q.atype != AnswerType.none) {
+            } else if (q.level == 2 && q.atype == AnswerType.text) {
                 result = "<div class='errors' style='height:24px'>" + result + "</div>"
             }
         }
