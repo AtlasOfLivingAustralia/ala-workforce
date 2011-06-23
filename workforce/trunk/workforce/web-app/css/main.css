@@ -523,9 +523,7 @@ div.right img {
 }
 
 div.links {
-    padding-top: 40px;
-    padding-left: 80px;
-    padding-bottom: 30px;
+    padding: 40px 80px 30px 80px;
 }
 
 p {
