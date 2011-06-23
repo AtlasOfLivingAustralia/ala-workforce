@@ -44,7 +44,7 @@
                             <h3>Respondents</h3>
                             <p style="margin-top: 5px;">Click a name to show answers.</p>
                             <ul class="respondents">
-                            <g:each in="${User.list(sort:'name')}" var="u">
+                            <g:each in="${User.getUsersWithAnswers(qset.setId, year as int)}" var="u">
                                 <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:u.userid]}">${u.name}</g:link></li>
                             </g:each>
                             </ul>
@@ -54,8 +54,9 @@
                             <h3>Institutions</h3>
                             <p style="margin-top: 5px;">Click a name to show answers.</p>
                             <ul class="respondents">
+                                <g:set var="users" value="${User.getUsersWithAnswers(qset.setId, year as int)}"/>
                                 <g:each in="${Institution.findAllBySetId(qset.setId)}" var="i">
-                                    <g:set var="userid" value="${User.findByName(i.account)?.userid}"/>
+                                    <g:set var="userid" value="${users.find{it.name == i.account}?.userid}"/>
                                     <g:if test="${userid}">
                                         <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:userid]}">${i.name}</g:link></li>
                                     </g:if>
