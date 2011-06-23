@@ -236,7 +236,7 @@ class QuestionController {
             render(view: "questions", model: [qset: QuestionSet.findBySetId(params.set as int),
                      pagination: buildPagination(params),
                      questions: questionList, errors:errors])
-         } else {
+        } else {
             // save the answers
             questionList.each {q1 ->
                 q1.saveAllAnswers(userId())
