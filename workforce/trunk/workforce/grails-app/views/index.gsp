@@ -14,10 +14,16 @@
             <g:if test="${type == 'personal'}">
                 <p>If you work in taxonomy in an Australian context, please complete the
                   <g:link controller="question" action="page" params='[set:1,page:1]'><strong>Australian Taxonomic Workforce - Personal Survey</strong></g:link>.</p>
+                <p>The survey questions are presented over a number of pages. Your answers are saved each time you exit a page.
+                You can partially fill in the survey and return to it at a later time.
+                Click the 'Finish' link on the last page when you have completed the survey.</p>
             </g:if>
             <g:elseif test="${type == 'institution'}">
                 <p>If you are responsible for an Australian natural science collection, please complete the
                     <g:link controller="question" action="page" params='[set:2,page:1]'><strong>Resources of Australian Natural Science Collections Survey</strong></g:link>.</p>
+                <p>The survey questions are presented over a number of pages. Your answers are saved each time you exit a page.
+                You can partially fill in the survey and return to it at a later time.
+                Click the 'Finish' link on the last page when you have completed the survey.</p>
             </g:elseif>
             <g:else>
                 <p>You need to log in to answer a survey.</p>
