@@ -18,7 +18,7 @@ class AdminController {
         }
 
         // render the page
-        [qset: qset, started: numberStarted, completed: numberCompleted, total: total]
+        [qset: qset, year: currentYear, started: numberStarted, completed: numberCompleted, total: total]
     }
 
     def index = {
