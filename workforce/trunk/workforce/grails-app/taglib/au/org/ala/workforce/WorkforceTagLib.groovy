@@ -560,7 +560,7 @@ class WorkforceTagLib {
         }
 
         if (q.errorMessage) {
-            if (q.level == 3 || q.atype == AnswerType.textarea) {
+            if (q.level == 1 || q.level == 3 || q.atype == AnswerType.textarea) {
                 result = "<div class='errors'>" + result + "</div>"
             } else if (q.level == 2 && q.atype == AnswerType.text) {
                 result = "<div class='errors' style='height:24px'>" + result + "</div>"
@@ -1116,20 +1116,21 @@ class WorkforceTagLib {
 
     def reportNavigation = { attrs ->
         User user = attrs.user
-        def users = User.list([sort:'name'])
+        def users = attrs.users
         def userIndex = users.findIndexOf{ it == user }
-        def result = ''
-
-        if (userIndex != -1) {
-            result = "<div style='float: right; padding: 25px 0px; margin-right: 0; *margin-right: 50%'>"
-            if (userIndex > 0) {
-                result += "<span><a href='${resource(file:'/report/'+ params.set +'/user/' + users[userIndex-1].userid)}'>prev</a></span>"
-            }
-            if (userIndex < users.size() - 1) {
-                result += "<span style='padding-left: 20px'><a href='${resource(file:'/report/'+ params.set +'/user/' + users[userIndex+1].userid)}'>next</a></span>"
-            }
-            result += "</div>"
+        if (userIndex == -1) {
+            userIndex = 0
         }
+        def result
+
+        result = "<div style='float: right; padding: 25px 0px; margin-right: 0; *margin-right: 50%'>"
+        if (userIndex > 0) {
+            result += "<span><a href='${resource(file:'/report/'+ params.set +'/user/' + users[userIndex-1].userid)}'>prev</a></span>"
+        }
+        if (userIndex < users.size() - 1) {
+            result += "<span style='padding-left: 20px'><a href='${resource(file:'/report/'+ params.set +'/user/' + users[userIndex+1].userid)}'>next</a></span>"
+        }
+        result += "</div>"
 
         out << result
     }
