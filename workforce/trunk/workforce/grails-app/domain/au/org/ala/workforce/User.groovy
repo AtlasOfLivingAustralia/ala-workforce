@@ -35,5 +35,20 @@ class User {
         }
         return u
     }
-    
+
+    static List getUsersWithAnswers(int setId, int year) {
+        def from = new GregorianCalendar(year, Calendar.JANUARY, 1)
+        def to = new GregorianCalendar(year+1, Calendar.JANUARY, 1)
+        def names = User.executeQuery(
+                 "select distinct u.name from User as u, Answer as a " +
+                 "where a.setId = :set " +
+                 "and a.lastUpdated >= :from and a.lastUpdated < :to " +
+                 "and u.userid = a.userId " +
+                 "order by name", [set: setId, from: from.time, to: to.time])
+        def users = []
+        names.each {
+            users << User.findByName(it)
+        }
+        return users
+    }
 }
