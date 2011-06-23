@@ -15,16 +15,22 @@ class ReportController {
         def setId = params.set as int ?: 1
         def qset = QuestionSet.findBySetId(setId)
 
+        def year = DateUtil.getYear(params.year)
+        def users = User.getUsersWithAnswers(setId, year)
+
         def loggedInUserId = request.userPrincipal.attributes.userid as int
         def userId = params.id as int ?: loggedInUserId
-        if (userId != loggedInUserId && !(request.isUserInRole('ROLE_ABRS_ADMIN') || request.isUserInRole('ROLE_ADMIN'))) {
+        User user
+        if (request.isUserInRole('ROLE_ABRS_ADMIN') || request.isUserInRole('ROLE_ADMIN')) {
+            user = users[0]
+            userId = user.userid
+        } else if (userId != loggedInUserId) {
             userId = loggedInUserId
+            user = User.findByUserid(userId)
         }
-        def user = User.findByUserid(userId)
 
         def questions = Question.findAllByLevel2AndQset(0, setId)
 
-        def year = DateUtil.getYear(params.year)
         def answers = Answer.getAnswers(setId, userId, year)
         questions.each {
             questionList <<  modelLoaderService.loadQuestionWithAnswer(setId, it.level1, answers)
@@ -33,7 +39,7 @@ class ReportController {
         assert questionList
 
         // render the page
-        [qset: qset, questions: questionList, user: user]
+        [qset: qset, questions: questionList, users: users, user: user]
     }
 
     
