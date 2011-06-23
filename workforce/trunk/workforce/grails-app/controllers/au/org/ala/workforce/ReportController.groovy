@@ -19,12 +19,17 @@ class ReportController {
         def users = User.getUsersWithAnswers(setId, year)
 
         def loggedInUserId = request.userPrincipal.attributes.userid as int
-        def userId = params.id as int ?: loggedInUserId
+        def userId
         User user
         if (request.isUserInRole('ROLE_ABRS_ADMIN') || request.isUserInRole('ROLE_ADMIN')) {
-            user = users[0]
-            userId = user.userid
-        } else if (userId != loggedInUserId) {
+            if (params.id) {
+                userId = params.id as int
+                user = users.find{it.userid == userId}
+            } else {
+                user = users[0]
+                userId = user.userid
+            }
+        } else {
             userId = loggedInUserId
             user = User.findByUserid(userId)
         }
