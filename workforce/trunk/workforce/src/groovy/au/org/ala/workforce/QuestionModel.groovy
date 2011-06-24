@@ -381,15 +381,22 @@ class QuestionModel {
                 }
                 if (valid) {
                     def reason = ''
+                    def offendingRank
                     (1..maxRequired).each { rank ->
                         def occurs = answerSet.findAll {it == rank}.size()
                         if (occurs != 1) {
                             reason = "The rank ${rank} appears ${occurs} times"
+                            offendingRank = rank as String
                             valid = false
                         }
                     }
                     if (!valid) {
                         errorMessage = "Answers must contain the numbers 1 to ${maxRequired} exactly once each. (${reason})"
+                        questions.each {
+                            if (it.answerValueStr == offendingRank) {
+                                it.errorMessage = errorMessage
+                            }
+                        }
                         errors.put ident(), errorMessage
                         println "Error in ${ident()}: ${errorMessage}"
                     }
