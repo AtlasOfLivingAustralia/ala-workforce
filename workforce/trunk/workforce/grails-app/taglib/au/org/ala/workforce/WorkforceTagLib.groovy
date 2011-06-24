@@ -560,11 +560,11 @@ class WorkforceTagLib {
         }
 
         if (q.errorMessage) {
-            if (q.level == 1 || q.level == 3 || q.atype == AnswerType.textarea) {
-                result = "<div class='errors'>" + result + "</div>"
-            } else if (q.level == 2 && q.atype == AnswerType.text) {
-                result = "<div class='errors' style='height:24px'>" + result + "</div>"
+            def style = ''
+            if (q.level == 2 && q.atype != AnswerType.none && q.atype != AnswerType.radio && q.atype != AnswerType.textarea) {
+                style = "style='height:24px'"
             }
+            result = "<div class='errors' ${style}>" + result + "</div>"
         }
 
         return result
