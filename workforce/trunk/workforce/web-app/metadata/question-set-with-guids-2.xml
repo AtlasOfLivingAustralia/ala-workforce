@@ -363,7 +363,7 @@
     <question id="4ef2bf98-8961-4d4f-a601-996e8a5cf007" type="pick">
       <text>State</text>
       <displayHint>dropdown</displayHint>
-      <answer type="externalRef">
+      <answer type="externalRef" required="true">
         <data>state</data>
       </answer>
     </question>
