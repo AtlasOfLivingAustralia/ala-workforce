@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.workforce.QuestionModel" %>
+<%@ page import="au.org.ala.workforce.Institution; au.org.ala.workforce.QuestionModel" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -22,12 +22,17 @@
             <div class="message">${flash.message}</div>
             </g:if>
             <g:if test="${user}">
-                <g:if test="${user.firstName && user.lastName}">
-                    <div style='float: left; padding: 25px 0px'>Answers for ${user.firstName} ${user.lastName}</div>
+                <g:if test="${qset.setId == 1}">
+                    <g:if test="${user.firstName && user.lastName}">
+                        <div style='float: left; padding: 25px 0px'>Answers for ${user.firstName} ${user.lastName}</div>
+                    </g:if>
+                    <g:else>
+                        <div style='float: left; padding: 25px 0px'>Answers for ${user.name}</div>
+                    </g:else>
                 </g:if>
-                <g:else>
-                    <div style='float: left; padding: 25px 0px'>Answers for ${user.name}</div>
-                </g:else>
+                <g:if test="${qset.setId == 2}">
+                    <div style='float: left; padding: 25px 0px'>Answers for ${Institution.findByAccount(user.name).name}</div>
+                </g:if>
                 <g:if test="${request.isUserInRole('ROLE_ABRS_ADMIN') || request.isUserInRole('ROLE_ADMIN')}">
                     <wf:reportNavigation users= "${users}" user="${user}"/>
                 </g:if>
