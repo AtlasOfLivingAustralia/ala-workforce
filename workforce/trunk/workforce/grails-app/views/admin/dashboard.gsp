@@ -55,7 +55,7 @@
                             <h3>Institutions</h3>
                             <p style="margin-top: 5px;">Click a name to show answers.</p>
                             <ul class="respondents">
-                                <g:each in="${Institution.findAllBySetId(qset.setId)}" var="i">
+                                <g:each in="${Institution.listInstitutionsForSet(qset.setId)}" var="i">
                                     <g:set var="userid" value="${users.find{it.name == i.account}?.userid}"/>
                                     <g:if test="${userid}">
                                         <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:userid]}">${i.name}</g:link></li>
