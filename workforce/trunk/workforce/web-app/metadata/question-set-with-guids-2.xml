@@ -295,18 +295,6 @@
       <code>NEZ</code>
       <uid/>
     </account>
-    <account>
-      <user>mark.woolston@csiro.au</user>
-      <institution>Higgins Chook Sanctuary</institution>
-      <code>EGG</code>
-      <uid>in13</uid>
-    </account>
-    <account>
-      <user>robyn.lawrence@csiro.au</user>
-      <institution>Queanbeyan Wombat Fancier</institution>
-      <code>WOMBAT</code>
-      <uid>in13</uid>
-    </account>
   </accounts>
   <question>
     <text>Please provide the following information about your institution.</text>
