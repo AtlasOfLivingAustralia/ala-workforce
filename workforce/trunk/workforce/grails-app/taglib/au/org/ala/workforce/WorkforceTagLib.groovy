@@ -373,7 +373,7 @@ class WorkforceTagLib {
                 break
             case AnswerType.number:
                 def answer = q.answerValueStr?.isNumber() ? NumberFormat.getInstance().format(q.answerValueStr.toDouble()) : q.answerValueStr
-                println "answer str is ${q.answerValueStr}; formatted answer is ${answer}" 
+                //println "answer str is ${q.answerValueStr}; formatted answer is ${answer}"
                 def atts = [name: q.ident(), size: 8, value: answer, 'class': 'number']
                 if (q.onchangeAction) {
                     atts.put 'onchange', "${q.onchangeAction}();"
@@ -564,7 +564,9 @@ class WorkforceTagLib {
             if (q.level == 2 && q.atype != AnswerType.none && q.atype != AnswerType.radio && q.atype != AnswerType.textarea) {
                 style = "style='height:24px'"
             }
-            result = "<div class='errors' ${style}>" + result + "</div>"
+            if (q.level != 2 && q.atype != AnswerType.none) {
+                result = "<div class='errors' ${style}>" + result + "</div>"
+            }
         }
 
         return result
