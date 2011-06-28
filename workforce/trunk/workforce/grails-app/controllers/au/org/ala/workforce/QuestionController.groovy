@@ -9,6 +9,14 @@ class QuestionController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     /**
+     * Default action
+     */
+    def index = {
+        log.warn("Default action invoked - " + request.requestURL)
+        redirect(uri: '/')
+    }
+
+    /**
      * Preloads objects for page requests.
      *
      * @param set Question set metadata is loaded if set is specified
@@ -227,32 +235,7 @@ class QuestionController {
      * DEVT only
      */
     def submit = {
-        def result = validate(params.from as int, params.to as int, params)
-        def questionList = result.questionList
-        def errors = result.errors
-        if (errors) {
-            errors = errors.sort {it.key}
-            //println "redirect to errors"
-            render(view: "questions", model: [qset: QuestionSet.findBySetId(params.set as int),
-                     pagination: buildPagination(params),
-                     questions: questionList, errors:errors])
-        } else {
-            // save the answers
-            questionList.each {q1 ->
-                q1.saveAllAnswers(userId())
-            }
-            def roughRepresentation = ""
-            questionList.each {q1 ->
-                roughRepresentation += dumpQuestion(q1)
-                q1.questions.each {q2 ->
-                    roughRepresentation += dumpQuestion(q2)
-                    q2.questions.each {q3 ->
-                        roughRepresentation += dumpQuestion(q3)
-                    }
-                }
-            }
-            render "<html><body><pre>" + roughRepresentation + "</pre></body></html>"
-        }
+        redirect(uri: '/')
     }
 
     /**
