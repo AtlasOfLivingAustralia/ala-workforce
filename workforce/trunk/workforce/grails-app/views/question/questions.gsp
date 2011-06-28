@@ -6,7 +6,7 @@
         <title>${qset.title}</title>
     </head>
     <body>
-        <g:form action="submit">
+        <g:form action="page" params="${[set: qset.setId, page: pagination.pageNumber]}">
             <g:hiddenField name="set" value="${qset.setId}"/>
             <g:hiddenField name="from" value="${pagination.from}"/>
             <g:hiddenField name="to" value="${pagination.to}"/>
