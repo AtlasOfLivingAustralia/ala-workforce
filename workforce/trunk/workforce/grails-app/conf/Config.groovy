@@ -87,8 +87,8 @@ environments {
         security.cas.appServerName = "http://abrs.ala.org.au"
     }
     development {
-        grails.serverURL = "http://woodfired.ala.org.au:8090/${appName}"
-        security.cas.appServerName = "http://woodfired.ala.org.au:8090"
+        grails.serverURL = "http://localhost:8090/${appName}"
+        security.cas.appServerName = "http://localhost:8090"
     }
     testserver {
         grails.serverURL = "http://testweb1.ala.org.au:8080/${appName}"
@@ -96,7 +96,7 @@ environments {
     }
     test {
         grails.serverURL = "http://localhost:8090/${appName}"
-        security.cas.appServerName = "http://woodfired.ala.org.au:8090"
+        security.cas.appServerName = "http://localhost:8090"
     }
 }
 
@@ -105,10 +105,13 @@ log4j = {
     // Example of changing the log pattern for the default console
     // appender:
     //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
+    appenders {
+        console name:'stdout', layout:pattern(conversionPattern: '%d{HH:mm:ss.SSS} %-5p %c{6} %m%n')
+    }
 
+    root {
+        warn 'stdout'
+    }
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
@@ -120,6 +123,7 @@ log4j = {
            'org.apache.commons',
            'org.springframework',
            'org.hibernate',
+           'org.jasig.cas.client',
            'net.sf.ehcache.hibernate'
 
     warn   'org.mortbay.log'
