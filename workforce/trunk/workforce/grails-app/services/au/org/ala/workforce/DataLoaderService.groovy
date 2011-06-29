@@ -245,7 +245,9 @@ class DataLoaderService implements ApplicationContextAware {
             q.instruction = it.@instruction
             q.instructionPosition = it.@instructionPosition
             q.qtype = it.@type.toString() ? QuestionType.valueOf(it.@type.toString()) : QuestionType.none
-            q.validation = it.validation
+            it.validation.each {
+                q.validation = q.validation ? (q.validation + " " + it.toString()) : it.toString()
+            }
             if (!q.validation && q.qtype == QuestionType.rank) {
                 q.validation = 'ranking-group'
             }
