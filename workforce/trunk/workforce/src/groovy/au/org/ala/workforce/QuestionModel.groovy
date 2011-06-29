@@ -38,7 +38,7 @@ class QuestionModel {
     String layoutHint               // directs layout of child questions
     boolean required                // the answer may not be blank
     String requiredIf               // the answer may not be blank if the condition is met
-    String validation               // cross-question validation
+    List validation                 // list of cross-question validations
     String onchangeAction           // js function to call when answer value is changed
 
     String answerValueStr           // any answer that may be supplied for validation - this usually holds the answer supplied
@@ -74,12 +74,15 @@ class QuestionModel {
         if (record.qdata) {
             this.qdata = JSON.parse(record.qdata)
         }
+        if (record.validation) {
+            this.validation = record.validation.tokenize(' ')
+        }
 
         //println "loading props for ${record.level1}_${record.level2}_${record.level3}"
         
         // other properties
         ['atype','qtype','label','qtext','shorttext','instruction','alabel','displayHint','layoutHint','datatype',
-                'subtext','required','requiredIf','validation','instructionPosition','guid','qset','onchangeAction'].each {
+                'subtext','required','requiredIf','instructionPosition','guid','qset','onchangeAction'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
             }
@@ -315,93 +318,137 @@ class QuestionModel {
             return [:]
         }
         Map<String,String> errors = new HashMap<String, String>()
-        switch (validation) {
-            case 'percent-total-lessThanOrEqual-100':
-                // all child questions of type percent must sum to <= 100
-                def sum = 0
-                // iterate max of 2 levels
-                questions.each { r1 ->
-                    if (r1.atype == AnswerType.percent && r1.answerValueStr && !r1.errorMessage) {
-                        sum += r1.answerValueStr as int
-                    }
-                    r1.questions.each { r2 ->
-                        if (r2.atype == AnswerType.percent && r2.answerValueStr && !r1.errorMessage) {
-                            sum += r2.answerValueStr as int
+        validation.each {
+            switch (it) {
+                case 'percent-total-lessThanOrEqual-100':
+                    // all child questions of type percent must sum to <= 100
+                    def sum = 0
+                    // iterate max of 2 levels
+                    questions.each { r1 ->
+                        if (r1.atype == AnswerType.percent && r1.answerValueStr && !r1.errorMessage) {
+                            sum += r1.answerValueStr as int
                         }
-                    }
-                }
-                // check sum
-                if (sum > 100) {
-                    errorMessage = "Percentages can not add to more than 100%"
-                    errors.put ident(), errorMessage
-                    println "Error in ${ident()}: ${errorMessage}"
-                }
-                break
-            case 'pseudo-radio':
-                int onCheckboxes = 0
-                // iterate next level
-                questions.each { q ->
-                    if (q.datatype == AnswerDataType.bool && q.answerValueStr in ['on','yes']) {
-                        onCheckboxes++
-                    }
-                }
-                if (onCheckboxes == 0) {
-                    errorMessage = "You must check one answer"
-                    errors.put ident(), errorMessage
-                    println "Error in ${ident()}: ${errorMessage}"
-                }
-                else if (onCheckboxes > 1) {
-                    errorMessage = "You may only check one answer"
-                    errors.put ident(), errorMessage
-                    println "Error in ${ident()}: ${errorMessage}"
-                }
-                break
-            case 'ranking-group':
-                // set of immediate sub-questions of type rank must contain each of the values 1..maxRequired exactly once
-                def maxRequired = qdata.maxRequired ?: qdata.max
-                def answerSet = []
-                boolean valid = true
-                questions.each {
-                    if (it.atype == AnswerType.rank && it.answerValueStr) {
-                        if (it.answerValueStr.isInteger()) {
-                            def val = NumberFormat.getIntegerInstance().parse(it.answerValueStr)
-                            answerSet << val
-                            if (val < 1 || val > maxRequired) {
-                                valid = false
-                                errorMessage = "Rank value must be between 1 and ${maxRequired}. Value is ${val}"
-                                errors.put ident(), errorMessage
+                        r1.questions.each { r2 ->
+                            if (r2.atype == AnswerType.percent && r2.answerValueStr && !r1.errorMessage) {
+                                sum += r2.answerValueStr as int
                             }
                         }
-                        else {
-                            valid = false
-                            errorMessage = "${it.answerValueStr} is not an integer."
-                            errors.put ident(), errorMessage
-                        }
                     }
-                }
-                if (valid) {
-                    def reason = ''
-                    def offendingRank
-                    (1..maxRequired).each { rank ->
-                        def occurs = answerSet.findAll {it == rank}.size()
-                        if (occurs != 1) {
-                            reason = "The rank ${rank} appears ${occurs} times"
-                            offendingRank = rank as String
-                            valid = false
-                        }
-                    }
-                    if (!valid) {
-                        errorMessage = "Answers must contain the numbers 1 to ${maxRequired} exactly once each. (${reason})"
-                        questions.each {
-                            if (it.answerValueStr == offendingRank) {
-                                it.errorMessage = errorMessage
-                            }
-                        }
+                    // check max
+                    if (sum > 100) {
+                        errorMessage = "Percentages can not add to more than 100%"
                         errors.put ident(), errorMessage
                         println "Error in ${ident()}: ${errorMessage}"
                     }
-                }
-                break
+                    break
+                case 'percent-total-greaterThan-0':
+                    // all child questions of type percent must sum to <= 100
+                    def sum = 0
+                    // iterate max of 2 levels
+                    questions.each { r1 ->
+                        if (r1.atype == AnswerType.percent && r1.answerValueStr && !r1.errorMessage) {
+                            sum += r1.answerValueStr as int
+                        }
+                        r1.questions.each { r2 ->
+                            if (r2.atype == AnswerType.percent && r2.answerValueStr && !r1.errorMessage) {
+                                sum += r2.answerValueStr as int
+                            }
+                        }
+                    }
+                    // check min
+                    if (sum <= 0) {
+                        errorMessage = "You must enter a percentage (greater than 0) in at least one field"
+                        errors.put ident(), errorMessage
+                        println "Error in ${ident()}: ${errorMessage}"
+                    }
+                    break
+                case 'minimum-1-answer':
+                    // at least one child question must have an answer
+                    boolean atLeastOneAnswer = false
+                    // iterate max of 2 levels
+                    questions.each { r1 ->
+                        if (r1.answerValueStr) {
+                            atLeastOneAnswer = true
+                        }
+                        r1.questions.each { r2 ->
+                            if (r2.answerValueStr) {
+                                atLeastOneAnswer = true
+                            }
+                        }
+                    }
+                    if (!atLeastOneAnswer) {
+                        errorMessage = "You must enter a answer in at least one field"
+                        errors.put ident(), errorMessage
+                        println "Error in ${ident()}: ${errorMessage}"
+                    }
+
+                    break
+                case 'pseudo-radio':
+                    int onCheckboxes = 0
+                    // iterate next level
+                    questions.each { q ->
+                        if (q.datatype == AnswerDataType.bool && q.answerValueStr in ['on','yes']) {
+                            onCheckboxes++
+                        }
+                    }
+                    if (onCheckboxes == 0) {
+                        errorMessage = "You must check one answer"
+                        errors.put ident(), errorMessage
+                        println "Error in ${ident()}: ${errorMessage}"
+                    }
+                    else if (onCheckboxes > 1) {
+                        errorMessage = "You may only check one answer"
+                        errors.put ident(), errorMessage
+                        println "Error in ${ident()}: ${errorMessage}"
+                    }
+                    break
+                case 'ranking-group':
+                    // set of immediate sub-questions of type rank must contain each of the values 1..maxRequired exactly once
+                    def maxRequired = qdata.maxRequired ?: qdata.max
+                    def answerSet = []
+                    boolean valid = true
+                    questions.each {
+                        if (it.atype == AnswerType.rank && it.answerValueStr) {
+                            if (it.answerValueStr.isInteger()) {
+                                def val = NumberFormat.getIntegerInstance().parse(it.answerValueStr)
+                                answerSet << val
+                                if (val < 1 || val > maxRequired) {
+                                    valid = false
+                                    errorMessage = "Rank value must be between 1 and ${maxRequired}. Value is ${val}"
+                                    errors.put ident(), errorMessage
+                                }
+                            }
+                            else {
+                                valid = false
+                                errorMessage = "${it.answerValueStr} is not an integer."
+                                errors.put ident(), errorMessage
+                            }
+                        }
+                    }
+                    if (valid) {
+                        def reason = ''
+                        def offendingRank
+                        (1..maxRequired).each { rank ->
+                            def occurs = answerSet.findAll {it == rank}.size()
+                            if (occurs != 1) {
+                                reason = "The rank ${rank} appears ${occurs} times"
+                                offendingRank = rank as String
+                                valid = false
+                            }
+                        }
+                        if (!valid) {
+                            errorMessage = "Answers must contain the numbers 1 to ${maxRequired} exactly once each. (${reason})"
+                            questions.each {
+                                if (it.answerValueStr == offendingRank) {
+                                    it.errorMessage = errorMessage
+                                }
+                            }
+                            errors.put ident(), errorMessage
+                            println "Error in ${ident()}: ${errorMessage}"
+                        }
+                    }
+                    break
+            }
         }
         return errors
     }
