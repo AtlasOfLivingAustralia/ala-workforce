@@ -4,6 +4,7 @@ import au.org.ala.cas.util.AuthenticationCookieUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import java.text.NumberFormat
 import java.text.DecimalFormat
+import org.jasig.cas.client.authentication.AttributePrincipal
 
 /**
  * Notes:
@@ -1155,6 +1156,35 @@ class WorkforceTagLib {
         }
         else {
             out << 'login'
+        }
+    }
+
+    def surveyStatus = { attrs ->
+        int userid = ((AttributePrincipal) request.userPrincipal).attributes['userid'] as int
+        def currentYear = DateUtil.getCurrentYear()
+        def lastUpdate = DateUtil.getNiceDateFromSqlDate(Answer.lastUpdate(attrs.setid as int, userid, currentYear))
+        if (lastUpdate) {
+            def complete = Event.isComplete(attrs.setid as int, userid, currentYear)
+            if (complete) {
+                out << "<p>Survey complete - thank you. (Last modified ${lastUpdate})</p>"
+            } else {
+                out << "<p>Survey incomplete (Last modified ${lastUpdate})</p>"
+            }
+            out << "<p class='textLinks'><a href='"
+            out << g.createLink(controller:"report", action:"answers", params:[set: attrs.setid])
+            out << "'>Click here to see a quick summary of your answers.</a></p>"
+        }
+    }
+
+    def summaryStatus = { attrs ->
+        int userid = attrs.user.userid
+        def currentYear = DateUtil.getCurrentYear()
+        def lastUpdate = DateUtil.getNiceDateFromSqlDate(Answer.lastUpdate(params.set as int, userid, currentYear))
+        def complete = Event.isComplete(params.set as int, userid, currentYear)
+        if (complete) {
+            out << "Survey complete (Last modified ${lastUpdate})"
+        } else {
+            out << "Survey incomplete (Last modified ${lastUpdate})"
         }
     }
 
