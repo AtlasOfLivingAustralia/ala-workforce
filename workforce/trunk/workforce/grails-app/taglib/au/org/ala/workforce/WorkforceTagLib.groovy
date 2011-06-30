@@ -565,9 +565,7 @@ class WorkforceTagLib {
             if (q.level == 2 && q.atype != AnswerType.none && q.atype != AnswerType.radio && q.atype != AnswerType.textarea) {
                 style = "style='height:24px'"
             }
-            if (q.level != 2 && q.atype != AnswerType.none) {
-                result = "<div class='errors' ${style}>" + result + "</div>"
-            }
+            result = "<div class='errors' ${style}>" + result + "</div>"
         }
 
         return result
