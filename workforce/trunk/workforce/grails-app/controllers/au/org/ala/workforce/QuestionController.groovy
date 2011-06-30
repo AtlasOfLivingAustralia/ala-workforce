@@ -143,6 +143,13 @@ class QuestionController {
      *
      */
     def leavePage = {
+        // if navigating backwards and current page has no answers then don't validate
+//        if (params._action_previous == 'Prev' || params._action_jumpPage < params.pageNumber) {
+//            if (!areAnswers(questionList)) {
+//                return [questionList:questionList, errors:[:]]
+//            }
+//        }
+
         // validate the answers
         def result = validate(params.from as int, params.to as int, params)
 
@@ -265,13 +272,6 @@ class QuestionController {
 
         // inject answers into questions
         injectAnswers(questionList, params)
-
-        // if navigating backwards and current page has no answers then don't validate
-        if (params._action_previous == 'Prev' || params._action_jumpPage < params.pageNumber) {
-            if (!areAnswers(questionList)) {
-                return [questionList:questionList, errors:[:]]
-            }
-        }
 
         // validate answers against each question
         Map<String, String> errors = new HashMap<String, String>()
