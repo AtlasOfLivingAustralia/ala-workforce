@@ -13,8 +13,7 @@ class DateUtil {
         if (year) {
             return year as int
         } else {
-            def c = Calendar.instance
-            return c.get(Calendar.YEAR)
+            return getCurrentYear()
         }
     }
 
