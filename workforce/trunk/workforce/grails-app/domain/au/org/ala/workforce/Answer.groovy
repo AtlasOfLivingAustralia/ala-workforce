@@ -39,6 +39,21 @@ class Answer {
         return count > 0
     }
 
+    static String lastUpdate(int setId, int userId, int year) {
+        def yearStart = year + "-01-01"
+        def result = Answer.executeQuery(
+                 "select lastUpdated from Answer " +
+                 "where setId = :set " +
+                 "and userId = :user " +
+                 "and last_updated >= :year " +
+                 "order by last_updated desc", [set: setId, user: userId, year: yearStart])
+        if (result.empty) {
+            return null
+        } else {
+            return result[0]
+        }
+    }
+    
     static Map getAnswers(int setId, int userId, int year) {
         def from = new GregorianCalendar(year, Calendar.JANUARY, 1)
         def to = new GregorianCalendar(year+1, Calendar.JANUARY, 1)
