@@ -13,7 +13,6 @@
             </wf:isABRSAdmin>
             <wf:isNotABRSAdmin>
                 <span class="navButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
-                <span class="navButton"><a href="${createLink(controller:'question', action:'showComplete', params:['set':qset.setId])}">Summary</a></span>
             </wf:isNotABRSAdmin>
             <span class="navButton">${user.name}</span>
         </div>
