@@ -34,4 +34,12 @@ class Event {
             [set: setId, year: yearStart])
         return users
     }
+
+    static boolean isComplete(int setId, int userid, int year) {
+        def yearStart = year + "-01-01"
+        def result = Event.executeQuery(
+            "select count(*) from Event where setId = :set and userid = :userid and last_updated >= :year and name = 'complete'",
+            [set: setId, userid: userid, year: yearStart])
+        return result[0] > 0
+    }
 }
