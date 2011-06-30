@@ -33,6 +33,7 @@
                 <g:if test="${qset.setId == 2}">
                     <div style='float: left; padding: 25px 0px'>Answers for ${Institution.findByAccount(user.name).name}</div>
                 </g:if>
+                <div style='float: left; padding: 25px'><wf:summaryStatus user="${user}"/></div>
                 <g:if test="${request.isUserInRole('ROLE_ABRS_ADMIN') || request.isUserInRole('ROLE_ADMIN')}">
                     <wf:reportNavigation users= "${users}" user="${user}"/>
                 </g:if>
