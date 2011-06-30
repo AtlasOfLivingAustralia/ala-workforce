@@ -266,6 +266,13 @@ class QuestionController {
         // inject answers into questions
         injectAnswers(questionList, params)
 
+        // if navigating backwards and current page has no answers then don't validate
+        if (params._action_previous == 'Prev' || params._action_jumpPage < params.pageNumber) {
+            if (!areAnswers(questionList)) {
+                return [questionList:questionList, errors:[:]]
+            }
+        }
+
         // validate answers against each question
         Map<String, String> errors = new HashMap<String, String>()
         questionList.each {
@@ -275,6 +282,23 @@ class QuestionController {
 
         // return the populated question list and any errors
         return [questionList:questionList, errors:errors]
+    }
+
+    /**
+     * Check for any answers in the list of questions
+     */
+    def areAnswers(questions) {
+        def result
+        questions.each {
+            if (it.answerValueStr) {
+                result = true
+            } else if (it.questions) {
+                result = areAnswers(it.questions)
+            } else {
+                result = false
+            }
+        }
+        return result
     }
 
     /**
