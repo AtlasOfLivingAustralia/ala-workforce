@@ -9,9 +9,9 @@
         <g:if test="${flash.message}"><div class="message">${flash.message}</div></g:if>
 
         <div class='links'>
-            <h1>ABRS Taxonomic Capacity Surveys</h1>
-            <p>You are invited to participate in the 2011 ABRS taxonomic capacity surveys.</p>
             <g:if test="${type == 'personal'}">
+                <h1>ABRS Taxonomic Capacity Survey</h1>
+                <p>You are invited to participate in the 2011 ABRS taxonomic capacity survey.</p>
                 <p>If you work in taxonomy in an Australian context, please complete the
                   <g:link controller="question" action="page" params='[set:1,page:1]'><strong>Australian Taxonomic Workforce - Personal Survey</strong></g:link>.</p>
                 <p>The survey questions are presented over a number of pages. Your answers are saved each time you exit a page.
@@ -19,6 +19,8 @@
                 Click the 'Finish' link on the last page when you have completed the survey.</p>
             </g:if>
             <g:elseif test="${type == 'institution'}">
+                <h1>ABRS Taxonomic Capacity Survey</h1>
+                <p>You are invited to participate in the 2011 ABRS taxonomic capacity survey.</p>
                 <p>If you are responsible for an Australian natural science collection, please complete the
                     <g:link controller="question" action="page" params='[set:2,page:1]'><strong>Resources of Australian Natural Science Collections Survey</strong></g:link>.</p>
                 <p>The survey questions are presented over a number of pages. Your answers are saved each time you exit a page.
@@ -26,6 +28,8 @@
                 Click the 'Finish' link on the last page when you have completed the survey.</p>
             </g:elseif>
             <g:else>
+                <h1>ABRS Taxonomic Capacity Surveys</h1>
+                <p>You are invited to participate in the 2011 ABRS taxonomic capacity surveys.</p>
                 <p>You need to log in to answer a survey.</p>
                 <h2>Personal survey</h2>
                 <p>You may use your existing logon for the Atlas of Living Australia or click the button below to register a new account.</p>
@@ -45,16 +49,17 @@
             <g:if test="${type == 'institution'}">
                 <g:link controller="question" action="page" params='[set:2, page:1]'>
                     <img src='${resource(dir:'images/abrsskin',file:'collections-button.png')}'/></g:link>
-            </g:if>
+                <wf:surveyStatus setid="2"/>
+             </g:if>
             <g:elseif test="${type == 'personal'}">
                 <g:link controller="question" action="page" params='[set:1, page:1]'>
                     <img src='${resource(dir:'images/abrsskin',file:'personal-button.png')}'/></g:link>
+                <wf:surveyStatus setid="1"/>
             </g:elseif>
             <g:else>
                 <a href="${ConfigurationHolder.config.security.cas.loginUrl}?service=${ConfigurationHolder.config.security.cas.appServerName}${ConfigurationHolder.config.security.cas.contextPath}/">
                     <img src='${resource(dir:'images/abrsskin',file:'login-button.png')}'/></a>
             </g:else>
-
             </div>
         </g:else>
 
