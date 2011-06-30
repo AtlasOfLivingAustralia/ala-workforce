@@ -1162,8 +1162,9 @@ class WorkforceTagLib {
     def surveyStatus = { attrs ->
         int userid = ((AttributePrincipal) request.userPrincipal).attributes['userid'] as int
         def currentYear = DateUtil.getCurrentYear()
-        def lastUpdate = DateUtil.getNiceDateFromSqlDate(Answer.lastUpdate(attrs.setid as int, userid, currentYear))
+        def lastUpdate = Answer.lastUpdate(attrs.setid as int, userid, currentYear)
         if (lastUpdate) {
+            lastUpdate = DateUtil.getNiceDateFromSqlDate(lastUpdate)
             def complete = Event.isComplete(attrs.setid as int, userid, currentYear)
             if (complete) {
                 out << "<p>Survey complete - thank you. (Last modified ${lastUpdate})</p>"
