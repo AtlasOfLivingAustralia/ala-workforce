@@ -14,7 +14,8 @@
                 <p>You are invited to participate in the 2011 ABRS taxonomic capacity survey.</p>
                 <p>If you work in taxonomy in an Australian context, please complete the
                   <g:link controller="question" action="page" params='[set:1,page:1]'><strong>Australian Taxonomic Workforce - Personal Survey</strong></g:link>.</p>
-                <p>The survey questions are presented over a number of pages. Your answers are saved each time you exit a page.
+                <p>The survey questions are presented over a number of pages. Your answers are saved each time you navigate away from a page
+                (ie press 'next' or 'prev' or jump to a page).
                 You can partially fill in the survey and return to it at a later time.
                 Click the 'Finish' link on the last page when you have completed the survey.</p>
             </g:if>
@@ -22,8 +23,9 @@
                 <h1>ABRS Taxonomic Capacity Survey</h1>
                 <p>You are invited to participate in the 2011 ABRS taxonomic capacity survey.</p>
                 <p>If you are responsible for an Australian natural science collection, please complete the
-                    <g:link controller="question" action="page" params='[set:2,page:1]'><strong>Resources of Australian Natural Science Collections Survey</strong></g:link>.</p>
-                <p>The survey questions are presented over a number of pages. Your answers are saved each time you exit a page.
+                    <g:link controller="question" action="page" params='[set:2,page:1]'><strong>Institution Survey</strong></g:link>.</p>
+                <p>The survey questions are presented over a number of pages. Your answers are saved each time you navigate away from a page
+                (ie press 'next' or 'prev' or jump to a page).
                 You can partially fill in the survey and return to it at a later time.
                 Click the 'Finish' link on the last page when you have completed the survey.</p>
             </g:elseif>
