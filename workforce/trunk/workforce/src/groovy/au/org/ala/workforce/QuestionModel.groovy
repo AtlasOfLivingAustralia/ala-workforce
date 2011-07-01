@@ -40,14 +40,17 @@ class QuestionModel {
     String requiredIf               // the answer may not be blank if the condition is met
     List validation                 // list of cross-question validations
     String onchangeAction           // js function to call when answer value is changed
-
-    String answerValueStr           // any answer that may be supplied for validation - this usually holds the answer supplied
-                                    //  by a user. It is held here during validation and error feedback
-    String errorMessage = ""        // any error that results from validation
+    String dependentOn              // the entire question can be dependent on the answer to another question - this holds the path and the condition
 
     QuestionModel owner            // reverse link
 
     List<QuestionModel> questions = [] // sub questions
+
+    /* transient values */
+    boolean disabled = false        // can be set based on the answer to a contingent question
+    String answerValueStr           // any answer that may be supplied for validation - this usually holds the answer supplied
+                                    //  by a user. It is held here during validation and error feedback
+    String errorMessage = ""        // any error that results from validation
 
     QuestionModel() {}
 
@@ -82,7 +85,7 @@ class QuestionModel {
         
         // other properties
         ['atype','qtype','label','qtext','shorttext','instruction','alabel','displayHint','layoutHint','datatype',
-                'subtext','required','requiredIf','instructionPosition','guid','qset','onchangeAction'].each {
+                'subtext','required','requiredIf','instructionPosition','guid','qset','onchangeAction','dependentOn'].each {
             if (record."${it}") {
                 this."${it}" = record."${it}"
             }
@@ -91,6 +94,10 @@ class QuestionModel {
 
     boolean isAnswerTrue() {
         return datatype == AnswerDataType.bool && answerValueStr in ['on','yes','true']
+    }
+
+    boolean isDisabled() {
+        return disabled || owner?.isDisabled()
     }
 
     /**
@@ -114,9 +121,8 @@ class QuestionModel {
          * questions if the other option is not selected.
          *
          * Implemented by reversing the 'requiredIf' link.
-         */
         if (requiredIf) {
-            def rif = parseRequiredIf()
+            def rif = parseCondition(requiredIf)
             def onlyIf = getQuestionFromPath(rif.path)
             switch (rif.comparator) {
                 case "=":
@@ -139,6 +145,7 @@ class QuestionModel {
                     break
             }
         }
+         */
 
         // the default action is to set the property
         this.answerValueStr = answer
@@ -151,10 +158,10 @@ class QuestionModel {
         return null
     }
     
-    def validate() {
+    def validate(params) {
         def valid = true
         clearErrors()
-        //println "validating ${ident()} atype=${atype} datatype=${datatype}"
+        //println "validating ${ident()} atype=${atype} datatype=${datatype} requiredIf=${requiredIf}"
         if (atype != AnswerType.none) {
             //if (answerValueStr) {println "answer is ${answerValueStr}"}
             if (answerValueStr) {
@@ -165,8 +172,15 @@ class QuestionModel {
                         valid = answerValueStr
                         break
                     case text:
-                        // only needs to have a value
-                        valid = answerValueStr
+                        // don't allow 'other' text if 'other' is not selected
+                        if (badOtherText()) {
+                            valid = false
+                            errorMessage = "You have provided 'if other' text but not selected the 'other' option."
+                        }
+                        else {
+                            // otherwise only needs to have a value
+                            valid = answerValueStr
+                        }
                         break
                     case rank:
                         // must be 1) a number, 2) within range
@@ -273,7 +287,7 @@ class QuestionModel {
                     errorMessage = "An answer is required"
                 }
                 if (requiredIf) {
-                    def rif = parseRequiredIf()
+                    def rif = parseCondition(requiredIf)
                     switch (rif.comparator) {
                         case "=":
                             if (getQuestionFromPath(rif.path)?.answerValueStr == rif.value) {
@@ -293,6 +307,12 @@ class QuestionModel {
                                 errorMessage = "An answer is required if you specify '${rif.label ?: rif.value}'"
                             }
                             break
+                        case "enabled":
+                            if (params?.disabledState == 'enabled') {
+                                valid = false
+                                errorMessage = "An answer is required"
+                            }
+                            break
                     }
                 }
             }
@@ -306,7 +326,7 @@ class QuestionModel {
         }
         // check sub-questions
         questions.each {
-            errors += it.validate()
+            errors += it.validate(params)
         }
         // check inter-question validations if all sub-questions are valid
         if (!errors) { errors += validateGlobalConstraints() }
@@ -457,17 +477,51 @@ class QuestionModel {
         errorMessage = ""
     }
 
-    Map parseRequiredIf() {
+    /**
+     * Detects when text in a 'if other please specify' field has been supplied
+     * when the 'other' option is not selected.
+     * @return
+     */
+    boolean badOtherText() {
+        if (requiredIf) {
+            def rif = parseCondition(requiredIf)
+            def onlyIf = getQuestionFromPath(rif.path)
+            switch (rif.comparator) {
+                case "=":
+                    if (onlyIf && onlyIf.answerValueStr != rif.value) {
+                        return true
+                    }
+                    break
+                case "=~":
+                    if (onlyIf && !(onlyIf.answerValueStr =~ rif.value)) {
+                        return true
+                    }
+                    break
+                case "groovyTruth":
+                    if (onlyIf && !onlyIf?.answerValueStr) {
+                        return true
+                    }
+                    break
+            }
+        }
+        return false
+    }
+
+    static Map parseCondition(String condition) {
+        // special cases
+        if (condition == 'enabled') {
+            return [comparator: condition]
+        }
         // extract the optional label
         def optionalLabel = ""
-        def opt = requiredIf.tokenize('|')
+        def opt = condition.tokenize('|')
         if (opt.size() > 1) {
             optionalLabel = opt[1]
         }
         def comparison = '='
-        def condition = opt[0].tokenize('=')
-        def conditionPath = condition[0]
-        def conditionValue = condition[1]
+        def bits = opt[0].tokenize('=')
+        def conditionPath = bits[0]
+        def conditionValue = bits[1]
         if (conditionValue.size() > 0 && conditionValue[0] == '~') {
             // comparison is 'contains'
             comparison = '=~'
@@ -493,6 +547,7 @@ class QuestionModel {
      * n and m are 1-based
      *
      * @param path
+     * @return a QuestionModel
      */
     def getQuestionFromPath(path) {
         if (!path) return null
