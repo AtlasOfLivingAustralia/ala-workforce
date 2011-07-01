@@ -551,7 +551,6 @@ span.subtext {
 }
 
 .instruction {
-    font-weight: bold;
     font-style: italic;
 }
 
@@ -676,3 +675,10 @@ div.header span {
     text-align: center;
 }
 
+span.link {
+    color: #000066;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 11px;
+    padding-left: 10px;
+}
