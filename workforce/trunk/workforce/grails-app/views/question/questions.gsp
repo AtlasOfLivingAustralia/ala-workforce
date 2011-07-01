@@ -15,7 +15,7 @@
             <div class="nav">
                 <span class="navButton home"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
                 <g:if test="${pagination.pageNumber != 1}">
-                    <g:actionSubmit class="navButton prev" action="previous" value="Prev" />
+                    <g:actionSubmit class="navButton prev" action="previous" value="Prev"/>
                 </g:if>
                 <g:else>
                     <!-- this is an invisible placeholder for the prev button on subsequent pages -->
@@ -23,7 +23,7 @@
                 </g:else>
                 <span class='pageProgress'><wf:pageProgress set="${qset.setId}" page="${pagination.pageNumber}" total="${pagination.totalPages}"/></span>
                 <g:if test="${pagination.pageNumber != pagination.totalPages}">
-                    <g:actionSubmit class="navButton" action="next" value="Next" />
+                    <g:actionSubmit class="navButton" action="next" value="Next"/>
                 </g:if>
                 <g:if test="${pagination.pageNumber == pagination.totalPages}">
                     <g:actionSubmit class="navButton" action="finish" value="Finish" />
@@ -85,5 +85,33 @@
             </g:form>
         </div>
 
+    <script type="text/javascript">
+        function clearRadio(ident) {
+            $('input[name='+ident+']:checked').removeAttr('checked');
+        }
+        function disable(ident, src) {
+            if (src.value == 'yes') {
+                $('input[name='+ident+']').removeAttr('disabled');
+                $('#disabledState').attr('value','enabled');
+            } else {
+                $('input[name='+ident+']').removeAttr('checked');
+                $('input[name='+ident+']').attr('disabled','true');
+                $('#disabledState').attr('value','disabled');
+             }
+        }
+        function setInitialState() {
+            // find any input with onchange="disable(..)" and set the states accordingly
+            $('input[onchange^="disable"]').each(function(index,element) {
+                var funct = this.getAttribute('onchange')
+                var ident = funct.substring(funct.indexOf("'")+1,funct.lastIndexOf("'"));
+                if (this.getAttribute('checked') != null) {
+                    disable(ident, this);
+                }
+            });
+        }
+        $(document).ready(function() {
+           setInitialState();
+        });
+    </script>
     </body>
 </html>
