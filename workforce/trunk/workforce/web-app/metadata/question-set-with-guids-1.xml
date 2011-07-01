@@ -251,14 +251,15 @@
     <text>And do you intend to be working in this field in 12 months time?</text>
     <shortText>Working in taxonomy in 12 months</shortText>
     <answer type="bool" required="true"/>
+    <onchange>disable('q7_1',this)</onchange>
   </question>
-  <question heightHint="6">
+  <question dependentOn="Q6=yes" heightHint="6">
     <text>And thinking about your longer-term future, how likely is it that you will continue your career in taxonomy?</text>
     <shortText>Likelihood of continuing in taxonomy</shortText>
     <question id="5a11f1ce-8e29-44cb-94d0-42e09c8105f6" datatype="text" type="pick">
       <text>Would you say that it is:</text>
       <shortText/>
-      <answer type="radio" required="true">
+      <answer type="radio" requiredIf="enabled">
         <data>
           <item>Very likely</item>
           <item>Fairly likely</item>
@@ -288,11 +289,11 @@
       </data>
     </question>
   </question>
-  <question defaultLayoutHint="align-with-level3" defaultDataType="integer">
+  <question defaultDataType="integer" defaultLayoutHint="align-with-level3">
     <text>Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?</text>
     <shortText>Percentage of full time work</shortText>
-      <validation>percent-total-lessThanOrEqual-100</validation>
-      <validation>percent-total-greaterThan-0</validation>
+    <validation>percent-total-lessThanOrEqual-100</validation>
+    <validation>percent-total-greaterThan-0</validation>
     <question>
       <text>Acquisition of taxonomic specimens &lt;em&gt;(including collecting, essential preparation, registration and incorporation into the collection)&lt;/em&gt;:</text>
       <shortText>Acquisition of taxonomic specimens:</shortText>
@@ -402,7 +403,7 @@
         <answer type="percent"/>
       </question>
       <question id="bdbef96e-1b06-474d-a6e1-3575f25c4241">
-        <answer type="text" dataType="text" requiredIf="../1=*|Other"/>
+        <answer dataType="text" type="text" requiredIf="../1=*|Other"/>
       </question>
     </question>
   </question>
