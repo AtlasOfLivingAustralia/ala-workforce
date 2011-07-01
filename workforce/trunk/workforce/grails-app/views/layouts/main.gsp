@@ -32,7 +32,7 @@
         <g:layoutBody />
         <div class='footer'>
             <a href="http://www.ala.org.au"><img src="${resource(dir:'images',file:'atlas-poweredby_rgb-lightbg.png')}"/></a>
-            <a href="mailto:support@ala.org.au">Click here to email ALA Support</a>
+            <a href="mailto:support@ala.org.au">Survey support and feedback</a>
         </div>
     </body>
 </html>
