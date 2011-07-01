@@ -40,13 +40,13 @@
                 <p>If you also wish to complete the personal survey, logout and log in again using your own personal account.</p>
             </g:else>
         </div>
-        <g:if test="${admin}">
+        <wf:isABRSAdmin>
             <div class="go-buttons">
                 <g:link controller="admin" action="dashboard" params='[set:1]'><img src="${resource(dir:'images/abrsskin',file:'personal-admin.png')}"/></g:link>
                 <g:link controller="admin" action="dashboard" params='[set:2]'><img src="${resource(dir:'images/abrsskin',file:'collections-admin.png')}"/></g:link>
             </div>
-        </g:if>
-        <g:else>
+        </wf:isABRSAdmin>
+        <wf:isNotABRSAdmin>
             <div class="go-buttons">
             <g:if test="${type == 'institution'}">
                 <g:link controller="question" action="page" params='[set:2, page:1]'>
@@ -63,7 +63,7 @@
                     <img src='${resource(dir:'images/abrsskin',file:'login-button.png')}'/></a>
             </g:else>
             </div>
-        </g:else>
+        </wf:isNotABRSAdmin>
 
         <g:if test="${admin}">
             <p><a href="${createLink(uri: '/')}">Home</a></p>
