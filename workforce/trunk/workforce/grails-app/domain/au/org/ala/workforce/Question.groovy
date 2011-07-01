@@ -30,6 +30,7 @@ class Question {
     String requiredIf               // must have an answer if the condition is true
     String validation               // cross-question validation
     String onchangeAction           // js function to call when answer value is changed
+    String dependentOn              // the entire question can be dependent on the answer to another question - this holds the path and the condition
 
     static constraints = {
         level1(min:0)
@@ -51,6 +52,7 @@ class Question {
         displayHint(nullable:true)
         layoutHint(nullable:true)
         requiredIf(nullable:true, maxSize:1024)
+        dependentOn(nullable:true, maxSize:1024)
         validation(nullable:true, maxSize: 1024)
         onchangeAction(nullable: true, maxSize: 1024)
     }
