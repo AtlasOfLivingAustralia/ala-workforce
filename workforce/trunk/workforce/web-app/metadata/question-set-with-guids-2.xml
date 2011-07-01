@@ -334,7 +334,7 @@
       <answer type="text" required="true"/>
     </question>
   </question>
-  <question instruction="We will only record your email address(es) if you agree. However it is desirable that at least your generic institutional address be made available in the published form of this survey. You may choose to keep personal email addresses confidential. In these cases please tick 'Email is not for publication'. They will only be used for the purpose for which you have provided them and our own statistical purposes, and will not be added to a mailing list. We will not use your email addresses for any other purpose, and will not disclose them, without your consent.">
+  <question instruction="It is desirable that at least your generic institutional address be made available in the published form of this survey. If an email address is supplied for the Institution and you do not wish it to be made available in the published form of this survey please choose 'Email is not for publication'. Email addresses supplied here will not be used for any other purpose and will not be disclosed without your consent.">
     <text>CONTACT DETAILS</text>
     <question id="fd9c8fe0-099b-41fe-acfe-d4f5878973d3">
       <text>Street Address:</text>
@@ -349,7 +349,7 @@
       <answer type="text" required="true"/>
     </question>
     <question id="4ef2bf98-8961-4d4f-a601-996e8a5cf007" type="pick">
-      <text>State</text>
+      <text>State:</text>
       <displayHint>dropdown</displayHint>
       <answer type="externalRef" required="true">
         <data>state</data>
@@ -395,13 +395,13 @@
           <item>Limited public access by appointment</item>
           <item>Limited public access no appointment required</item>
           <item>No public access</item>
-          <item>Other</item>
+          <item>Other public access</item>
         </data>
       </answer>
     </question>
     <question id="ff179d2c-da11-4885-8229-5f60dc3a1767">
       <text>If other please specify:</text>
-      <answer type="textarea" requiredIf="../1=Other"/>
+      <answer type="textarea" requiredIf="../1=~Other"/>
     </question>
     <question id="099eeb3c-70f2-4d2d-83f7-71cbe6560053" datatype="text" type="pick">
       <displayHint>radio</displayHint>
@@ -412,13 +412,13 @@
           <item>Limited research access by appointment</item>
           <item>Limited research access no appointment required</item>
           <item>No research access</item>
-          <item>Other</item>
+          <item>Other research access</item>
         </data>
       </answer>
     </question>
     <question id="f4fd0328-321c-4887-bd4b-ef3aac47ba27">
       <text>If other please specify:</text>
-      <answer type="textarea" requiredIf="../3=Other"/>
+      <answer type="textarea" requiredIf="../3=~Other"/>
     </question>
   </question>
   <question id="c294008f-94b8-4331-900a-624f86e7b892">
@@ -652,7 +652,7 @@
       </answer>
     </question>
   </question>
-  <question instructionPosition="top" instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) and spends half their research time, for example, on mammals please indicate this as Mammals Scientist/Taxonomist as 0.25 (ie half their research time). Similarly with part-time staff please indicate proportion of full time duties     undertaken. The number of publications field includes scientific articles, books and reports for the surveyed period">
+  <question instructionPosition="top" instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) and spends half their research time, for example, on mammals please indicate this as Mammals Scientist/Taxonomist as 0.25 (ie half their research time). Similarly with part-time staff please indicate proportion of full time duties undertaken. The Number of Publications field includes scientific articles, books and reports for the surveyed period">
     <text>Please provide the following details against specialty on your taxonomic staff, support and publications.</text>
     <shortText>PROPORTION OF DUTIES</shortText>
     <question defaultDataType="number" defaultAnswerType="number" type="matrix">
@@ -691,7 +691,7 @@
           <item>Administrator/ Manager</item>
           <item>Volunteer/ Associate (retired)</item>
           <item>Volunteer/ Associate (not retired)</item>
-          <item>Number of Publications 2009-2011</item>
+          <item>Number of Publications 2009 to 2010</item>
         </cols>
         <guids>344b0ce9-36f6-49d3-936f-88b0373a380c,3ab478aa-9676-44c7-8715-987452e99e34,e87a6771-d986-4c96-b5af-0da36fec8c7a,67289c56-c39c-4525-ac8b-0f62c3c3afbc,1fefd221-3f10-4c5b-a970-c2e4c5bbe2f7,692f9cd3-4f76-4c17-9b6c-06f1acabbb65,340c10ad-74e1-4c2b-ab07-07374f82d258,5010cbc8-237e-4360-a614-34b9fc91c237,33a81527-bb94-4e9d-aff7-ee8998c89f1a,64296ac4-5a08-4244-a1a4-2d51a1eb730a,788be456-66cb-4c14-88ee-296d11b2931e,0c1309b7-9894-4fbe-bcba-420b62593e49,52251fd4-78dd-4db2-bce8-d3df116c5660,a9632a3a-bdf6-4bc7-86db-d9662e60cae6,bc30c790-497b-4937-949d-f4288f499979,38531bfb-a006-4b89-8f68-51e425567c3b,7ec158b5-0d72-4db7-ad5b-59975c88b3a5,b4514b5b-e5f3-4862-9e54-7a453f870034,6f71f438-f1f8-417a-953c-e9c34716858a,4083de84-35d3-4982-a256-6c88ca800bca,9325ffa1-16c3-4b2c-b7f3-764e32a88bd9,2d3a55f9-6ea3-419f-915e-82f4dec525c6,2379d84f-0594-47f1-a79f-1b17f2c6bb13,3a2aff13-b212-4e3e-ba8e-937b072db15f,d1505ee8-9440-4be5-9c1e-7896c433933d,958c85d7-d385-47d2-8467-e2946c95bcf2,8805af5f-f53a-400b-9290-5fc976e1b699,ab1cca59-65d7-4896-bd51-f27b2d1cda5e,939536ab-4083-45f7-ac0d-c6862bc59e1f,c7c1ec21-3ae5-4953-866b-1ae0360ed713,eb85b359-1988-4562-b0ac-6e96a68cbb80,4c065cb3-144d-4bfe-9c91-513bfac182ce,0a167f60-dd3f-41ec-8c85-982b9a75bedf,b3cc0dcf-0af3-4678-adf5-4566f334d6b3,0d409948-984e-420e-9b79-622a64c0c6e4,68fa16aa-d58f-4426-804b-1e8e43e0edcd,e39149a7-5dd5-4457-8692-43f890abb33f,1ab294c1-5c77-4d7f-9696-41d0e12d9429,0ce48cfa-5ab4-4602-8d6b-cd608796e851,8b91db43-f7e6-4012-9be2-36b53a7ca1a8,5baa88b7-f65c-4599-9982-b274bf4df4bb,66c74a80-aa0e-4b18-876c-e51b643db182,7b0a5d7f-f0fd-4c7b-984e-7c08bb4441f1,04246c0f-3246-4c2a-bb5d-598faa8dbd31,e43fb3ed-7482-4c27-afbd-c29a51459d50,e9b326d8-b894-4155-9ce4-2f2559707fe1,de1b8f96-b4f0-42bd-b606-592f1b020802,dae8aa08-35db-43d2-8018-3de8572469f7,b69bb860-4eec-42eb-a724-b7d40f609d9f,aed53dea-353d-4c39-8670-4523aa27ba3f,128075ec-bc23-4936-adaf-c23c6f4e1c41,f0c210a4-257c-4d2d-a046-c4bf8ebeb0af,d37e57b3-357f-4830-99df-61f1e40e6b95,400b310e-d437-4f61-aaed-47cec7316540,3c6d631b-cce8-4ebd-9d91-f5551851534d,9fb2a512-2c29-46ed-b591-0b9ef1cebe2e,3017509b-3ddc-4edb-9044-7a3dab0c2be0,94d2bf5b-1992-4b99-b8fe-831234c688d5,8b313c5b-d3bf-44f4-b534-67478c0766a8,740d6958-3a81-446f-9c29-c7332fdd28e6,7435410e-c55f-4355-903a-278b01c3f496,b83d69a9-d832-4f4e-a1fa-cefe478e64f2,2512e484-7c9c-4515-baf2-0b9f830a4aa0,3a0a318c-ab00-43e3-a120-3d81db0b651a,f1186ec0-ed98-43d5-84e1-d674a58838ee,c4e2b8c8-8588-41e2-b2fd-b1c1f9c1485b,5ea3ef00-3f51-45bd-a730-9e80baa7807f,4deade8d-231d-4585-9bdb-686af1527780,8c79d119-f186-4094-a315-5a2577453752,1170edbc-f6ed-48f7-b744-b9c0002e5952,2f8bcc2d-a161-4b6e-b577-d50d84bec0e0,d695f1cd-c54c-46cb-bcef-70c190f77ad2,aea40049-d770-488c-8051-16dc65c3adb6,00aafa67-2e09-4098-91f2-38f6bade4c66,1b1b2b00-dc31-4b37-b46b-e5f95407a01d,3116d797-e066-443e-a8d3-e65529219d73,2a22e30f-dcb8-4120-9f31-f9f06eab3d3e,3daaa165-618e-4f58-831d-07928d8b68c9,9ac25b4a-c225-42a3-96cf-80758d7f32aa,80471533-768c-426b-85a9-94175ff78e15,8cbb4cb1-227d-4158-a570-cd248e3fa49f,4bd15b1e-c9e1-4fd3-9be3-ca6219935f01,d1410f56-108d-4dc3-97ee-6fe1eb5aa5b5,9efe17a7-b2d2-4146-84bb-99eb105f02f5,2504a184-9f97-49b9-9061-f55c5c373b5e,b3afae6a-867f-47bd-a82d-98ce67675694,8c1dae98-44e7-43f8-9773-ef61f82a0d37,19060c4c-bee5-4117-8aba-3295fd722872,3c2fe597-486a-4cf6-a162-0a5659048535,f94956e5-9a80-4b64-9968-38997c985367,d9223d07-d7f4-4b56-bf25-dcdbdcbb9572,59740e00-2ecf-4dd7-803e-349dc59d3a42,a000e60c-d1ba-4612-b1d9-76472e07e72f,d2100191-f941-4f17-9705-75e550231626,eb4e1cf4-b322-4975-ac35-fc2556232b63,3f49e352-4ab7-4e67-a978-3284a5628885,66a360e7-bdad-4dde-ad25-eb8d695c18f0,01ef8685-cf7f-4bbc-b04a-71bf2871c9e3,6042ee86-8477-4dfe-b475-a36c3f3414f4,40494471-7fd8-4efd-9614-1dd1eae112dd,8cd42c96-6c7e-4735-8e9c-151e6a8b3cb8,9a4af158-bc48-44cf-9d23-42b6ca8ed1e6,3fd4dbbd-4ce9-4790-8728-02fbdf7b1d44,265e729a-d85b-4f5f-9cae-4cae2e24c8a7,36d1eb32-e873-4988-bfbe-221cf1ad852e,f9541960-caad-4014-9756-e777996f4514,346a64db-8c8a-4caf-9184-fafbaad23f99,0b4a5950-5f4e-428e-b58c-de4a863330f4,fa9bdd51-ee24-42ae-b0d6-cb7e28178ea1,b61d8558-3859-4799-ab1a-82e3cb3ccedd,53969634-0b5c-4af8-9714-24fa383f2628,3976d91d-baea-4c84-b865-0914a6c8fb6b,346c53bb-580a-4bf2-8023-7d9fffc4f25b,aae79246-f063-42c6-8015-0608a1b14234,a1495bf6-e04c-4e48-9b27-647ca7eeb361,3baa10df-8af3-49ad-8095-4ae657ff061e,3dc53404-f0fb-4774-a5bd-71db487000da,16b1bebb-e1fe-4dc9-a81c-b00248bda9b7,67a64ae8-9797-49fc-a654-bdba36d78cb0,54e068a4-2811-4c05-8e62-789796714617,6803e378-2b97-439b-b169-17eeb33378bc,2d1e0b3d-810d-451c-ae21-668490ee8702,406f72cd-6f39-4712-889f-adbd220ed784,ccb1bae9-103c-4e56-aeef-21e67519d693,9b057467-3fd4-4f1d-899d-507a467d32c0,b845fe5e-5e0b-4841-bc5a-55f5640826df,3c505ba5-de9e-48d0-afd6-d25e0d8c978b,b2fc581f-fb29-4b00-8e48-4ad0e74a19fc,c772553f-667b-4753-98a2-10f872ab05a5,bbd76a57-9ccd-4528-823f-29166780630f,784ba63b-3bf7-42c3-95b8-d7b0b1b10d72,ea19e9c6-5bdc-48ec-8921-f46bcca46485,c637dff8-0782-4c34-ad58-7be9c450ddc2,008b3769-7689-43d2-86bf-70336183bcbb,f9e55f7f-2885-41c3-a3ca-1edf8bcad05b,fe307441-adfe-4866-b945-e5efdd3e5f84,6c6fd678-6cc1-4734-9138-a6b7d60f3d5b,b8f9e64b-feb3-40c3-8a38-d4250a7d346f,2b949acc-c246-4a8c-97e6-90367ee43bd6,e7a786f4-3a3d-41db-939c-1d10402547f5,50d5dc4e-afc9-4bd1-9a37-f1adb746a790,cc204ff4-fc5c-4b36-9df0-2b25116c54be,7da96161-1332-48b2-8b69-d2728e5ded4a,bffb227d-b95c-4899-905e-7df25f1b62ab,d0958c39-1fe1-4f98-8c91-95cfe89f646e,1fd553b3-4b8d-4727-8a42-77f48e9f0cdf,77793f51-eb2b-44de-a06d-ccfedbf03984,4d1384cd-7f29-46ef-8acb-3e762284f925,d951e11c-f5b0-405f-9e77-e9252d169191,6716f062-4c22-4f89-8e3e-72388a2eb146,9c67314e-f9e5-48ed-b0d4-2490909cce97,1a0f6743-6b2d-4d97-8dbe-05b6e1a5963e,50198f16-3fb1-4283-990d-f06905e46a5e,07e34110-7866-41f7-9bf4-bdbcd0d168fe,f04a71c0-a4b3-4f14-a3a5-0d286ef3b712,819f1155-f458-43eb-a759-e9b9c125db41,f8d1ae80-c46a-4a77-8169-dd8e2290895a,c5ab0cf0-ec39-4301-894e-35209ecdfabe,5901766c-f27b-41fb-9974-c1fcfe40c11e,71f14627-1edf-4f47-a3eb-7adf7cebb8c4,7680363a-9135-47c5-aba7-5dc95b0fb46d,84a88ba1-0889-4884-a8e3-d08a729b35bb,cf134232-c82d-4e06-b48e-88cb1e02bb43,4b6e3578-c515-470a-a30e-a1e58aacfdaf,86358ab4-b781-4990-8400-249a937e6af3,2260ffb5-e44c-47de-85e4-62f570f2b63c,26ba2585-f010-4973-b1e3-b4d659e2411b,b3a059a9-29e2-4c67-8b52-ab76497576f9,44e0340d-4167-47cd-8bee-c793dcd7175a,3e34dfdf-2f93-436f-8e56-8b6b784127f5,fc86b0c6-65ee-4502-b8c1-6130a74e1d8f,297b76de-4a9b-49ed-901e-86b4ec7a5283,912d4783-87d5-47db-8933-2a8f45ab6e2f,f24b565a-8ef7-4383-ae6c-c02b07d49b0e,67a73600-7853-435e-9773-a94b86b87a6f,264d6a41-f320-4f1e-834f-d42f210d6e52,e8c1af2f-caff-49d3-a591-76badd3f62db,e70676db-41b0-44d0-9f7e-7229b819fb2b,b5eef54f-1996-43e1-9bde-98e886102fbd,a33bad5f-f415-4223-9db9-2a891ebec863,94201989-a2bc-4e81-93ab-cddb0fd68cec,0a96cbf8-07d2-45e5-849b-413cea231ce1,198b8f1f-956d-4355-92f5-bb709b3609cd,0da0db1e-f8b3-444a-b3a2-2a058e028b74</guids>
       </data>
@@ -720,7 +720,7 @@
           <item>Administrator/ Manager</item>
           <item>Volunteer/ Associate (retired)</item>
           <item>Volunteer/ Associate (not retired)</item>
-          <item>Number of Publications 2009-2011</item>
+          <item>Number of Publications 2009 to 2010</item>
         </cols>
         <guids>8f51f5bd-f417-44ce-bf70-e41a1e6e233e,9705f09a-e0a1-4095-a756-3dbfb2b4213a,68e7c7cd-88fc-437e-b4e0-2f54bec093b4,5a35c81f-c201-4913-86b0-9456f0f9593e,7b682e81-4938-495b-b1fe-8f9ce712bb4b,1fa3bce1-2318-4f76-a66c-6ad8d9ce5d0d,7396117c-3ab9-4740-9905-5f587c874e1f,f8eb07fc-2ca5-4013-87f9-b783bd93004b,1fe62674-4526-44ce-916e-92d53b1d3fa1,5a4f9e13-9439-4baf-92b3-a7232f5c133b,f5f43ac5-90bb-4b41-9fa4-2c4807543da5,53c228da-08bb-4fe3-bbe9-32003d597c14,b8be4537-b6c7-4b20-862b-856bd4ac3974,7c294187-5457-425c-9eaa-72e68ddaadcf,1488f1f7-e68e-4a58-987e-eb400f91e5b1,3849c40e-dbc3-4207-a30d-8c150464b156,b5e2f9fa-4085-4a93-a6d3-2a5ca00fef74,329ea643-9ba2-4c30-b1cc-a48c85a167b3,b54fae9b-97f4-45f4-a302-bfd121c56663,a9d3806b-c3fb-42aa-b7c4-377e7a6e44cb,1a8493b0-0ae0-4838-84d7-bcdb65678f43,01bab68b-fd4a-4b01-b31e-9796cc80a1fc,f8ed8ade-da8c-428f-b0be-50a4fe8da5b2,ebca8ffe-1ec7-4a21-bd63-461b3c3615dd,bfa6162c-bc5b-4de9-8952-9282e664686e,e6dfac2c-be5b-4b73-a788-ed671d2e4549,e560ed28-94b9-4f34-8b0b-b9c6efb2bd00,408625fd-6eb3-4954-960c-ba2e1c19711e,38995464-f6fa-46f8-afe2-ecd07f3cdb9e,822a53dc-6b44-43da-b1da-fad71bd52152,e62777b8-660b-42e1-9613-7c431461d0a2,b9159438-1546-4817-b32a-3399e2d8df1f,193e89f0-5ecd-41b6-912b-a7cb3cae46a1,b05ea675-4806-4ee5-a057-e1e37c225b2f,bb958371-3764-414d-bdb3-3acc78336808,d25dc990-de2d-4142-a8ae-b673668c5511,0d868ed1-c123-4575-ba4a-8fdb800dd632,fb9eecfc-d722-4d20-9e6c-e3e74244a903,f51b3234-dd65-4259-ad2a-0f9030683c64,5c046d6d-a5d1-45e8-ae5b-3664ab4eb798,71df5ef8-2d4a-408a-8457-2f6be690c2fa,13fb8006-22b8-4919-9bb9-de59fba06994,c803f28e-5e42-4069-9a52-5db6fda38ec3,7a57938c-d71f-4ead-92de-2d5be81cb0a4,6d31235d-9e95-4d9a-a716-7e567587aeb5,2769cda8-b4f5-4021-828c-5cfad8a9c3d6,5493484d-8895-46bc-9204-87e9fdb9c8ae,feb75576-1e31-41f0-9f45-e7e84798415b,ae3dc076-bd59-429b-a7ea-9218eb352072,41d7c3ab-2f9a-41b3-9cb6-0ebc14fd07da,0828db89-fcec-4af3-91b7-83fa649e5629,2c0a51c8-769e-44ab-b6d7-16a54d2128e6,1c8c3281-801f-4478-abc4-54d55a255138,fd7ccd9b-a6f8-453c-8183-1d70ffc81edf,42307888-3299-4a35-8756-1298a8b6c8e3,41038df4-d150-4468-89be-2e7cee8d930a,2cef0479-213b-4ac3-9f23-5d6353938358,0168aa4b-db23-46e1-bccb-a609b5096bf7,4358e7a6-6b58-4922-b5cd-52eb4beb17d5,c280e5e1-f21d-4edf-b68c-555f0197e10c,98c3eb14-6bc1-4485-9144-5c254b3c70f3,83280fff-377e-4861-91ff-dc82d7fd2379,e2ce557f-81ed-42af-95c2-62aac632446e,6115fe9b-ca72-4275-ac28-dce72b52f89e,66f4a7a7-5400-49bc-aeb9-2de2cd1f1467,05577d83-eeec-4213-9233-c7760f08c0ce,392040dd-6c8f-4bc5-a257-d27a3760f8a6,6427e508-ecac-4788-b5f8-18b7c6bb95af,41b29b18-fd18-4ade-afce-b91a548aec8f,1a59159f-cc87-4f25-9fce-19acfaf3125b,b628d0e3-7fd4-4d58-881c-d68d40076a63,6713974f-3627-41bc-8053-35b70dfd3c31,5a68b1eb-f8d4-4893-824d-5a58032cd3f4,559381e2-268d-4f0e-af29-13d5e5c66ebd,4f3a30de-5178-4f34-9f2c-45d866a3ffc0,d8404d8c-b21c-4597-a4f6-2826bda3ccc4,78601b71-aaa0-4906-a279-889b5b71d629,1bcc996a-86e7-4070-9765-b10be38c5165,29ea2513-8f27-478c-842d-d04835ac489b,b81cf577-e693-4b3b-b25f-575550a587b8,6df4a4a8-ae2c-4f5c-ac8b-a26fe451fa2c,3f1a3f06-ea71-4f9f-86eb-59216373df3d,ecf492f1-df5f-4b00-b044-4426fd71c710,a2b6923e-c2aa-4a60-aec1-102686772271,f91f67d0-169b-4537-b31f-d36b9c33a904,20ca38ca-cc78-4756-aa79-3d3d06abe21a,b2ccf170-56b9-49af-91ea-407795ac9a9d,577b6a60-acc2-4d97-bead-bec18873c512</guids>
       </data>
@@ -742,7 +742,7 @@
           <item>Administrator/ Manager</item>
           <item>Volunteer/ Associate (retired)</item>
           <item>Volunteer/ Associate (not retired)</item>
-          <item>Number of Publications 2009-2011</item>
+          <item>Number of Publications 2009 to 2010</item>
         </cols>
         <guids>f69b06b8-9e28-4230-bd8b-49db3a8c40ff,ee56b455-99b5-4561-b089-856134662c51,4d342cae-26d8-4abd-8128-4a325c147c28,e4f06a7b-c2ff-47f7-912c-971d95abbebb,9735504a-f8e5-4965-bb76-f1eecd23dc81,65200448-8f9c-4729-b370-40ab495f3b61,4c0ab073-9b61-4b9f-a15e-d2373475e042,8660e2da-a2d0-4158-9379-0e3daa742518,46200b07-9608-4291-adc5-63bcafc4311a,a190552f-977e-4cb3-800a-6d733003fed8,a58d9f24-56b3-4484-8b86-78b76145536e,f7230cfb-1625-4373-a7a4-321742101316,6e24c641-16b9-451c-97ad-6ebf6ac456c8,edd086f8-f574-452d-b587-bac1b8ba0d2a,afd7b888-6f57-429f-bb2c-3357da7891a4,235b77ba-36f2-48e0-8830-cdee150f9776,d51fed2c-4f4a-4222-b535-2ca25e4409e8,f54dc80c-c716-452c-97b7-76a80e87d9c7,6a6126b8-8c35-4d06-b78e-32ca7c65f19f,3a10b09e-6316-4b8c-ac2a-50839dd419eb,5b2e3656-b334-4181-bcc6-14c1ede0da47,4c353e87-b5b8-4b2d-9c6b-1af692bc102c,7759fbb0-ec6a-430b-b4ab-f7e921adb82c,2798c347-a3f9-4a15-a57f-57937c208a9f,8708d409-68dd-4738-8279-47f7abdfc1b5,5e74d489-dcd3-4896-a65a-15d332b45cea,570555b0-7405-4a77-b239-8d4457cfdca3,f3dd157d-106a-4a65-bda6-bec31598aecd,9e7b8841-74a7-4a6b-b2e4-75428cb428ee,74a95f36-72cf-41f3-82fa-4e6c1a3acf5c,dab65330-b9ae-4ac3-9a5b-0a1615d863f7,87d3b8ba-db3a-452a-b777-8d0bf6b444d9</guids>
       </data>
