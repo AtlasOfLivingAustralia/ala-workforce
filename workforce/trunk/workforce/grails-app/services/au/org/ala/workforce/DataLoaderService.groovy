@@ -259,6 +259,9 @@ class DataLoaderService implements ApplicationContextAware {
             q.subtext = it.subtext
             q.shorttext = it.shortText
             q.onchangeAction = it.onchange
+            if (q.onchangeAction && q.onchangeAction[-1] != ')') {
+                q.onchangeAction += "()"  // add parentheses if not present
+            }
             def atype = valueOrDefault('type', it.answer?.@type?.text(), defaults, ident)
             q.atype = atype ? AnswerType.valueOf(atype as String) : AnswerType.none
             def datatype = valueOrDefault('dataType', it.answer?.@dataType?.text(), defaults, ident)
@@ -279,6 +282,7 @@ class DataLoaderService implements ApplicationContextAware {
             }
             q.required = it.answer?.@required == 'true' || it.answer?.@required == 'yes'
             q.requiredIf = it.answer?.@requiredIf
+            q.dependentOn = it.@dependentOn
             q.adata = extractJsonString(it.answer?.data) as grails.converters.JSON
             q.alabel = it.answer?.label?.text()
 
