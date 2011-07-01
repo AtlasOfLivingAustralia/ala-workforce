@@ -276,8 +276,7 @@ class QuestionController {
         // validate answers against each question
         Map<String, String> errors = new HashMap<String, String>()
         questionList.each {
-            //println "validating " + it.ident()
-            errors += it.validate()
+            errors += it.validate(params)
         }
 
         // return the populated question list and any errors
