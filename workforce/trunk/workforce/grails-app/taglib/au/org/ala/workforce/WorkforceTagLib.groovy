@@ -3,7 +3,6 @@ package au.org.ala.workforce
 import au.org.ala.cas.util.AuthenticationCookieUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import java.text.NumberFormat
-import java.text.DecimalFormat
 import org.jasig.cas.client.authentication.AttributePrincipal
 
 /**
@@ -31,6 +30,8 @@ class WorkforceTagLib {
      */
     def question = { attrs ->
         QuestionModel model = attrs.question
+
+        setDisabledState(model)
 
         List secondLevel = model.questions
         int secondLevelIndex = 0
@@ -363,11 +364,12 @@ class WorkforceTagLib {
             case AnswerType.bool:
                 def yesChecked = (q.answerValueStr?.toLowerCase() in ['yes', 'true', 'on']) ? 'checked' : ''
                 def noChecked = (q.answerValueStr?.toLowerCase() in ['no', 'false']) ? 'checked' : ''
+                def onchange = q.onchangeAction ? "onchange=${q.onchangeAction}" : ""
                 if (q.displayHint == 'checkbox') {
-                    result += "<input class='checkbox' type='checkbox' name='${q.ident()}' ${yesChecked}/>"
+                    result += "<input ${onchange} class='checkbox' type='checkbox' name='${q.ident()}' ${yesChecked}/>"
                 } else {
-                    result += "<input class='radio' class='radio' type='radio' name='${q.ident()}' id='yes' value='yes' ${yesChecked}/><label for='yes'>Yes</label>"
-                    result += "<input class='radio' type='radio' name='${q.ident()}' id='no' value='no' ${noChecked}/><label for='no'>No</label>"
+                    result += "<input ${onchange} class='radio' class='radio' type='radio' name='${q.ident()}' id='yes' value='yes' ${yesChecked}/><label for='yes'>Yes</label>"
+                    result += "<input ${onchange} class='radio' type='radio' name='${q.ident()}' id='no' value='no' ${noChecked}/><label for='no'>No</label>"
                 }
                 break
             case AnswerType.none:
@@ -383,6 +385,10 @@ class WorkforceTagLib {
                 break
             case AnswerType.radio:
                 // display radio buttons with text from adata to select one chunk of text
+                if (q.requiredIf == "enabled") {
+                    result += "<input type='hidden' name='disabledState' id='disabledState' value='" +
+                            (q.isDisabled() ? "disabled" : "enabled") + "'/>"
+                }
                 def items = []
                 q.adata.eachWithIndex { it, idx ->
                     def checked = it == q.answerValueStr ? 'checked' : ''
@@ -398,17 +404,18 @@ class WorkforceTagLib {
                 break
             case AnswerType.text:
                 def size = extractTextFieldSize(q.displayHint)
-                result += textField(name: q.ident(), size: size, value: q.answerValueStr) + " " + (q.alabel ?: "")
+                Map params = [name: q.ident(), size: size, value: q.answerValueStr]
+                result += textField(params) + " " + (q.alabel ?: "")
                 break
             case AnswerType.textarea:
                 result += textArea(name: q.ident(), rows: q.adata?.rows ?: 4, value: (q.answerValueStr ?: "")) + " " + (q.alabel ?: "")
                 break
             case AnswerType.percent:
-                def attrs = [name: q.ident(), size: 7, value: q.answerValueStr]
+                def params = [name: q.ident(), size: 7, value: q.answerValueStr]
                 if (q.level == 2 && q.layoutHint == 'align-with-level3') {  //TODO: apply to other types
-                    result = "<div class='alignWithLevel3'>" + textField(attrs) + " %</div>"
+                    result = "<div class='alignWithLevel3'>" + textField(params) + " %</div>"
                 } else {
-                    result += textField(attrs) + " %"
+                    result += textField(params) + " %"
                 }
                 break
             case AnswerType.range:
@@ -569,6 +576,32 @@ class WorkforceTagLib {
         }
 
         return result
+    }
+
+    private Map getDisabled(QuestionModel q) {
+        boolean enabled = false
+        if (q.requiredIf) {
+            def rif = q.parseCondition(q.requiredIf)
+            switch (rif.comparator) {
+                case "=":
+                    if (q.getQuestionFromPath(rif.path)?.answerValueStr == rif.value) {
+                        enabled = true
+                    }
+                    break
+                case "=~":
+                    if (q.getQuestionFromPath(rif.path)?.answerValueStr?.toLowerCase() =~ rif.value?.toLowerCase()) {
+                        enabled = true
+                    }
+                    break
+                case "groovyTruth":
+                    if (q.getQuestionFromPath(rif.path)?.answerValueStr) {
+                        enabled = true
+                    }
+                    break
+            }
+
+        }
+        return enabled ? [:] : [disabled:'true']
     }
 
     /**
@@ -763,9 +796,14 @@ class WorkforceTagLib {
             if (q2.errorMessage) {
                 rowText = "<span class='errors'>" + rowText + "</span>"
             }
-            content += "<tr><td>${rowText}</td>"
-
             def ident = q2.ident()
+
+            // optional radio groups should have a 'clear' link to reset the state
+            def clearLink = ''
+            if (rowText.toLowerCase() =~ 'other') {
+                clearLink = " <span class='link' onclick=\"clearRadio('${ident}');\">clear answer</span>"
+            }
+            content += "<tr><td>${rowText}${clearLink}</td>"
 
             cols.eachWithIndex { col, idx ->
                 def selected = (col == q2.answerValueStr) ? " checked" : ""
@@ -1171,7 +1209,7 @@ class WorkforceTagLib {
             }
             out << "<p class='textLinks'><a href='"
             out << g.createLink(controller:"report", action:"answers", params:[set: attrs.setid])
-            out << "'>Click here to see a quick summary of your answers.</a></p>"
+            out << "'>Click here to see a summary of your answers.</a></p>"
         }
     }
 
@@ -1228,6 +1266,42 @@ class WorkforceTagLib {
             text += "<br/><span class='instruction'>${q.instruction}</span>"
         }
         return text
+    }
+
+    def setDisabledState(QuestionModel q) {
+        def path = q.dependentOn
+        if (!path) { return }
+
+        // get the conditional phrase
+        def cond = QuestionModel.parseCondition(q.dependentOn)
+
+        // assume simple path for now
+        int targetQuestionNumber = cond.path[1..-1].toInteger()
+
+        // load the question
+        def answers = Answer.getAnswers(q.qset, 21, DateUtil.getCurrentYear())
+        QuestionModel contingent =  modelLoaderService.loadQuestionWithAnswer(q.qset, targetQuestionNumber, answers)
+
+        // check the answer
+        String answer = contingent.answerValueStr
+        switch (cond.comparator) {
+            case "=":
+                if (answer != cond.value) {
+                    println "setting ${q.ident()} to disabled"
+                    q.disabled = true
+                }
+                break
+            case "=~":
+                if (!(answer?.toLowerCase() =~ cond.value?.toLowerCase())) {
+                    q.disabled = true
+                }
+                break
+            case "groovyTruth":
+                if (!answer) {
+                    q.disabled = true
+                }
+                break
+        }
     }
 
 }
