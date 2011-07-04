@@ -12,6 +12,7 @@
             <g:hiddenField name="to" value="${pagination.to}"/>
             <g:hiddenField name="totalPages" value="${pagination.totalPages}"/>
             <g:hiddenField name="pageNumber" value="${pagination.pageNumber}"/>
+            <div id="hiddenAction"></div>
             <div class="nav">
                 <span class="navButton home"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
                 <g:if test="${pagination.pageNumber != 1}">
@@ -26,7 +27,7 @@
                     <g:actionSubmit class="navButton" action="next" value="Next"/>
                 </g:if>
                 <g:if test="${pagination.pageNumber == pagination.totalPages}">
-                    <g:actionSubmit class="navButton" action="finish" value="Finish" />
+                    <g:actionSubmit class="navButton" action="finish" value="Finish"/>
                 </g:if>
             </div>
             <div class="body">
@@ -76,13 +77,14 @@
                 </g:else>
                 <span class='pageProgress'><wf:pageProgress set="${qset.setId}" page="${pagination.pageNumber}" total="${pagination.totalPages}"/></span>
                 <g:if test="${pagination.pageNumber != pagination.totalPages}">
-                    <g:actionSubmit class="navButton" action="next" value="Next" />
+                    <g:actionSubmit class="navButton" action="next" value="Next"/>
                 </g:if>
                 <g:if test="${pagination.pageNumber == pagination.totalPages}">
-                    <g:actionSubmit class="navButton" action="finish" value="Finish" />
+                    <g:actionSubmit class="navButton" action="finish" value="Finish"/>
                 </g:if>
             </div>
             </g:form>
+
         </div>
 
     <script type="text/javascript">
@@ -110,7 +112,18 @@
             });
         }
         $(document).ready(function() {
-           setInitialState();
+            setInitialState();
+        });
+        $(document).keypress(function(event) {
+            if (event.which == 13) {
+                <g:if test="${pagination.pageNumber != pagination.totalPages}">
+                    $("#hiddenAction").append("<input type='hidden' name='_action_next' value='Next'/>")
+                </g:if>
+                <g:if test="${pagination.pageNumber == pagination.totalPages}">
+                    $("#hiddenAction").append("<input type='hidden' name='_action_finish' value='Finish'/>")
+                </g:if>
+                $("form").submit()
+            }
         });
     </script>
     </body>
