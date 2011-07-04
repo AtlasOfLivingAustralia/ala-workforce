@@ -1209,7 +1209,7 @@ class WorkforceTagLib {
                 out << "<p>Survey incomplete (Last modified ${lastUpdate})</p>"
             }
             out << "<p class='textLinks'><a href='"
-            out << g.createLink(controller:"report", action:"answers", params:[set: attrs.setid])
+            out << g.createLink(controller:"report", action:"answers", params:[set: attrs.setid, id:userid])
             out << "'>Click here to see a summary of your answers.</a></p>"
         }
     }
