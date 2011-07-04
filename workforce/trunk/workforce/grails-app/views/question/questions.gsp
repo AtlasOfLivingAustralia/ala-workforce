@@ -92,7 +92,7 @@
             $('input[name='+ident+']:checked').removeAttr('checked');
         }
         function disable(ident, src) {
-            if (src.value == 'yes') {
+            if (src.value == 'yes' && src.checked) {
                 $('input[name='+ident+']').removeAttr('disabled');
                 $('#disabledState').attr('value','enabled');
             } else {
@@ -103,10 +103,10 @@
         }
         function setInitialState() {
             // find any input with onchange="disable(..)" and set the states accordingly
-            $('input[onchange^="disable"]').each(function(index,element) {
-                var funct = this.getAttribute('onchange')
-                var ident = funct.substring(funct.indexOf("'")+1,funct.lastIndexOf("'"));
-                if (this.getAttribute('checked') != null) {
+            $('input[onclick*="disable"][value="no"]').each(function(index,element) {
+                var funct = this.getAttributeNode('onclick').value;
+                var ident = funct.substring(funct.indexOf("'")+1,funct.lastIndexOf("',"));
+                if ($(this).attr('checked') == 'checked') {
                     disable(ident, this);
                 }
             });
