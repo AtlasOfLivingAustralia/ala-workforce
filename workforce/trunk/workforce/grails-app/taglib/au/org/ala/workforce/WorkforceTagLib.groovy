@@ -364,7 +364,8 @@ class WorkforceTagLib {
             case AnswerType.bool:
                 def yesChecked = (q.answerValueStr?.toLowerCase() in ['yes', 'true', 'on']) ? 'checked' : ''
                 def noChecked = (q.answerValueStr?.toLowerCase() in ['no', 'false']) ? 'checked' : ''
-                def onchange = q.onchangeAction ? "onchange=${q.onchangeAction}" : ""
+                // hack for IE - use onclick instead
+                def onchange = q.onchangeAction ? "onclick=${q.onchangeAction}" : ""
                 if (q.displayHint == 'checkbox') {
                     result += "<input ${onchange} class='checkbox' type='checkbox' name='${q.ident()}' ${yesChecked}/>"
                 } else {
