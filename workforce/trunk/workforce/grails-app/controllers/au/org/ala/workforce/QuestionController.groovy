@@ -288,13 +288,16 @@ class QuestionController {
      */
     def areAnswers(questions) {
         def result
-        questions.each {
-            if (it.answerValueStr) {
+        for (q in questions) {
+            if (q.answerValueStr) {
                 result = true
-            } else if (it.questions) {
-                result = areAnswers(it.questions)
+            } else if (q.questions) {
+                result = areAnswers(q.questions)
             } else {
                 result = false
+            }
+            if (result) {
+                break
             }
         }
         return result
