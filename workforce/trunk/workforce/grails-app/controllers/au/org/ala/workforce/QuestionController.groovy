@@ -123,8 +123,14 @@ class QuestionController {
      * Handle move to previous page.
      */
     def previous = {
+        // test if Next is also present - weird behaviour in IE7 on pressing Enter to go to Next page
+        int jump = -1
+        if (params._action_next == 'Next') {
+            jump = 1
+        }
+        
         // set the destination page
-        params.chainTo = [action: 'page', params:[set:params.set, page:params.pageNumber.toInteger() - 1]]
+        params.chainTo = [action: 'page', params:[set:params.set, page:params.pageNumber.toInteger() + jump]]
 
         // forward to page submission
         forward(action: 'leavePage', params:params)
