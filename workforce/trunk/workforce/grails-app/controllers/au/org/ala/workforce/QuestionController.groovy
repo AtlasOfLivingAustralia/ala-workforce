@@ -206,7 +206,7 @@ class QuestionController {
 
         if (noErrors) {
             // create completion event
-            Event.complete(userId(), params.qset.setId)
+            Event.complete(userId(), params.qset.setId, request.getHeader("User-Agent"), request.getRemoteAddr())
             // show home page
             redirect(uri: '/')
         }
