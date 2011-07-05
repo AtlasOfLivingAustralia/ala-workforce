@@ -108,6 +108,9 @@
                 var ident = funct.substring(funct.indexOf("'")+1,funct.lastIndexOf("',"));
                 if ($(this).attr('checked') == 'checked') {
                     disable(ident, this);
+                } else {
+                    // make sure the hidden input state is enabled
+                    $('#disabledState').attr('value','enabled');
                 }
             });
         }
