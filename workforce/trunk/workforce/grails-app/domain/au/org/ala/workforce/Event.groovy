@@ -8,6 +8,8 @@ class Event {
     int userid                      // the user
     int setId                       // the question set
     String name                     // the type of event
+    String userAgent                // the user agent
+    String ipAddr                   // their ip address
     // the timestamp reflects when the answer was stored - note that Grails handles this automagically based on the property name
     Date lastUpdated
 
@@ -15,8 +17,8 @@ class Event {
         name(maxSize:45, inList: [STARTED, COMPLETE])
     }
 
-    static complete(userid, set) {
-        new Event(userid: userid, setId: set, name: COMPLETE).save()
+    static complete(userid, set, agent, ip) {
+        new Event(userid: userid, setId: set, name: COMPLETE, userAgent: agent, ipAddr: ip).save()
     }
 
     static def numberCompletedForYear(int setId, String year) {
