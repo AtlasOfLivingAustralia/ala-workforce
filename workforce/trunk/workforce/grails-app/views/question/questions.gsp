@@ -119,13 +119,15 @@
         });
         $(document).keypress(function(event) {
             if (event.which == 13) {
-                <g:if test="${pagination.pageNumber != pagination.totalPages}">
-                    $("#hiddenAction").append("<input type='hidden' name='_action_next' value='Next'/>")
-                </g:if>
-                <g:if test="${pagination.pageNumber == pagination.totalPages}">
-                    $("#hiddenAction").append("<input type='hidden' name='_action_finish' value='Finish'/>")
-                </g:if>
-                $("form").submit()
+                if (event.target.nodeName != 'SELECT' && event.target.nodeName != 'TEXTAREA') {
+                    <g:if test="${pagination.pageNumber != pagination.totalPages}">
+                        $("#hiddenAction").append("<input type='hidden' name='_action_next' value='Next'/>")
+                    </g:if>
+                    <g:if test="${pagination.pageNumber == pagination.totalPages}">
+                        $("#hiddenAction").append("<input type='hidden' name='_action_finish' value='Finish'/>")
+                    </g:if>
+                    $("form").submit()
+                }
             }
         });
     </script>
