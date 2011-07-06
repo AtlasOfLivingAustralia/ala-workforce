@@ -9,7 +9,8 @@ class ReportController {
      *
      */
     def answers = {
-
+        cache false
+        
         def questionList = []
 
         def setId = params.set as int ?: 1
