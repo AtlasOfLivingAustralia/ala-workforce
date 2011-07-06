@@ -77,7 +77,8 @@ class QuestionController {
      * @param page the page to display
      */
     def page = {
-
+        cache false
+        
         // grab the required page number
         def pageNumber = params.page.isInteger() ? params.page.toInteger() : 1
         assert params.qset
