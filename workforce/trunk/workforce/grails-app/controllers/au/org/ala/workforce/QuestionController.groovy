@@ -9,11 +9,11 @@ class QuestionController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     /**
-     * Default action
+     * Action for "/" to set no-cache Cache-Control
      */
-    def index = {
-        log.warn("Default action invoked - " + request.requestURL)
-        redirect(uri: '/')
+    def home = {
+        cache false
+        render(view:'../index')
     }
 
     /**
@@ -23,13 +23,7 @@ class QuestionController {
      * @param question page number will be derived
      */
     def beforeInterceptor = {
-        if (params.set?.isInteger()) {
-            params.qset = QuestionSet.findBySetId(params.set.toInteger())
 
-            if (params.question?.isInteger() && !params.page) {
-                params.page = params.qset.findPageByQuestionNumber(params.question.toInteger()).pageNumber
-            }
-        }
         if (request.getUserPrincipal()) {
             // this is called to make sure we have a full record of the user in the user store
             User.getUser(request.getUserPrincipal())
@@ -43,6 +37,19 @@ class QuestionController {
                     flash.message = "You do not have the required role to access the ${params.qset.shortName}."
                     redirect(uri: '/')
                 }
+            }
+
+            // ensure that institutional user doesn't see personal survey
+            if (request.isUserInRole('ROLE_ABRS_INSTITUTION')) {
+                params.set = '2'
+            }
+        }
+
+        if (params.set?.isInteger()) {
+            params.qset = QuestionSet.findBySetId(params.set.toInteger())
+
+            if (params.question?.isInteger() && !params.page) {
+                params.page = params.qset.findPageByQuestionNumber(params.question.toInteger()).pageNumber
             }
         }
     }
