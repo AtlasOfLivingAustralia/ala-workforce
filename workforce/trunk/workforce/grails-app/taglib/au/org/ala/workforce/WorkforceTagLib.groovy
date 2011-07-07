@@ -331,18 +331,19 @@ class WorkforceTagLib {
         }
 
         else if (q.questions) {
+            // all level 2 in column 2; level 3 in column 3
+            if (q.displayHint == 'checkbox') {
+                // widget first
+                result.secondColumnHtml = "${getQuestionTextForReport(q)}"
+            } else {
+                // text first
+                def questionText = getQuestionTextForReport(q)
+                def answerText = layoutAnswer(q)
+                result.secondColumnHtml = "${questionText} ${answerText}"
+            }
+
             // 3rd level questions
             result.thirdColumnHtml = layoutLevel3ForReport(q)
-
-            if (result.thirdColumnHtml) {
-                if (q.displayHint == 'checkbox') {
-                     // widget first
-                     result.secondColumnHtml = "${getQuestionTextForReport(q)}"
-                 } else {
-                     // text first
-                     result.secondColumnHtml = "${getQuestionTextForReport(q)} " + layoutAnswer(q)
-                 }
-            }
         }
 
         else {
