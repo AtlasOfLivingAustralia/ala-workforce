@@ -5,6 +5,7 @@ class AdminController {
     def modelLoaderService
 
     def dashboard = {
+        cache false
 
         def setId = params.set.toInteger() ?: 1
         def qset = QuestionSet.findBySetId(setId)
@@ -22,6 +23,8 @@ class AdminController {
     }
 
     def index = {
+        cache false
+        
         render(view:'../index', model:[admin:true])
     }
 
