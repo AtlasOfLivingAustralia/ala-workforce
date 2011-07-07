@@ -634,6 +634,7 @@ class WorkforceTagLib {
                         result += "No"
                     }
                     break
+
                 case AnswerType.percent:
                     result += q.answerValueStr + "%"
                     break
@@ -645,6 +646,13 @@ class WorkforceTagLib {
                         result += q.answerValueStr
                     }
                     break
+
+                case AnswerType.textarea:
+                    q.answerValueStr.tokenize("\r").each {
+                        result += "${it}<br/>"
+                    }
+                    break
+                
                 default:
                     result += q.answerValueStr
             }
