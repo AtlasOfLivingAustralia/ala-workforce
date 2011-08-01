@@ -28,11 +28,11 @@
                         </table>
                         <div class="progress-container">
                             <div title="${completed} completed" style="width: ${(completed*100)/total}%">
-                                <g:if test="${qset.setId==2 && completed > 2}">
+                                <g:if test="${qset.setId==QuestionModel.CURRENT_INSTITUTIONAL_SURVEY && completed > 2}">
                                     ${String.format('%.1f',(completed*100)/total)}%
                                 </g:if>
                             </div>
-                            <g:if test="${qset.setId==2 && completed < 3}">
+                            <g:if test="${qset.setId==QuestionModel.CURRENT_INSTITUTIONAL_SURVEY && completed < 3}">
                                 <span style="float:left; padding-left: 3px;">${String.format('%.1f',(completed*100)/total)}%</span>
                             </g:if>
                             <div title="${started-completed} started but not completed" style="width: ${(started*100)/total}%"></div>
@@ -41,7 +41,7 @@
                         <div style="clear:both"></div>
 
                         <g:set var="users" value="${User.getUsersWithAnswers(qset.setId, year as int)}"/>
-                        <g:if test="${qset.setId == 1}">
+                        <g:if test="${qset.setId == QuestionModel.CURRENT_PERSONAL_SURVEY}">
                             <h3>Respondents</h3>
                             <p style="margin-top: 5px;">Click a name to show answers.</p>
                             <ul class="respondents">
@@ -51,7 +51,7 @@
                             </ul>
                         </g:if>
 
-                        <g:if test="${qset.setId == 2}">
+                        <g:if test="${qset.setId == QuestionModel.CURRENT_INSTITUTIONAL_SURVEY}">
                             <h3>Institutions</h3>
                             <p style="margin-top: 5px;">Click a name to show answers.</p>
                             <ul class="respondents">
@@ -75,6 +75,7 @@
                         <g:else>
                             <p><g:link controller="report" action="answers" params="${[set:qset.setId]}"><strong>Browse all answers</strong></g:link></p>
                             <p><g:link controller="download" action="download" params="${[set:qset.setId]}"><strong>CSV Download</strong></g:link></p>
+                            <p><g:link controller="admin" action="createSurvey" params="${[set:qset.setId]}"><strong>Create New Survey</strong></g:link></p>
                         </g:else>
                         <p class="dull">Generate Charts</p>
                     </td>
