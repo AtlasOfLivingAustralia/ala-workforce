@@ -6,9 +6,9 @@ package au.org.ala.workforce
  * Time: 2:26:48 PM
  */
 enum AnswerType {
-    bool, none, number, text, textarea, percent, rank, externalRef, radio, range, preload, calculate
+    bool, none, number, text, textarea, percent, rank, externalRef, radio, range, preload, calculate, summable
 
     static list() {
-        [bool, none, number, text, textarea, percent, rank, externalRef, radio, range, preload, calculate]
+        [bool, none, number, text, textarea, percent, rank, externalRef, radio, range, preload, calculate, summable]
     }
 }
