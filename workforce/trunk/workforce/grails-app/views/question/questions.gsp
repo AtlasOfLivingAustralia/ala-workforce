@@ -3,6 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
+        <link rel="stylesheet" href="${resource(dir:'css',file:'jquery-ui-combobox.css')}" />
         <title>${qset.title}</title>
     </head>
     <body>
@@ -29,6 +30,7 @@
                 <g:if test="${pagination.pageNumber == pagination.totalPages}">
                     <g:actionSubmit class="navButton" action="finish" value="Finish"/>
                 </g:if>
+                <g:actionSubmit class="navButton" action="exit" value="Exit" style="padding-left: 100px"/>
             </div>
             <div class="body">
                 <g:if test="${questions.size() == 1}">
@@ -82,9 +84,10 @@
                 <g:if test="${pagination.pageNumber == pagination.totalPages}">
                     <g:actionSubmit class="navButton" action="finish" value="Finish"/>
                 </g:if>
+                <g:actionSubmit class="navButton" action="exit" value="Exit" style="padding-left: 100px"/>
             </div>
             </g:form>
-
+        
         </div>
 
     <script type="text/javascript">
@@ -119,6 +122,9 @@
         });
         $(document).keypress(function(event) {
             if (event.which == 13) {
+                if (event.target.className.indexOf('summable') > -1) {
+                    updateSum(event.target);
+                }
                 if (event.target.nodeName != 'SELECT' && event.target.nodeName != 'TEXTAREA') {
                     <g:if test="${pagination.pageNumber != pagination.totalPages}">
                         $("#hiddenAction").append("<input type='hidden' name='_action_next' value='Next'/>")
