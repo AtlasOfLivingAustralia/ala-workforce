@@ -16,8 +16,6 @@ class WorkforceTagLib {
 
     static namespace = 'wf'
 
-    static final int INSTITUTION_SURVEY_QUESTION_SET_ID = 2;
-
     def modelLoaderService, listLoaderService
 
     /**
@@ -140,6 +138,7 @@ class WorkforceTagLib {
      */
     def report = { attrs ->
         QuestionModel model = attrs.question
+        QuestionSet qset = attrs.qset
 
         List secondLevel = model.questions
         int secondLevelIndex = 0
@@ -180,7 +179,7 @@ class WorkforceTagLib {
                 // question text should span q & a columns only if there are answers
                 firstCellRowSpan++
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset)}</td>"
                     if (firstCellRowSpan > 1) {
                         out << "<td colspan='2'>${getQuestionTextForReport(model)}</td>"
                     } else {
@@ -191,7 +190,7 @@ class WorkforceTagLib {
             } else {
                 // go straight to first sub-question
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset)}</td>"
                 if (secondLevel) {
                     QuestionModel q = secondLevel[0]
                     if (contents) {contents.remove(0)}
@@ -208,7 +207,7 @@ class WorkforceTagLib {
                 // real question - with text and answer
                 firstCellRowSpan++
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset)}</td>"
                     out << "<td>${getQuestionTextForReport(model)}</td>"
                     out << "<td>" + layoutAnswer(model) + "</td>"
                 out << "</tr>"
@@ -216,7 +215,7 @@ class WorkforceTagLib {
             } else {
                 // probably won't occur
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset)}</td>"
                     out << "<td colspan=2>" + layoutAnswer(model) + "</td>"
                 out << "</tr>"
             }
@@ -366,7 +365,7 @@ class WorkforceTagLib {
                 def yesChecked = (q.answerValueStr?.toLowerCase() in ['yes', 'true', 'on']) ? 'checked' : ''
                 def noChecked = (q.answerValueStr?.toLowerCase() in ['no', 'false']) ? 'checked' : ''
                 // hack for IE - use onclick instead
-                def onchange = q.onchangeAction ? "onclick=${q.onchangeAction}" : ""
+                def onchange = q.onchangeAction ? "onclick=${q.onchangeAction}()" : ""
                 if (q.displayHint == 'checkbox') {
                     result += "<input ${onchange} class='checkbox' type='checkbox' name='${q.ident()}' ${yesChecked}/>"
                 } else {
@@ -380,10 +379,31 @@ class WorkforceTagLib {
                 def answer = q.answerValueStr?.isNumber() ? NumberFormat.getInstance().format(q.answerValueStr.toDouble()) : q.answerValueStr
                 //println "answer str is ${q.answerValueStr}; formatted answer is ${answer}"
                 def atts = [name: q.ident(), size: 8, value: answer, 'class': 'number']
-                if (q.onchangeAction) {
-                    atts.put 'onchange', "${q.onchangeAction}();"
+                if (q.onchangeAction == 'updateSum') {
+                    atts.put 'class', 'number summable'
                 }
                 result += textField(atts) + " " + (q.alabel ?: "")
+                break
+            case AnswerType.summable:
+                def answer = q.answerValueStr?.isNumber() ? NumberFormat.getInstance().format(q.answerValueStr.toDouble()) : q.answerValueStr
+                def atts = [name: q.ident(), size: 8, value: answer]
+                def noOfCols = q.owner.qdata.cols.size()
+                def rowRange = q.owner.adata.rowRange ?: [start: 1, finish: Integer.MAX_VALUE]
+                def colRange = q.owner.adata.colRange ?: [start: 1, finish: Integer.MAX_VALUE]
+                def rowCol = getRowAndColumnNumber(q.ident(), noOfCols)
+                if (rowCol.rowNum >= (rowRange.start as Integer) && rowCol.rowNum <= (rowRange.finish as Integer) &&
+                    rowCol.colNum >= (colRange.start as Integer) && rowCol.colNum <= (colRange.finish as Integer)) {
+                    atts.put 'class', 'summable number'
+                    atts.put 'colnum', rowCol.colNum
+                } else {
+                    atts.put 'class', 'number'
+                }
+                def sumRow = q.owner.adata.sumRow
+                if (sumRow && sumRow as int == rowCol.rowNum) {
+                    result += hiddenField(name: q.ident(), value: answer, totalnum: rowCol.colNum, class: 'intratotal') + "<span class='calculated' id='s${q.ident()}' totalnum='${rowCol.colNum}'>${answer?:''}</span>"
+                } else {
+                    result += textField(atts) + " " + (q.alabel ?: "")
+                }
                 break
             case AnswerType.radio:
                 // display radio buttons with text from adata to select one chunk of text
@@ -394,7 +414,8 @@ class WorkforceTagLib {
                 def items = []
                 q.adata.eachWithIndex { it, idx ->
                     def checked = it == q.answerValueStr ? 'checked' : ''
-                    items << "<input class='radio' type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' value='${it}' ${checked}/><label for='${q.ident()}_${idx}'>${it}</label>"
+                    // use escaped " for value so that apostrophe is handled correctly
+                    items << "<input class='radio' type='radio' name='${q.ident()}' id='${q.ident()}_${idx}' value=\"${it}\" ${checked}/><label for='${q.ident()}_${idx}'>${it}</label>"
                 }
                 if (items.size() == 2) {
                     // treat as boolean with arbitrary labels
@@ -414,6 +435,9 @@ class WorkforceTagLib {
                 break
             case AnswerType.percent:
                 def params = [name: q.ident(), size: 7, value: q.answerValueStr]
+                if (q.onchangeAction == 'updateSum') {
+                    params.put 'class', 'summable'
+                }
                 if (q.level == 2 && q.layoutHint == 'align-with-level3') {  //TODO: apply to other types
                     result = "<div class='alignWithLevel3'>" + textField(params) + " %</div>"
                 } else {
@@ -465,12 +489,40 @@ class WorkforceTagLib {
                 break
             case AnswerType.externalRef:
                 if (q.adata =~ 'state') {
+                    result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 25)
                     result += select(name: q.ident(), from: ListLoaderService.states, value: q.answerValueStr,
                             noSelection: ['':'Select a state or territory'])
+                    result += '</div>'
+                }
+                else if (q.adata =~ 'herbarium') {
+                    if (q.displayHint == 'combobox') {
+                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 38)
+                    }
+                    result += select(name: q.ident(), from: ListLoaderService.herbaria, value: q.answerValueStr,
+                                        noSelection: ['':'Select a herbarium'])
+                    if (q.displayHint == 'combobox') {
+                        result += '</div>'
+                    }
+                }
+                else if (q.adata =~ 'museum') {
+                    if (q.displayHint == 'combobox') {
+                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 38)
+                    }
+                    result += select(name: q.ident(), from: ListLoaderService.museums, value: q.answerValueStr,
+                                        noSelection: ['':'Select a museum'])
+                    if (q.displayHint == 'combobox') {
+                        result += '</div>'
+                    }
                 }
                 else if (q.adata =~ 'university') {
+                    if (q.displayHint == 'combobox') {
+                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 38)
+                    }
                     result += select(name: q.ident(), from: ListLoaderService.universities, value: q.answerValueStr,
-                            noSelection: ['':'Select a university'])
+                                        noSelection: ['':'Select a university'])
+                    if (q.displayHint == 'combobox') {
+                        result += '</div>'
+                    }
                 }
                 else if (q.adata.domain) {
                     /* this uses a list from a database field based on the answer data elements
@@ -533,39 +585,19 @@ class WorkforceTagLib {
                 result += hiddenField(name: q.ident(), value: answer) + answer + " " + (q.alabel ?: "")
                 break
             case AnswerType.calculate:
-                // only support adata = 'sum' for now - which sums the number answers from siblings
-                def sum = 0
-                q.owner.questions.each {
-                    if (it.atype == AnswerType.number && it.answerValueStr) {
-                        if (it.answerValueStr.isNumber()) {
-                            sum += NumberFormat.getInstance().parse(it.answerValueStr)
-                        }
+                def value = q.answerValueStr ?: '0'
+                if (q.owner.qtype == QuestionType.matrix) {
+                    def colNum = q.ident().substring(q.ident().lastIndexOf('_') + 1)
+                    result += hiddenField(name: q.ident(), value: value, totalnum: colNum) + "<span class='calculated' id='s${q.ident()}' totalnum='${colNum}'>${value}</span>"
+                } else {
+                    def total = hiddenField(name: q.ident(), value: value, class: 'sumTotal') + "<span class='calculated' id='s${q.ident()}'>${value}</span> " + (q.alabel ?: "")
+                    if (q.level == 2 && q.layoutHint == 'align-with-level3') {
+                        result += "<div class='alignWithLevel3'>" + total + "</div>"
+                    } else {
+                        result += total
                     }
+                    result += "<script type='text/javascript' src='/workforce/js/field-sum.js'></script>"
                 }
-                result += hiddenField(name: q.ident(), value: sum) + "<span class='calculated' id='s${q.ident()}'>${sum}</span> " + (q.alabel ?: "")
-                def questionRoot = q.ident()[0..q.ident().lastIndexOf('_')]
-                def start = 1
-                def end = q.owner.questions.size() - 1
-                def target = q.ident()
-                result += """
-<script>
-  function ${q.adata.action}() {
-    var questionRoot = '${questionRoot}';
-    var start = ${start};
-    var end = ${end};
-    var target = '${target}';
-    var sum = 0
-    for (var i = start; i <= end; i++) {
-      var num = parseFloat(\$('input#'+questionRoot+i).attr('value'));
-      if (!isNaN(num)) {
-        sum = sum + num
-      }
-    }
-    \$('input#'+target).attr('value',sum);
-    \$('span#s'+target).html(sum);
-  }
-</script>
-"""
                 break
         }
 
@@ -578,6 +610,28 @@ class WorkforceTagLib {
         }
 
         return result
+    }
+
+    Map<String, Integer> getRowAndColumnNumber(String ident, int noOfCols) {
+        int field = ident.substring(ident.lastIndexOf('_') + 1) as int
+        int colNumber = field.mod(noOfCols)
+        if (colNumber == 0) {
+            colNumber = noOfCols
+        }
+        int rowNumber = (field - 1) / noOfCols + 1
+        return [rowNum: rowNumber, colNum: colNumber]
+    }
+
+    def combobox = {attrs ->
+        def sizeOption = attrs.size ? "{ size: ${attrs.size} }" : ''
+        return """
+        <script type='text/javascript' src='/workforce/js/jquery-ui-combobox.js'></script>
+        <script type='text/javascript'>
+            \$(function() {
+                \$('#${attrs.name}').combobox(${sizeOption});
+            });
+        </script>
+"""
     }
 
     private Map getDisabled(QuestionModel q) {
@@ -690,14 +744,18 @@ class WorkforceTagLib {
         def colWidth = 75/cols.size()
         cols.each { content += "<col width='${colWidth}%'/>"}
 
-        content += "<tr><td>${text}</td>"
+        if (q.displayHint != 'noColumnHeadings') {
+            // layout column headings
+            content += "<tr><td>${text}</td>"
 
-        cols.each {
-            content += "<td style='text-align:center'>${it}</td>"
+            cols.each {
+                content += "<td style='text-align:center'>${it}</td>"
+            }
+
+            content += "</tr>"
         }
 
-        content += "</tr>"
-
+        // layout each row
         rows.each { row ->
             content += "<tr><td>${row}</td>"
             cols.each { col ->
@@ -713,6 +771,10 @@ class WorkforceTagLib {
             content += "</tr>"
         }
         content += "</table>"
+
+        if (q.atype == AnswerType.calculate || q.atype == AnswerType.summable) {
+            content += "<script type='text/javascript' src='/workforce/js/column-sum.js'></script>"
+        }
 
         return [secondColumnHtml: content, thirdColumnHtml: "", spanColumns2and3: true]
     }
@@ -730,13 +792,15 @@ class WorkforceTagLib {
         def colWidth = 75/cols.size()
         cols.each { content += "<col width='${colWidth}%'/>"}
 
-        content += "<tr><td>${text}</td>"
+        if (q.displayHint != 'noColumnHeadings') {
+            content += "<tr><td>${text}</td>"
 
-        cols.each {
-            content += "<td style='text-align:center'>${it}</td>"
+            cols.each {
+                content += "<td style='text-align:center'>${it}</td>"
+            }
+
+            content += "</tr>"
         }
-
-        content += "</tr>"
 
         rows.each { row ->
             // Check if there are any answers for this row
@@ -1186,7 +1250,7 @@ class WorkforceTagLib {
 
     def selectSurvey = {
         if (username()) {
-            def institutions = Institution.listInstitutionsForSet(INSTITUTION_SURVEY_QUESTION_SET_ID)
+            def institutions = Institution.listInstitutionsForSet(QuestionModel.CURRENT_INSTITUTIONAL_SURVEY)
             if (institutions.any {it.account == username()}) {
                 // show institutional survey
                 /*out << link(controller:"question", action:"page", params:['set':2, 'page':1]) {
@@ -1314,4 +1378,8 @@ class WorkforceTagLib {
         }
     }
 
+    private String getQuestionLink(QuestionModel q, QuestionSet qset) {
+        def page = qset.findPageByQuestionNumber(q.questionNumber)
+        return "<a class='' href='/workforce/set/${q.qset}/page/${page.pageNumber}'>Q${q.questionNumber}</a>"
+    }
 }
