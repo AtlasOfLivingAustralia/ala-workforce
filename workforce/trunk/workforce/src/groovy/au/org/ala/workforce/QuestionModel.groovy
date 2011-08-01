@@ -15,6 +15,14 @@ import org.codehaus.groovy.grails.web.json.JSONObject
  */
 class QuestionModel {
 
+    // Question sets
+    static final int CURRENT_PERSONAL_SURVEY = 1
+    static final int CURRENT_INSTITUTIONAL_SURVEY = 2
+    static final int PERSONAL_SURVEY_2003 = 3
+    static final int INSTITUTIONAL_SURVEY_2003 = 4
+    static final int PERSONAL_SURVEY_2006 = 5
+    static final int INSTITUTIONAL_SURVEY_2006 = 6
+
     int qset                        // a unique int that identifies the question qset
     int questionNumber              // the ordinal for this level of question
     int level                       // the level this question has in the hierarchy
@@ -157,8 +165,8 @@ class QuestionModel {
         }
         return null
     }
-    
-    def validate(params) {
+
+    def validate = {params ->
         def valid = true
         clearErrors()
         //println "validating ${ident()} atype=${atype} datatype=${datatype} requiredIf=${requiredIf}"
@@ -201,7 +209,7 @@ class QuestionModel {
                         break
                     case [number, integer]:
                         // remove any commas
-                        answerValueStr = answerValueStr.findAll{it != ','}.join()
+                        answerValueStr = answerValueStr.findAll {it != ','}.join()
 
                         // must be a number
                         if (answerValueStr.isNumber()) {
@@ -212,7 +220,7 @@ class QuestionModel {
                                 errorMessage = "A percentage must be between 0 and 100. Value is ${val}"
                             }
                             // check if it's an integer if the dataType integer
-                            if (datatype == integer  && !answerValueStr.isInteger()) {
+                            if (datatype == integer && !answerValueStr.isInteger()) {
                                 valid = false
                                 errorMessage = "Answer must be a whole number"
                             }
@@ -241,6 +249,34 @@ class QuestionModel {
                                 if (val > 2000000000) {
                                     valid = false
                                     errorMessage = "Number must not be greater than 2 billion"
+                                }
+                            }
+
+                            // perform any validations between fields
+                            if (this.owner.qdata instanceof JSONObject && this.owner.qdata.has('validation')) {
+                                def validations = this.owner.qdata.validation
+                                def thisColumn = getThisColumnNumber()
+                                def thisRow = getThisRowNumber()
+                                if (isRowSubjectToValidation(thisRow)) {
+                                    for (validation in validations) {
+                                        Map<String,String> validationDetails = getValidationDetails(validation)
+                                        if (validationDetails['subjectColumn'] as int == thisColumn) {
+                                            switch (validationDetails['validation']) {
+                                                case 'greaterThanOrEqual':
+                                                    int objectColumn = validationDetails['objectColumn'] as int
+                                                    def columnValue = getColumnValue(objectColumn).replaceAll(',', '')
+                                                    if (columnValue.isNumber()) {
+                                                        if ((val as int) < (columnValue as int)) {
+                                                            valid = false
+                                                            errorMessage = "Number must not be less than that in column '${this.owner.qdata.cols[objectColumn - 1]}'"
+                                                        }
+                                                    }
+                                                    break
+                                                default:
+                                                    break
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -319,7 +355,7 @@ class QuestionModel {
         }
 
         // add errors to a map
-        Map<String,String> errors = new HashMap<String, String>()
+        Map<String, String> errors = new HashMap<String, String>()
         if (!valid) {
             errors.put ident(), errorMessage
             println "Error in ${ident()}: ${errorMessage}"
@@ -331,6 +367,80 @@ class QuestionModel {
         // check inter-question validations if all sub-questions are valid
         if (!errors) { errors += validateGlobalConstraints() }
         return errors
+    }
+
+    boolean isRowSubjectToValidation(int row) {
+        if (owner.qdata instanceof JSONObject && owner.qdata.has('validationRange')) {
+            def range = owner.qdata.validationRange
+            if (row >= (range.start as int) && row <= (range.finish as int)) {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return true
+        }
+    }
+
+    /**
+     * Determine the row number (starting from 1) for this field in a matrix question
+     * @return The row number or 0 if not applicable
+     */
+    int getThisRowNumber() {
+        int result = 0
+        if (adata instanceof JSONObject && adata?.has('row')) {
+            def rowLabel = adata.row
+            if (owner.qdata instanceof JSONObject && owner.qdata.has('rows')) {
+                def rows = owner.qdata.rows
+                result = rows.findIndexOf { it == rowLabel } + 1
+            }
+        }
+        return result
+    }
+
+    /**
+     * Determine the column number (starting from 1) for this field in a matrix question
+     * @return The column number or 0 if not applicable
+     */
+    int getThisColumnNumber() {
+        int result = 0
+        if (adata instanceof JSONObject && adata?.has('col')) {
+            def columnLabel = adata.col
+            if (owner.qdata instanceof JSONObject && owner.qdata.has('cols')) {
+                def columns = owner.qdata.cols
+                result = columns.findIndexOf { it == columnLabel } + 1
+            }
+        }
+        return result
+    }
+
+    /**
+     * Get the value for the answer at the specified column in this row of questions
+     * @param columnNumber
+     * @return The value of the answer
+     */
+    String getColumnValue(int columnNumber) {
+        def columnLabel = owner.qdata.cols[columnNumber - 1]
+        def rowLabel = adata.row
+        def sibling = owner.questions.find { it.adata.col == columnLabel && it.adata.row == rowLabel}
+        if (sibling) {
+            return sibling.answerValueStr
+        } else {
+            return null
+        }
+    }
+
+    /**
+     * Pull apart an inter-field validation specification
+     * @param spec validation specification
+     * @return Map of the component parts
+     */
+    Map<String, String> getValidationDetails(String spec) {
+        def bits = spec.tokenize('[,]')
+        String validation = bits[0]
+        String subjectColumn = bits[1]
+        String objectColumn = bits[2]
+        return ['validation':validation, 'subjectColumn':subjectColumn, 'objectColumn':objectColumn]
     }
 
     def validateGlobalConstraints() {
@@ -468,9 +578,36 @@ class QuestionModel {
                         }
                     }
                     break
+                case ~/column-total-greaterThanOrEqual-priorQuestion-column-total.*/:
+                    def tokens = it.tokenize('[,]')
+                    QuestionModel thisTotalQuestion = getTotalQuestion(this, tokens[1])
+                    QuestionModel previousTotalQuestion = getTotalQuestion(this.previousSibling(), tokens[2])
+                    int thisTotal = thisTotalQuestion.answerValueStr as int
+                    int previousTotal = previousTotalQuestion.answerValueStr as int
+                    if (thisTotal < previousTotal) {
+                        thisTotalQuestion.errorMessage = "Total should be greater than or equal to corresponding total above"
+                        errors.put thisTotalQuestion.ident(), thisTotalQuestion.errorMessage
+                    }
+                    break
             }
         }
         return errors
+    }
+
+    QuestionModel getTotalQuestion(QuestionModel q, String col) {
+        def result = null
+        if (q.qdata instanceof JSONObject && q.qdata.has('cols')) {
+            def colLabel = q.qdata.cols[(col as int) - 1]
+            for (QuestionModel sq : q.questions) {
+                if (sq.adata instanceof JSONObject && sq.adata?.has('row')) {
+                    if (sq.adata.col == colLabel && sq.adata.row == 'Total') {
+                        result = sq
+                        break
+                    }
+                }
+            }
+        }
+        return result
     }
 
     void clearErrors() {
@@ -498,7 +635,7 @@ class QuestionModel {
                     }
                     break
                 case "groovyTruth":
-                    if (onlyIf && !onlyIf?.answerValueStr) {
+                    if (onlyIf && (!onlyIf?.answerValueStr || onlyIf?.answerValueStr as int == 0)) {
                         return true
                     }
                     break
