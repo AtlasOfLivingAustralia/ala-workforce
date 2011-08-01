@@ -9,6 +9,8 @@ class ListLoaderService implements ApplicationContextAware {
     static transactional = false
 
     static states = []
+    static herbaria = []
+    static museums = []
     static universities = []
     ApplicationContext applicationContext
 
@@ -26,6 +28,12 @@ class ListLoaderService implements ApplicationContextAware {
                 // turn the node lists into java array lists
                 lists.statesList.item.each {
                     states << it.toString()
+                }
+                lists.herbaria.item.each {
+                    herbaria << it.toString()
+                }
+                lists.museums.item.each {
+                    museums << it.toString()
                 }
                 lists.universities.item.each {
                     universities << it.toString()
