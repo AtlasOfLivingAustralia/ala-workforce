@@ -13,7 +13,7 @@ class ReportController {
         
         def questionList = []
 
-        def setId = params.set as int ?: 1
+        def setId = params.set as int ?: QuestionModel.CURRENT_PERSONAL_SURVEY
         def qset = QuestionSet.findBySetId(setId)
 
         def year = DateUtil.getYear(params.year)
@@ -55,8 +55,8 @@ class ReportController {
      */
     def singleQuestionAnswer = {
 
-        def questionId = params.qid.toInteger() ?: 1;
-        def setId = params.set.toInteger() ?: 1
+        def questionId = params.qid.toInteger() ?: 1
+        def setId = params.set.toInteger() ?: QuestionModel.CURRENT_PERSONAL_SURVEY
         def qset = QuestionSet.findBySetId(setId)
         def loggedInUserId = request.userPrincipal.attributes.userid as int
         def userId = params.id as int ?: loggedInUserId
