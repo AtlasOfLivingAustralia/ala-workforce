@@ -44,25 +44,12 @@ class DataLoaderService implements ApplicationContextAware {
     /**
      * Load the specified question set.
      *
-     * Looks for the GUID-annotated version first, then the raw version; external files first then internal.
      * @param set the integer identifier of the set
      */
     def loadQuestionSet(set) {
         // first try external file with guids
         def qsetFile = new File("/data/workforce/metadata/question-set-with-guids-${set}.xml")
-        if (!qsetFile.exists()) {
-            // second try external file without guids
-            qsetFile = new File("/data/workforce/metadata/question-${set}.xml")
-        }
-        if (!qsetFile.exists()) {
-            // third try internal file with guids
-            qsetFile = applicationContext.getResource("metadata/question-set-with-guids-${set}.xml").getFile()
-        }
-        if (!qsetFile.exists()) {
-            // fourth try internal file without guids
-            qsetFile = applicationContext.getResource("metadata/question-set-${set}.xml").getFile()
-        }
-        assert qsetFile : "question set definition not found"
+        assert qsetFile : "question set ${set} definition not found"
 
         // inject any missing guids
         def file = injectGuidsAndSave(set, qsetFile)
@@ -128,6 +115,7 @@ class DataLoaderService implements ApplicationContextAware {
             // handle matrix questions - these not only imply an answer but also dynamically
             //  generate the child questions so the guids are stored as a list to be assigned
             //  to the questions when they are loaded
+            def type = it.@type
             if (it.@type == 'matrix' && it.data.guids.size() == 0) {
                 // generate MxN guids
                 def list = []
@@ -259,9 +247,6 @@ class DataLoaderService implements ApplicationContextAware {
             q.subtext = it.subtext
             q.shorttext = it.shortText
             q.onchangeAction = it.onchange
-            if (q.onchangeAction && q.onchangeAction[-1] != ')') {
-                q.onchangeAction += "()"  // add parentheses if not present
-            }
             def atype = valueOrDefault('type', it.answer?.@type?.text(), defaults, ident)
             q.atype = atype ? AnswerType.valueOf(atype as String) : AnswerType.none
             def datatype = valueOrDefault('dataType', it.answer?.@dataType?.text(), defaults, ident)
@@ -338,7 +323,14 @@ class DataLoaderService implements ApplicationContextAware {
                 } else {
                     q.datatype = AnswerDataType.number
                 }
-                q.atype = AnswerType.number//valueOf(defaults.defaultAnswerType) as AnswerType
+                if (matrixQuestion.atype == AnswerType.none) {
+                    q.atype = AnswerType.number//valueOf(defaults.defaultAnswerType) as AnswerType
+                } else {
+                    q.atype = matrixQuestion.atype
+                }
+                if (matrixQuestion.onchangeAction) {
+                    q.onchangeAction = matrixQuestion.onchangeAction
+                }
                 q.required = false //TODO for now
                 q.adata = [row:row, col:col] as JSON
                 q.guid = guids[guidCounter++]
@@ -395,7 +387,7 @@ class DataLoaderService implements ApplicationContextAware {
 
         // determine if it's a list or qset of properties
         def name = data.children()[0].name()
-        boolean isList = data.children().size() > 1
+        boolean isList = data.children().size() > 1 || data.@list == 'true'
         if (isList) {
             data.children().each {
                 if (it.name() != name) {
@@ -587,11 +579,18 @@ class MapUtil {
             map."${node.name()}" = text
         }
     }
+    def static addList(map, node) {
+        if (node.size()) {
+            map."${node.name()}" = [node.text()]
+        }
+    }
     def static add(map, node) {
         if (node.size()) {
             if (node.@value == 'int') {
                 //println "Processing ${node.name()} as int"
                 addInt(map, node)
+            } else if (node.@list == 'true') {
+                addList(map, node)
             } else {
                 //println "Processing ${node.name()} as string"
                 addString(map, node)
