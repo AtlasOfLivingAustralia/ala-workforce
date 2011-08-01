@@ -1,7 +1,5 @@
 package au.org.ala.workforce
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-
 class QuestionController {
 
     def dataLoaderService, modelLoaderService
@@ -60,7 +58,7 @@ class QuestionController {
      * Reload a specific question set.
      */
     def loadQuestionSetXML = {
-        def set = params.set ?: 1
+        def set = params.set ?: QuestionModel.CURRENT_PERSONAL_SURVEY
         dataLoaderService.loadQuestionSet(set)
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
         render "XML question set loaded - ${list}"
@@ -71,8 +69,8 @@ class QuestionController {
      */
     def reload = {
         dataLoaderService.clearQuestionSets()
-        dataLoaderService.loadQuestionSet(1)
-        dataLoaderService.loadQuestionSet(2)
+        dataLoaderService.loadQuestionSet(QuestionModel.CURRENT_PERSONAL_SURVEY)
+        dataLoaderService.loadQuestionSet(QuestionModel.CURRENT_INSTITUTIONAL_SURVEY)
         render "Done."
     }
 
@@ -140,6 +138,17 @@ class QuestionController {
             // set the destination page
             params.chainTo = [action: 'page', params:[set:params.set, page:params.pageNumber.toInteger() - 1]]
         }
+
+        // forward to page submission
+        forward(action: 'leavePage', params:params)
+    }
+
+    /**
+     * Handle move to previous page.
+     */
+    def exit = {
+        // set the destination page
+        params.chainTo = [action: 'home', params:[set:params.set]]
 
         // forward to page submission
         forward(action: 'leavePage', params:params)
