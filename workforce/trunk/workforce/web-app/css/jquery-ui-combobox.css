@@ -1,0 +1,5 @@
+/* JQuery UI Combobox styles */
+.ui-button { margin-left: -1px; }
+.ui-button-icon-only .ui-button-text { padding: 0.35em; }
+button.ui-button-icon-only { width: 19px; height: 19px; vertical-align: -2px; *vertical-align: baseline;}
+.ui-autocomplete-input { margin: 0; padding: 2px 4px; }
