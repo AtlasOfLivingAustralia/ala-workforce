@@ -8,10 +8,12 @@
         <meta name="app.version" content="${g.meta(name:'app.version')}"/>
         <meta name="app.build" content="${g.meta(name:'app.build')}"/>
         <link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}" />
+        <link rel="stylesheet" href="${resource(dir:'css',file:'jquery-ui-1.8.14.custom.css')}" />
         <link rel="shortcut icon" href="${resource(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
         <g:layoutHead />
         <g:javascript library="application" />
-        <g:javascript library="jquery" plugin="jquery"/>
+        <g:javascript library="jquery-1.5.1.min" />
+        <g:javascript library="jquery-ui-1.8.14.custom.min" />
     </head>
     <body>
         <div class='header'>
@@ -32,7 +34,8 @@
         <g:layoutBody />
         <div class='footer'>
             <a href="http://www.ala.org.au"><img src="${resource(dir:'images',file:'atlas-poweredby_rgb-lightbg.png')}"/></a>
-            <a href="mailto:support@ala.org.au">Survey support and feedback</a>
+            <p><a href="mailto:abrs@environment.gov.au">Survey feedback</a></p>
+            <p><a href="mailto:support@ala.org.au">Technical support</a></p>
         </div>
     </body>
 </html>
