@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.workforce.QuestionSet" %>
+<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.workforce.QuestionSet; au.org.ala.workforce.QuestionModel" %>
 <html>
     <head>
         <title>ABRS Surveys</title>
@@ -11,7 +11,7 @@
         <div class='links'>
             <g:if test="${type == 'personal'}">
                 <h1>ABRS Taxonomic Capacity Survey</h1>
-                <p>You are invited to participate in the 2011 ABRS taxonomic capacity survey.</p>
+                <p>You are invited to participate in the 2011 ABRS Taxonomic Capacity Survey.</p>
                 <p>If you work in taxonomy in an Australian context, please complete the
                   <g:link controller="question" action="page" params='[set:1,page:1]'><strong>Australian Taxonomic Workforce - Personal Survey</strong></g:link>.</p>
                 <p>The survey questions are presented over a number of pages. Your answers are saved each time you navigate away from a page
@@ -31,7 +31,7 @@
             </g:elseif>
             <g:else>
                 <h1>ABRS Taxonomic Capacity Surveys</h1>
-                <p>You are invited to participate in the 2011 ABRS taxonomic capacity surveys.</p>
+                <p>You are invited to participate in the 2011 ABRS Taxonomic Capacity Surveys.</p>
                 <p>You need to log in to answer a survey.</p>
                 <h2>Personal survey</h2>
                 <p>You may use your existing logon for the Atlas of Living Australia or click the button below to register a new account.</p>
@@ -51,12 +51,12 @@
             <g:if test="${type == 'institution'}">
                 <g:link controller="question" action="page" params='[set:2, page:1]'>
                     <img src='${resource(dir:'images/abrsskin',file:'collections-button.png')}'/></g:link>
-                <wf:surveyStatus setid="2"/>
+                <wf:surveyStatus setid="${QuestionModel.CURRENT_INSTITUTIONAL_SURVEY}"/>
              </g:if>
             <g:elseif test="${type == 'personal'}">
                 <g:link controller="question" action="page" params='[set:1, page:1]'>
                     <img src='${resource(dir:'images/abrsskin',file:'personal-button.png')}'/></g:link>
-                <wf:surveyStatus setid="1"/>
+                <wf:surveyStatus setid="${QuestionModel.CURRENT_PERSONAL_SURVEY}"/>
             </g:elseif>
             <g:else>
                 <a href="${ConfigurationHolder.config.security.cas.loginUrl}?service=${ConfigurationHolder.config.security.cas.appServerName}${ConfigurationHolder.config.security.cas.contextPath}/">
