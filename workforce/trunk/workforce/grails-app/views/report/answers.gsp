@@ -8,7 +8,7 @@
     <body>
         <div class="nav" id="breadcrumb">
             <wf:isABRSAdmin>
-                <span class="navButton"><a class="home" href="${createLink(uri: '/admin')}">Admin</a></span>
+                <span class="navButton"><a class="home" href="${createLink(uri: '/admin')}">Home</a></span>
                 <span class="navButton"><a href="${createLink(uri: '/admin/set/' + qset.setId)}">${qset.shortName}</a></span>
             </wf:isABRSAdmin>
             <wf:isNotABRSAdmin>
@@ -21,7 +21,7 @@
             <div class="message">${flash.message}</div>
             </g:if>
             <g:if test="${user}">
-                <g:if test="${qset.setId == 1}">
+                <g:if test="${qset.setId == QuestionModel.CURRENT_PERSONAL_SURVEY}">
                     <g:if test="${user.firstName && user.lastName}">
                         <div style='float: left; padding: 25px 0px'>Answers for ${user.firstName} ${user.lastName}</div>
                     </g:if>
@@ -29,7 +29,7 @@
                         <div style='float: left; padding: 25px 0px'>Answers for ${user.name}</div>
                     </g:else>
                 </g:if>
-                <g:if test="${qset.setId == 2}">
+                <g:if test="${qset.setId == QuestionModel.CURRENT_INSTITUTIONAL_SURVEY}">
                     <div style='float: left; padding: 25px 0px'>Answers for ${Institution.findByAccount(user.name).name}</div>
                 </g:if>
                 <div style='float: left; padding: 25px'><wf:summaryStatus user="${user}"/></div>
@@ -43,7 +43,7 @@
                     <tbody>
 
                     <g:each var='question' in="${questions}">
-                      <wf:report question="${question}"/>
+                      <wf:report question="${question}" qset="${qset}"/>
                     </g:each>
 
                     </tbody>
