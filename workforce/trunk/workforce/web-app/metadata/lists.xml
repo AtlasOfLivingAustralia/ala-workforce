@@ -1,4 +1,8 @@
 <lists>
+    <surveyYears>
+        <item>2003</item>
+        <item>2006</item>
+    </surveyYears>
     <statesList>
         <item>Australian Capital Territory</item>
         <item>New South Wales</item>
@@ -50,4 +54,28 @@
         <item>University of Wollongong</item>
         <item>Victoria University</item>
     </universities>
+    <herbaria>
+        <item>Australian Antarctic Division Herbarium</item>
+        <item>Australian National Herbarium</item>
+        <item>Australian Tropical Herbarium</item>
+        <item>Kings Park and Botanic Garden Herbarium</item>
+        <item>National Herbarium of New South Wales</item>
+        <item>National Herbarium of Victoria</item>
+        <item>Northern Territory Herbarium (Darwin)</item>
+        <item>Northern Territory Herbarium (Alice Springs)</item>
+        <item>Queensland Herbarium</item>
+        <item>State Herbarium of South Australia</item>
+        <item>Tasmanian Herbarium</item>
+        <item>Western Australian Herbarium</item>
+    </herbaria>
+    <museums>
+        <item>Australian Museum</item>
+        <item>Museum and Art Gallery of the Northern Territory</item>
+        <item>Museum Victoria</item>
+        <item>Queen Victoria Museum and Art Gallery</item>
+        <item>Queensland Museum</item>
+        <item>South Australian Museum</item>
+        <item>Tasmanian Museum and Art Gallery</item>
+        <item>Western Australian Museum</item>
+    </museums>
 </lists>
