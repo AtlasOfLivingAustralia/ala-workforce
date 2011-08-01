@@ -18,7 +18,7 @@
                     <colgroup><col width="4%"><col width="50%"><col width="46%"></colgroup>
                     <tbody>
 
-                      <wf:report question="${question}"/>
+                      <wf:report question="${question} qset="${qset}""/>
 
                     </tbody>
                 </table>
