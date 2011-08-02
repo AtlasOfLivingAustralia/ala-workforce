@@ -5,14 +5,14 @@
   <pageSequence>
     <page>1-1</page>
     <page>2-2</page>
-    <page>3-5</page>
-    <page>6-8</page>
-    <page>9-9</page>
-    <page>10-11</page>
-    <page>12-13</page>
-    <page>14-14</page>
-    <page>15-16</page>
-    <page>17-18</page>
+    <page>3-4</page>
+    <page>5-7</page>
+    <page>8-8</page>
+    <page>9-10</page>
+    <page>11-12</page>
+    <page>13-13</page>
+    <page>14-15</page>
+    <page>16-17</page>
   </pageSequence>
   <question instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
     <question id="1b591a08-6d45-404a-b483-3a80f64d0139">
@@ -71,6 +71,7 @@
   <question>
     <text>Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?</text>
     <shortText>Organisation and location</shortText>
+    <validation>minimum-1-answer</validation>
     <question id="fd7d56cf-ae3d-4673-a1b5-1ad299f62a53">
       <text>Museum</text>
       <displayHint>checkbox</displayHint>
@@ -81,6 +82,13 @@
         <displayHint>dropdown</displayHint>
         <answer type="externalRef" requiredIf="..=on|Museum">
           <data>state</data>
+        </answer>
+      </question>
+      <question id="96d5b5ce-be58-417e-a21b-0875b084930a">
+        <text>Name</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|University">
+          <data>museum</data>
         </answer>
       </question>
     </question>
@@ -94,6 +102,13 @@
         <displayHint>dropdown</displayHint>
         <answer type="externalRef" requiredIf="..=on|Herbarium">
           <data>state</data>
+        </answer>
+      </question>
+      <question id="2c8495ab-41d7-46f7-8601-a9b4465f09a0">
+        <text>Name</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|University">
+          <data>herbarium</data>
         </answer>
       </question>
     </question>
@@ -111,7 +126,7 @@
       </question>
       <question id="426755ba-ed3e-4799-ae57-7b9318d281c1" type="pick">
         <text>Name</text>
-        <displayHint>dropdown</displayHint>
+        <displayHint>combobox</displayHint>
         <answer type="externalRef" requiredIf="..=on|University">
           <data>university</data>
         </answer>
@@ -198,41 +213,122 @@
       </question>
     </question>
   </question>
-  <question heightHint="7">
+  <question>
     <text>What is your employment status at this organisation?</text>
     <shortText>Employment status</shortText>
-    <question id="82cd1826-b914-4c66-a019-e689957ac0e9" datatype="text" type="pick">
-      <displayHint>radio</displayHint>
-      <answer type="radio" required="true">
-        <data>
-          <item>Full-time (permanent), paid by organisation</item>
-          <item>Full-time (temporary), paid by organisation</item>
-          <item>Full-time, on grant</item>
-          <item>Part-time (permanent), paid by organisation</item>
-          <item>Part-time (temporary), paid by organisation</item>
-          <item>Part-time, on grant</item>
-          <item>Associate/Volunteer (retired)</item>
-          <item>Associate/Volunteer (not retired)</item>
-          <item>Student</item>
-          <item>Other</item>
-        </data>
-      </answer>
+    <validation>minimum-1-answer</validation>
+    <question type="none">
+      <text>For each applicable category, please indicate how many hours per week do you work on average.</text>
+      <shortText>Hours worked per week</shortText>
+      <question id="c929c23c-be56-411a-bea9-5b5e289b14f2">
+        <text>Full-time (permanent), paid by organisation</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="8788b284-0a04-4497-bef4-fabbd979ca92">
+        <text>Full-time (temporary), paid by organisation</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="92c6c4c2-e8a0-4325-a7f0-ff3b7a796e78">
+        <text>Full-time, on grant</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="69418fed-5c55-4b49-9aea-509dde3efe6b">
+        <text>Part-time (permanent), paid by organisation</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="9fba47cc-c6ca-406c-a176-6cc73f95bec5">
+        <text>Part-time (temporary), paid by organisation</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="2871142f-0a2d-4ed9-b587-c349be407c54">
+        <text>Part-time, on grant</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="0259b049-eb0a-4f16-b951-ea4b6cfaa0d7">
+        <text>Associate/Volunteer (retired)</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="4e25ad3c-df3b-4038-8aee-3fe38f080a5b">
+        <text>Associate/Volunteer (not retired)</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="480553c4-a8eb-499c-9559-b772e3dfbbb2">
+        <text>Student</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="da0806f8-411a-44e0-ab3e-495eb8b8c29e">
+        <text>Other</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="a48b1270-498b-46ae-9625-b22116e82967">
+        <text>If other please specify:</text>
+        <answer dataType="text" type="textarea" requiredIf="../1=*|Other">
+          <data>
+            <rows value="int">3</rows>
+          </data>
+        </answer>
+      </question>
     </question>
-    <question id="5bd64a9f-2407-49d4-b50c-cbc198e67e0b">
-      <text>If other please specify:</text>
-      <answer type="text" requiredIf="../1=Other"/>
-    </question>
-  </question>
-  <question id="cf72403a-1e1a-478d-9421-4947f72c08d2" heightHint="1">
-    <text>In your position, how many hours per week do you work on average?</text>
-    <shortText>Hours per week worked</shortText>
-    <answer type="number" required="true">
-      <data>
-        <min value="int">0</min>
-        <max value="int">100</max>
-      </data>
-      <label>hours per week</label>
-    </answer>
   </question>
   <question id="717f12ff-5d07-4cdb-804c-5d82cae1ab76" type="range" heightHint="5">
     <text>How long have you been working in the field of taxonomy?</text>
@@ -301,17 +397,20 @@
       <question id="1f2eeaee-34db-4eb9-843c-0a535c67ba1d">
         <text>Field component</text>
         <answer type="percent"/>
+        <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
       <question id="276ff568-e272-425b-a5d0-cc98c72e6bf3">
         <text>"In-House" component</text>
         <answer type="percent"/>
+        <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
     </question>
     <question id="a240e798-8cd6-4711-9e1e-3718b22db1ac">
       <text>Specialist identification services</text>
       <answer type="percent"/>
+      <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question>
@@ -321,51 +420,60 @@
         <text>For own institution &lt;em&gt;(including borrowing material, final preparation of specimens and "writing up"&lt;/em&gt;)</text>
         <shortText>For own institution</shortText>
         <answer type="percent"/>
+        <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
       <question id="d1e7e88e-6c62-477f-9f1f-daccfc5a22d0">
         <text>Conducted for others &lt;em&gt;(e.g. other government depts., environmental agencies, including work on and writing of reports not for publication)&lt;/em&gt;</text>
         <shortText>Conducted for others</shortText>
         <answer type="percent"/>
+        <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
     </question>
     <question id="b4468cf4-2dc6-43f4-a6ab-82ff9cff0e8a">
       <text>Writing descriptive publications</text>
       <answer type="percent"/>
+      <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question id="cdd22923-26b3-4603-bf10-cf7ef6a648ee">
       <text>Theoretical taxonomic work &lt;em&gt;(e.g. phylogenetic, cladistic)&lt;/em&gt;</text>
       <shortText>Theoretical taxonomic work</shortText>
       <answer type="percent"/>
+      <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question id="c777cace-a8d1-4b1b-a308-fc9f6fba3afd">
       <text>Constructing electronic ID tools</text>
       <answer type="percent"/>
+      <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question id="2ebd34b9-bbe2-494c-a53f-352dd65733c3">
       <text>Building databases, websites</text>
       <answer type="percent"/>
+      <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question id="90b32871-f3fd-4fdc-a41f-097866532828">
       <text>Teaching and lecturing &lt;em&gt;(as part of official work)&lt;/em&gt;</text>
       <shortText>Teaching and lecturing</shortText>
       <answer type="percent"/>
+      <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question id="717f59c5-787b-41a8-8abd-10f2ec7df088">
       <text>Official editorial work, work for learned societies etc</text>
       <answer type="percent"/>
+      <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question id="cbbb3794-bb9e-406f-9743-952b0f28e70b">
       <text>Administration &lt;em&gt;(including staff supervision, meetings policy and program management)&lt;/em&gt;</text>
       <shortText>Administration</shortText>
       <answer type="percent"/>
+      <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question>
@@ -374,11 +482,13 @@
       <question id="93b50d81-b9d2-422e-98be-ad5bc0b05b03">
         <text>Maintaining the condition and order of the collection</text>
         <answer type="percent"/>
+        <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
       <question id="7354fe50-f7fa-49a2-90a1-02654dba0303">
         <text>Processing outgoing and returned loans of material</text>
         <answer type="percent"/>
+        <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
     </question>
@@ -388,11 +498,13 @@
       <question id="92c9cea9-4bb0-4ff6-9675-51f90509e5e4">
         <text>General public</text>
         <answer type="percent"/>
+        <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
       <question id="d2560a4f-7583-4447-ae9b-20c010c5d277">
         <text>Public/private sector organizations</text>
         <answer type="percent"/>
+        <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
     </question>
@@ -401,10 +513,20 @@
       <label>i</label>
       <question id="c018144c-dbcb-4970-8e99-0785ed99f675">
         <answer type="percent"/>
+        <onchange>updateSum</onchange>
       </question>
       <question id="bdbef96e-1b06-474d-a6e1-3575f25c4241">
         <answer dataType="text" type="text" requiredIf="../1=*|Other"/>
       </question>
+    </question>
+    <question id="388729e3-eb21-47ab-92aa-546fa3caef65">
+      <text>Total</text>
+      <answer type="calculate">
+        <data>
+          <action>updateSum</action>
+        </data>
+        <label>%</label>
+      </answer>
     </question>
   </question>
   <question heightHint="27">
@@ -414,7 +536,7 @@
     <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
       <question id="b818a1ad-5799-4404-a341-098ba58147fd">
         <layoutHint>subgroup:Mammals</layoutHint>
-        <text>Eutherian</text>
+        <text>Eutherians</text>
       </question>
       <question id="798bd16a-b446-4cca-a84c-861ecd14d30d">
         <layoutHint>subgroup:Mammals</layoutHint>
@@ -434,7 +556,7 @@
         <text>Amphibians</text>
       </question>
       <question id="a8f6719b-d39b-4ae6-988a-c025caa1d8a0">
-        <text>Fish</text>
+        <text>Fishes</text>
       </question>
       <question id="16dde29e-4910-4b1a-938a-e5cd09c0ec1e">
         <text>Cephalochordates</text>
@@ -487,7 +609,7 @@
         <text>Poriferans</text>
       </question>
       <question id="413b4227-8ee5-4d33-9bcd-0065b3f9e40a">
-        <text>Protozoa</text>
+        <text>Protozoans</text>
       </question>
       <question id="c131dc9f-8ecd-4fed-bc1c-a9de4e23ca7f">
         <text>Other animal groups</text>
@@ -496,11 +618,11 @@
     <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
       <question id="2430e2f4-c327-40d1-8ee6-bfa1146a2674">
         <layoutHint>subgroup:Angiosperms</layoutHint>
-        <text>Dicotyledon</text>
+        <text>Dicotyledons</text>
       </question>
       <question id="fea30b77-2e20-49fc-8064-b4baaa1dbc8c">
         <layoutHint>subgroup:Angiosperms</layoutHint>
-        <text>Monocotyledon</text>
+        <text>Monocotyledons</text>
       </question>
       <question id="87829324-66ec-4db8-876f-a3dc73ec6331">
         <text>Gymnosperms</text>
@@ -545,7 +667,7 @@
     </question>
   </question>
   <question heightHint="3">
-    <text>Please identify the groups you work on, if possible at Family level, if not then at Order level.</text>
+    <text>If appropriate, please identify the groups you work on, if possible at Family level, if not then at Order level.</text>
     <shortText>Taxonomic groups</shortText>
     <question id="d55bf420-0c20-4f42-b7dc-e90bd908ecb5">
       <text>Family</text>
