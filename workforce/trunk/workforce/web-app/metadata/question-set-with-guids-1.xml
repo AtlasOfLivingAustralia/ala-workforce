@@ -218,7 +218,7 @@
     <shortText>Employment status</shortText>
     <validation>minimum-1-answer</validation>
     <question type="none">
-      <text>For each applicable category, please indicate how many hours per week do you work on average.</text>
+      <text>For each applicable category, please indicate how many hours per week you work on average.</text>
       <shortText>Hours worked per week</shortText>
       <question id="c929c23c-be56-411a-bea9-5b5e289b14f2">
         <text>Full-time (permanent), paid by organisation</text>
@@ -322,7 +322,7 @@
       </question>
       <question id="a48b1270-498b-46ae-9625-b22116e82967">
         <text>If other please specify:</text>
-        <answer dataType="text" type="textarea" requiredIf="../1=*|Other">
+        <answer dataType="text" type="textarea" requiredIf="../10=*|Other">
           <data>
             <rows value="int">3</rows>
           </data>
