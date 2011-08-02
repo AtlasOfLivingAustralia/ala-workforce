@@ -635,8 +635,12 @@ class QuestionModel {
                     }
                     break
                 case "groovyTruth":
-                    if (onlyIf && (!onlyIf?.answerValueStr || onlyIf?.answerValueStr as int == 0)) {
-                        return true
+                    if (onlyIf) {
+                        if (!onlyIf.answerValueStr) {
+                            return true
+                        } else if (onlyIf.answerValueStr.isNumber() && (onlyIf.answerValueStr as int == 0)) {
+                            return true
+                        }
                     }
                     break
             }
