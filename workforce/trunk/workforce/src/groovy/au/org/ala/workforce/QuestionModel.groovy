@@ -196,7 +196,7 @@ class QuestionModel {
                         // parent question happens first
                         if (answerValueStr.isInteger()) {
                             def val = NumberFormat.getIntegerInstance().parse(answerValueStr)
-                            int max = owner.qdata?.max
+                            int max = this.owner.qdata?.max
                             if (val < 1 || val > max) {
                                 valid = false
                                 errorMessage = "Rank value must be between 1 and ${max}. Value is ${val}"
