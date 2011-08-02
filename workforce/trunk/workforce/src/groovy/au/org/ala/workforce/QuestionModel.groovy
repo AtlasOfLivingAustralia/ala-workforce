@@ -582,9 +582,9 @@ class QuestionModel {
                     def tokens = it.tokenize('[,]')
                     QuestionModel thisTotalQuestion = getTotalQuestion(this, tokens[1])
                     QuestionModel previousTotalQuestion = getTotalQuestion(this.previousSibling(), tokens[2])
-                    int thisTotal = thisTotalQuestion.answerValueStr as int
-                    int previousTotal = previousTotalQuestion.answerValueStr as int
-                    if (thisTotal < previousTotal) {
+                    def thisTotal = thisTotalQuestion.answerValueStr
+                    def previousTotal = previousTotalQuestion.answerValueStr
+                    if (thisTotal && previousTotal && ((thisTotal as int) < (previousTotal as int))) {
                         thisTotalQuestion.errorMessage = "Total should be greater than or equal to corresponding total above"
                         errors.put thisTotalQuestion.ident(), thisTotalQuestion.errorMessage
                     }
