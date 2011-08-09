@@ -26,13 +26,19 @@ class SurveyController {
     }
 
     def save = {
-        def surveyInstance = new Survey(params)
-        if (surveyInstance.save(flush: true)) {
-            flash.message = "${message(code: 'default.created.message', args: [message(code: 'survey.label', default: 'Survey'), surveyInstance.id])}"
-            redirect(action: "show", id: surveyInstance.id)
-        }
-        else {
-            render(view: "create", model: [surveyInstance: surveyInstance])
+        def surveyInstance = Survey.findByYearAndType(params.year, params.surveyType)
+        if (surveyInstance) {
+            flash.message = "Survey already exists"
+            redirect(action:'newSurvey', params: params)
+        } else {
+            surveyInstance = new Survey(year: params.year, priorYear1: params.priorYear1, priorYear2: params.priorYear2, 'type': params.surveyType)
+            if (surveyInstance.save(flush: true)) {
+                flash.message = "${message(code: 'default.created.message', args: [message(code: 'survey.label', default: 'Survey'), surveyInstance.id])}"
+                redirect(action: "list")
+            }
+            else {
+                render(view: "create", model: [surveyInstance: surveyInstance])
+            }
         }
     }
 
