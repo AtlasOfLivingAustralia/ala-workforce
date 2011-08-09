@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.workforce.Institution; au.org.ala.workforce.QuestionModel" %>
+<%@ page import="au.org.ala.workforce.Institution; au.org.ala.workforce.Survey; au.org.ala.workforce.SurveyType;" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -21,7 +21,7 @@
             <div class="message">${flash.message}</div>
             </g:if>
             <g:if test="${user}">
-                <g:if test="${qset.setId == QuestionModel.CURRENT_PERSONAL_SURVEY}">
+                <g:if test="${qset.setId == Survey.getCurrentQSetId(SurveyType.personal)}">
                     <g:if test="${user.firstName && user.lastName}">
                         <div style='float: left; padding: 25px 0px'>Answers for ${user.firstName} ${user.lastName}</div>
                     </g:if>
@@ -29,7 +29,7 @@
                         <div style='float: left; padding: 25px 0px'>Answers for ${user.name}</div>
                     </g:else>
                 </g:if>
-                <g:if test="${qset.setId == QuestionModel.CURRENT_INSTITUTIONAL_SURVEY}">
+                <g:if test="${qset.setId == Survey.getCurrentQSetId(SurveyType.institutional)}">
                     <div style='float: left; padding: 25px 0px'>Answers for ${Institution.findByAccount(user.name).name}</div>
                 </g:if>
                 <div style='float: left; padding: 25px'><wf:summaryStatus user="${user}"/></div>
