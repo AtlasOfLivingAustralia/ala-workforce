@@ -8,11 +8,9 @@
 </head>
 
 <body>
-<div class="nav">
-    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a>
-    </span>
-    <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label"
-                                                                               args="[entityName]"/></g:link></span>
+<div class="nav" id="breadcrumb">
+    <span class="navButton"><a class="home" href="${createLink(uri: '/admin')}"><g:message code="default.home.label"/></a></span>
+    <span class="navButton">Survey List</span>
 </div>
 
 <div class="body">
@@ -25,10 +23,9 @@
             <thead>
             <tr>
 
-                <g:sortableColumn property="id" title="${message(code: 'survey.id.label', default: 'Id')}"/>
+                <g:sortableColumn property="id" title="${message(code: 'survey.id.label', default: 'Question Set Id')}"/>
 
-                <g:sortableColumn property="questionSetId"
-                                  title="${message(code: 'survey.questionSetId.label', default: 'Question Set Id')}"/>
+                <g:sortableColumn property="year" title="${message(code: 'survey.year.label', default: 'Survey Year')}"/>
 
                 <g:sortableColumn property="priorYear1"
                                   title="${message(code: 'survey.priorYear1.label', default: 'Prior Year1')}"/>
@@ -38,8 +35,6 @@
 
                 <g:sortableColumn property="type" title="${message(code: 'survey.type.label', default: 'Type')}"/>
 
-                <g:sortableColumn property="year" title="${message(code: 'survey.year.label', default: 'Year')}"/>
-
             </tr>
             </thead>
             <tbody>
@@ -47,17 +42,15 @@
                 <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
                     <td><g:link action="show"
-                                id="${surveyInstance.id}">${fieldValue(bean: surveyInstance, field: "id")}</g:link></td>
+                                id="${surveyInstance.id}">${surveyInstance.id}</g:link></td>
 
-                    <td>${fieldValue(bean: surveyInstance, field: "questionSetId")}</td>
+                    <td>${surveyInstance.year}</td>
 
-                    <td>${fieldValue(bean: surveyInstance, field: "priorYear1")}</td>
+                    <td>${surveyInstance.priorYear1}</td>
 
-                    <td>${fieldValue(bean: surveyInstance, field: "priorYear2")}</td>
+                    <td>${surveyInstance.priorYear2}</td>
 
-                    <td>${fieldValue(bean: surveyInstance, field: "type")}</td>
-
-                    <td>${fieldValue(bean: surveyInstance, field: "year")}</td>
+                    <td>${surveyInstance.type}</td>
 
                 </tr>
             </g:each>
