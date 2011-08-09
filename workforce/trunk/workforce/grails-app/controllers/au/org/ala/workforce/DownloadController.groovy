@@ -8,7 +8,7 @@ class DownloadController {
 
     def download = {
 
-        def setId = params.set as int ?: QuestionModel.CURRENT_PERSONAL_SURVEY
+        def setId = params.set as int ?: Survey.getCurrentQSetId(SurveyType.personal)
         def qset = QuestionSet.findBySetId(setId)
         def year = DateUtil.getYear(params.year)
 
