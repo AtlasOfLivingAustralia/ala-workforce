@@ -58,7 +58,7 @@ class QuestionController {
      * Reload a specific question set.
      */
     def loadQuestionSetXML = {
-        def set = params.set ?: QuestionModel.CURRENT_PERSONAL_SURVEY
+        def set = params.set ?: Survey.getCurrentQSetId(SurveyType.personal)
         dataLoaderService.loadQuestionSet(set)
         def list = "<ul>" + Question.list().collect {"<li>${it.level1}-${it.level2}-${it.level3} ${it.qtext}</li>"}.join("\n") + "</ul>"
         render "XML question set loaded - ${list}"
@@ -69,8 +69,8 @@ class QuestionController {
      */
     def reload = {
         dataLoaderService.clearQuestionSets()
-        dataLoaderService.loadQuestionSet(QuestionModel.CURRENT_PERSONAL_SURVEY)
-        dataLoaderService.loadQuestionSet(QuestionModel.CURRENT_INSTITUTIONAL_SURVEY)
+        dataLoaderService.loadQuestionSet(Survey.getCurrentQSetId(SurveyType.personal))
+        dataLoaderService.loadQuestionSet(Survey.getCurrentQSetId(SurveyType.institutional))
         render "Done."
     }
 
