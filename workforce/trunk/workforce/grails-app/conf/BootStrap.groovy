@@ -1,4 +1,5 @@
-import au.org.ala.workforce.QuestionModel
+import au.org.ala.workforce.Survey
+import au.org.ala.workforce.SurveyType
 
 class BootStrap {
 
@@ -7,8 +8,8 @@ class BootStrap {
     def init = { servletContext ->
         listLoaderService.load()
         dataLoaderService.clearQuestionSets()
-        dataLoaderService.loadQuestionSet(QuestionModel.CURRENT_PERSONAL_SURVEY)
-        dataLoaderService.loadQuestionSet(QuestionModel.CURRENT_INSTITUTIONAL_SURVEY)
+        dataLoaderService.loadQuestionSet(Survey.getCurrentQSetId(SurveyType.personal))
+        dataLoaderService.loadQuestionSet(Survey.getCurrentQSetId(SurveyType.institutional))
     }
 
     def destroy = {
