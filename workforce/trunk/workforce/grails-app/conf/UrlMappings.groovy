@@ -17,6 +17,9 @@ class UrlMappings {
         "/admin/set/$set" (controller: 'admin', action: 'dashboard')
         "/admin" (controller: 'admin', action: 'index')
 
+        "/survey/new" (controller: 'survey', action: 'newSurvey')
+        "/survey" (controller: 'survey', action: 'index')
+
         "/logout" (controller: 'session', action: 'logout')
 
 		"/" (controller: 'question', action: 'home')
