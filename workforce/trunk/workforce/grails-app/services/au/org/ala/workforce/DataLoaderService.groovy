@@ -3,7 +3,7 @@ package au.org.ala.workforce
 import groovy.sql.Sql
 import grails.converters.JSON
 import org.xml.sax.SAXException
-import grails.converters.XML
+
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 import groovy.xml.XmlUtil
@@ -48,8 +48,8 @@ class DataLoaderService implements ApplicationContextAware {
      */
     def loadQuestionSet(set) {
         // first try external file with guids
-        def qsetFile = new File("/data/workforce/metadata/question-set-with-guids-${set}.xml")
-        assert qsetFile : "question set ${set} definition not found"
+        def qsetFile = new File("/data/workforce/metadata/question-set-${Survey.getDescription(set)}.xml")
+        assert qsetFile : "question set ${Survey.getDescription(set)} definition not found"
 
         // inject any missing guids
         def file = injectGuidsAndSave(set, qsetFile)
@@ -65,7 +65,7 @@ class DataLoaderService implements ApplicationContextAware {
     File injectGuidsAndSave(set, qsetFile) {
         def qset = injectGuids(qsetFile.text)
 
-        def file = new File("/data/workforce/metadata/question-set-with-guids-${set}.xml")
+        def file = new File("/data/workforce/metadata/question-set-${Survey.getDescription(set)}.xml")
         def writer = new FileWriter(file)
         writer << XmlUtil.serialize(qset)
         writer.close()
@@ -210,6 +210,8 @@ class DataLoaderService implements ApplicationContextAware {
     }
 
     private void loadXmlQuestions(questions, set, level, level1, level2, Map defaults) {
+        def metadata = Survey.getSurveyMetadata(set)
+
         questions.eachWithIndex { it, idx ->
             // l1,l2,l3 are derived from the xml structure and used to label the question hierarchy
             // ident is a temp id string to provide scope for defaults
@@ -242,7 +244,7 @@ class DataLoaderService implements ApplicationContextAware {
             q.label = it.label
             q.layoutHint = valueOrDefault('layoutHint', it.layoutHint.text(), defaults, ident)
             q.displayHint = valueOrDefault('displayHint', it.displayHint.text(), defaults, ident)
-            q.qdata = extractJsonString(it.data) as grails.converters.JSON
+            q.qdata = extractJsonString(it.data, metadata) as grails.converters.JSON
             q.qtext = it.text
             q.subtext = it.subtext
             q.shorttext = it.shortText
@@ -268,7 +270,7 @@ class DataLoaderService implements ApplicationContextAware {
             q.required = it.answer?.@required == 'true' || it.answer?.@required == 'yes'
             q.requiredIf = it.answer?.@requiredIf
             q.dependentOn = it.@dependentOn
-            q.adata = extractJsonString(it.answer?.data) as grails.converters.JSON
+            q.adata = extractJsonString(it.answer?.data, metadata) as grails.converters.JSON
             q.alabel = it.answer?.label?.text()
 
             q.save()
@@ -290,7 +292,7 @@ class DataLoaderService implements ApplicationContextAware {
                     loadListOfQuestions(q, set, defaults)
                 }
                 else {
-                    loadMatrixOfQuestions(q, set, defaults)
+                    loadMatrixOfQuestions(q, set, metadata, defaults)
                 }
             }
 
@@ -301,7 +303,7 @@ class DataLoaderService implements ApplicationContextAware {
         }
     }
 
-    def loadMatrixOfQuestions(matrixQuestion, set, defaults) {
+    def loadMatrixOfQuestions(matrixQuestion, set, metadata, defaults) {
         def qdata = JSON.parse(matrixQuestion.qdata)
         def rows = qdata.rows
         def cols = qdata.cols
@@ -332,7 +334,7 @@ class DataLoaderService implements ApplicationContextAware {
                     q.onchangeAction = matrixQuestion.onchangeAction
                 }
                 q.required = false //TODO for now
-                q.adata = [row:row, col:col] as JSON
+                q.adata = [row: row, col: substitutePlaceholders(col, metadata)] as JSON
                 q.guid = guids[guidCounter++]
 
                 q.save()
@@ -343,6 +345,10 @@ class DataLoaderService implements ApplicationContextAware {
                 }
             }
         }
+    }
+
+    String substitutePlaceholders(String text, Map metadata) {
+        return text.replaceAll(/\$\{(\w+)\}/) { all, placeholder ->  metadata[placeholder] }
     }
 
     def loadListOfQuestions(matrixQuestion, set, defaults) {
@@ -374,7 +380,7 @@ class DataLoaderService implements ApplicationContextAware {
         }
     }
 
-    def extractJsonString(data) {
+    def extractJsonString(data, metadata) {
         if (!data || !data.size()) {
             return null
         }
@@ -401,7 +407,7 @@ class DataLoaderService implements ApplicationContextAware {
             result = []
             data.children().each {
                 //println "item=${it.text()}"
-                result << it.text()
+                result << substitutePlaceholders(it.text(), metadata)
             }
         } else {
             //println "Processing object"
@@ -410,7 +416,7 @@ class DataLoaderService implements ApplicationContextAware {
                 data.children().each {
                     //println "prop=${it.name()}=${it.text()}"
                     if (it.children().size()) {
-                        result.addString(it, extractJsonString(it))
+                        result.addString(it, extractJsonString(it, metadata))
                     } else {
                         result.add(it)
                     }
