@@ -378,8 +378,8 @@
           <item>(c) Unfunded</item>
         </rows>
         <cols>
-          <item>No. Days in 2009</item>
-          <item>No. Days in 2010</item>
+          <item>No. Days in ${year1}</item>
+          <item>No. Days in ${year2}</item>
         </cols>
         <guids>bde13aab-04b9-4a80-b339-937e5955dc8b,0bcddba0-947e-4d89-9315-9163d53dafa6,e7ac4059-d55a-4cef-80f3-fadf390009f8,26cf2ad8-7d33-4d31-8ee6-03fd9e7ef20c,f2700227-2e51-40d0-b149-42f3963d0fda,00b32824-42b6-4a11-bc33-574f810f108c</guids>
       </data>
