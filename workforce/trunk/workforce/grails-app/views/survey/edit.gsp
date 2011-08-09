@@ -36,12 +36,10 @@
 
                 <tr class="prop">
                     <td valign="top" class="name">
-                        <label for="questionSetId"><g:message code="survey.questionSetId.label"
-                                                              default="Question Set Id"/></label>
+                        <label for="year"><g:message code="survey.year.label" default="Year"/></label>
                     </td>
-                    <td valign="top" class="value ${hasErrors(bean: surveyInstance, field: 'questionSetId', 'errors')}">
-                        <g:textField name="questionSetId"
-                                     value="${fieldValue(bean: surveyInstance, field: 'questionSetId')}"/>
+                    <td valign="top" class="value ${hasErrors(bean: surveyInstance, field: 'year', 'errors')}">
+                        <g:textField name="year" value="${fieldValue(bean: surveyInstance, field: 'year')}"/>
                     </td>
                 </tr>
 
@@ -75,15 +73,6 @@
                         <g:select name="type" from="${au.org.ala.workforce.SurveyType?.values()}"
                                   keys="${au.org.ala.workforce.SurveyType?.values()*.name()}"
                                   value="${surveyInstance?.type?.name()}"/>
-                    </td>
-                </tr>
-
-                <tr class="prop">
-                    <td valign="top" class="name">
-                        <label for="year"><g:message code="survey.year.label" default="Year"/></label>
-                    </td>
-                    <td valign="top" class="value ${hasErrors(bean: surveyInstance, field: 'year', 'errors')}">
-                        <g:textField name="year" value="${fieldValue(bean: surveyInstance, field: 'year')}"/>
                     </td>
                 </tr>
 
