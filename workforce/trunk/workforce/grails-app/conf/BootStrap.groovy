@@ -8,6 +8,7 @@ class BootStrap {
     def init = { servletContext ->
         listLoaderService.load()
         dataLoaderService.clearQuestionSets()
+        Survey.init()
         dataLoaderService.loadQuestionSet(Survey.getCurrentQSetId(SurveyType.personal))
         dataLoaderService.loadQuestionSet(Survey.getCurrentQSetId(SurveyType.institutional))
     }
