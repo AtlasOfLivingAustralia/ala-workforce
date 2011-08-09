@@ -1250,7 +1250,7 @@ class WorkforceTagLib {
 
     def selectSurvey = {
         if (username()) {
-            def institutions = Institution.listInstitutionsForSet(QuestionModel.CURRENT_INSTITUTIONAL_SURVEY)
+            def institutions = Institution.listInstitutionsForSet(Survey.getCurrentQSetId(SurveyType.institutional))
             if (institutions.any {it.account == username()}) {
                 // show institutional survey
                 /*out << link(controller:"question", action:"page", params:['set':2, 'page':1]) {
