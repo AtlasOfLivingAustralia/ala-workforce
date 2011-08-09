@@ -15,14 +15,6 @@ import org.codehaus.groovy.grails.web.json.JSONObject
  */
 class QuestionModel {
 
-    // Question sets
-    static final int CURRENT_PERSONAL_SURVEY = 1
-    static final int CURRENT_INSTITUTIONAL_SURVEY = 2
-    static final int PERSONAL_SURVEY_2003 = 3
-    static final int INSTITUTIONAL_SURVEY_2003 = 4
-    static final int PERSONAL_SURVEY_2006 = 5
-    static final int INSTITUTIONAL_SURVEY_2006 = 6
-
     int qset                        // a unique int that identifies the question qset
     int questionNumber              // the ordinal for this level of question
     int level                       // the level this question has in the hierarchy
