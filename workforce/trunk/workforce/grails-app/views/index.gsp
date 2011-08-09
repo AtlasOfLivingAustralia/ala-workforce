@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.workforce.QuestionSet; au.org.ala.workforce.QuestionModel" %>
+<%@ page import="au.org.ala.workforce.SurveyType; org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.workforce.QuestionSet; au.org.ala.workforce.Survey" %>
 <html>
     <head>
         <title>ABRS Surveys</title>
@@ -51,12 +51,12 @@
             <g:if test="${type == 'institution'}">
                 <g:link controller="question" action="page" params='[set:2, page:1]'>
                     <img src='${resource(dir:'images/abrsskin',file:'collections-button.png')}'/></g:link>
-                <wf:surveyStatus setid="${QuestionModel.CURRENT_INSTITUTIONAL_SURVEY}"/>
+                <wf:surveyStatus setid="${Survey.getCurrentQSetId(SurveyType.institutional)}"/>
              </g:if>
             <g:elseif test="${type == 'personal'}">
                 <g:link controller="question" action="page" params='[set:1, page:1]'>
                     <img src='${resource(dir:'images/abrsskin',file:'personal-button.png')}'/></g:link>
-                <wf:surveyStatus setid="${QuestionModel.CURRENT_PERSONAL_SURVEY}"/>
+                <wf:surveyStatus setid="${Survey.getCurrentQSetId(SurveyType.personal)}"/>
             </g:elseif>
             <g:else>
                 <a href="${ConfigurationHolder.config.security.cas.loginUrl}?service=${ConfigurationHolder.config.security.cas.appServerName}${ConfigurationHolder.config.security.cas.contextPath}/">
