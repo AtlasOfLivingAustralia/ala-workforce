@@ -58,9 +58,6 @@
         </table>
     </div>
 
-    <div class="paginateButtons">
-        <g:paginate total="${surveyInstanceTotal}"/>
-    </div>
 </div>
 </body>
 </html>
