@@ -55,7 +55,7 @@ class DataLoaderService implements ApplicationContextAware {
         def file = injectGuidsAndSave(set, qsetFile)
         assert file : "unable to write question set file with guids"
 
-        loadQuestionSetXML(file.text)
+        loadQuestionSetXML(set, file.text)
     }
 
     /**
@@ -152,7 +152,7 @@ class DataLoaderService implements ApplicationContextAware {
     /**
      * Load from XML metadata
      */
-    def loadQuestionSetXML(text) {
+    def loadQuestionSetXML(set, text) {
         def qset
 
         try {
@@ -165,13 +165,13 @@ class DataLoaderService implements ApplicationContextAware {
             return
         }
 
-        int set = loadSetMetadata(qset)
-        loadInstitutionMetadata(qset, set)
+        loadSetMetadata(set, qset)
+        loadInstitutionMetadata(set, qset)
         println "LoadQuestionSet ${set} ............."
         loadXmlQuestions(qset.question, set, 1, 0, 0, [:])
     }
 
-    private loadInstitutionMetadata(qset, set) {
+    private loadInstitutionMetadata(set, qset) {
         def accounts = qset.accounts.account
         accounts.each { acc ->
             def inst = new Institution(account: acc.user.text(), code: acc.code.text(), name: acc.institution.text(),
@@ -183,8 +183,7 @@ class DataLoaderService implements ApplicationContextAware {
         }
     }
 
-    private int loadSetMetadata(qset) {
-        int set = qset.@set.text().toInteger()
+    private void loadSetMetadata(set, qset) {
         def title = qset.title.text()
         def shortName = qset.shortName.text()
         def role = qset.requiredRole.text()
@@ -205,8 +204,6 @@ class DataLoaderService implements ApplicationContextAware {
         if (!qs.save()) {
             qs.errors.each { println it }
         }
-
-        return set
     }
 
     private void loadXmlQuestions(questions, set, level, level1, level2, Map defaults) {
