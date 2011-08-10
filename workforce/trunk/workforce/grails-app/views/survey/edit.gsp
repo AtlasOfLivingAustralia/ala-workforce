@@ -39,7 +39,7 @@
                         <label for="year"><g:message code="survey.year.label" default="Year"/></label>
                     </td>
                     <td valign="top" class="value ${hasErrors(bean: surveyInstance, field: 'year', 'errors')}">
-                        <g:textField name="year" value="${fieldValue(bean: surveyInstance, field: 'year')}"/>
+                        <g:textField name="year" value="${surveyInstance.year}"/>
                     </td>
                 </tr>
 
@@ -50,7 +50,7 @@
                     </td>
                     <td valign="top" class="value ${hasErrors(bean: surveyInstance, field: 'priorYear1', 'errors')}">
                         <g:textField name="priorYear1"
-                                     value="${fieldValue(bean: surveyInstance, field: 'priorYear1')}"/>
+                                     value="${surveyInstance.priorYear1}"/>
                     </td>
                 </tr>
 
@@ -61,7 +61,7 @@
                     </td>
                     <td valign="top" class="value ${hasErrors(bean: surveyInstance, field: 'priorYear2', 'errors')}">
                         <g:textField name="priorYear2"
-                                     value="${fieldValue(bean: surveyInstance, field: 'priorYear2')}"/>
+                                     value="${surveyInstance.priorYear2}"/>
                     </td>
                 </tr>
 
