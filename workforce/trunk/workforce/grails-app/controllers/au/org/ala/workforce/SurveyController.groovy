@@ -1,5 +1,7 @@
 package au.org.ala.workforce
 
+import org.apache.commons.io.FileUtils
+
 class SurveyController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -33,6 +35,16 @@ class SurveyController {
         } else {
             surveyInstance = new Survey(year: params.year, priorYear1: params.priorYear1, priorYear2: params.priorYear2, 'type': params.surveyType)
             if (surveyInstance.save(flush: true)) {
+                // Create new question set xml
+                def dest = "/data/workforce/metadata/question-set-${params.surveyType}-${params.year}.xml"
+                def source
+                if (params.basedOn == 'blank') {
+                    source = "/data/workforce/metadata/blank-question-set.xml"
+                } else {
+                    source = "/data/workforce/metadata/question-set-${params.surveyType}-${params.basedOn}.xml"
+                }
+                FileUtils.copyFile(new File(source), new File(dest));
+
                 flash.message = "${message(code: 'default.created.message', args: [message(code: 'survey.label', default: 'Survey'), surveyInstance.id])}"
                 redirect(action: "list")
             }
