@@ -4,7 +4,7 @@ class Survey {
 
     int year                        // Year of the survey
     SurveyType type                 // Survey type - currently Personal or Institutional
-    //int questionSetId               // Question set associated with this survey
+    //int questionSetId             // Question set associated with this survey
     int priorYear1                  // Earlier prior year for funding or publications
     int priorYear2                  // Later prior year for funding or publications
 
