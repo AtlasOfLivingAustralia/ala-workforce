@@ -60,7 +60,7 @@ input:focus, select:focus, textarea:focus {
 
 .body {
     float: left;
-    margin: 0 15px 10px 30px;
+    margin: 0px 15px 10px 80px;
 }
 
 /* NAVIGATION MENU */
@@ -304,6 +304,7 @@ table.stats {
 
 .list table {
     border-collapse: collapse;
+    margin: 25px 0px;
 }
 .list th, .list td {
     border-left: 1px solid #ddd;
@@ -339,6 +340,8 @@ table.stats {
 
 .dialog table {
     padding: 5px 0;
+    margin: 25px 15px 0px 0px;
+    border: none;
 }
 
 .prop {
