@@ -11,7 +11,7 @@
             <span class="navButton"><a href="${createLink(uri: '/admin/set/' + qset.setId)}">${qset.shortName}</a></span>
             <span class="navButton">Create New Survey</span>
         </div>
-        <div class='links'>
+        <div class='body'>
             <h1>ABRS Taxonomic Workforce Survey Creation</h1>
             <h2>${qset.title}</h2>
             <g:if test="${flash.message}">
@@ -89,8 +89,9 @@
                             </td>
 
                             <g:set var="optionsList" value="${['Blank Survey','2003 Survey','2006 Survey','2011 Survey']}"/>
+                            <g:set var="keyList" value="${['blank','2003','2006','2011']}"/>
                             <td valign="top" class="value">
-                                <g:select name="basedOn" from="${optionsList}" value=""/>
+                                <g:select name="basedOn" from="${optionsList}" keys="${keyList}" value=""/>
                             </td>
                         </tr>
 
