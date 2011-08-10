@@ -29,28 +29,28 @@
             <tr class="prop">
                 <td valign="top" class="name"><g:message code="survey.year.label" default="Survey Year:"/></td>
 
-                <td valign="top" class="value">${fieldValue(bean: surveyInstance, field: "year")}</td>
+                <td valign="top" class="value">${surveyInstance.year}</td>
 
             </tr>
 
             <tr class="prop">
                 <td valign="top" class="name"><g:message code="survey.id.label" default="QSet Id:"/></td>
 
-                <td valign="top" class="value">${fieldValue(bean: surveyInstance, field: "id")}</td>
+                <td valign="top" class="value">${surveyInstance.id}</td>
 
             </tr>
 
             <tr class="prop">
                 <td valign="top" class="name"><g:message code="survey.priorYear1.label" default="Prior Year1:"/></td>
 
-                <td valign="top" class="value">${fieldValue(bean: surveyInstance, field: "priorYear1")}</td>
+                <td valign="top" class="value">${surveyInstance.priorYear1}</td>
 
             </tr>
 
             <tr class="prop">
                 <td valign="top" class="name"><g:message code="survey.priorYear2.label" default="Prior Year2:"/></td>
 
-                <td valign="top" class="value">${fieldValue(bean: surveyInstance, field: "priorYear2")}</td>
+                <td valign="top" class="value">${surveyInstance.priorYear2}</td>
 
             </tr>
 
