@@ -15,9 +15,10 @@
                 <p>If you work in taxonomy in an Australian context, please complete the
                   <g:link controller="question" action="page" params='[set:1,page:1]'><strong>Australian Taxonomic Workforce - Personal Survey</strong></g:link>.</p>
                 <p>The survey questions are presented over a number of pages. Your answers are saved each time you navigate away from a page
-                (ie press 'next' or 'prev' or jump to a page).
-                You can partially fill in the survey and return to it at a later time.
+                (i.e. press 'Next' or 'Prev' or jump to a page). <em>Note that clicking the browser Back or Forward buttons will not save your answers</em>.</p>
+                <p>You can partially fill in the survey, press 'Exit' and return to it at a later time.
                 Click the 'Finish' link on the last page when you have completed the survey.</p>
+                <p>Note that your session will expire after 2 hours of inactivity. If this happens you will be prompted to login again.</p>
             </g:if>
             <g:elseif test="${type == 'institution'}">
                 <h1>ABRS Taxonomic Capacity Survey</h1>
@@ -25,9 +26,10 @@
                 <p>If you are responsible for an Australian natural science collection, please complete the
                     <g:link controller="question" action="page" params='[set:2,page:1]'><strong>Institution Survey</strong></g:link>.</p>
                 <p>The survey questions are presented over a number of pages. Your answers are saved each time you navigate away from a page
-                (ie press 'next' or 'prev' or jump to a page).
-                You can partially fill in the survey and return to it at a later time.
+                (i.e. press 'Next' or 'Prev' or jump to a page). <em>Note that clicking the browser Back or Forward buttons will not save your answers</em>.</p>
+                <p>You can partially fill in the survey, press 'Exit' and return to it at a later time.
                 Click the 'Finish' link on the last page when you have completed the survey.</p>
+                <p>Note that your session will expire after 2 hours of inactivity. If this happens you will be prompted to login again.</p>
             </g:elseif>
             <g:else>
                 <h1>ABRS Taxonomic Capacity Surveys</h1>
