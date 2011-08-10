@@ -489,14 +489,14 @@ class WorkforceTagLib {
                 break
             case AnswerType.externalRef:
                 if (q.adata =~ 'state') {
-                    result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 25)
+                    result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 25, value: q.answerValueStr)
                     result += select(name: q.ident(), from: ListLoaderService.states, value: q.answerValueStr,
                             noSelection: ['':'Select a state or territory'])
                     result += '</div>'
                 }
                 else if (q.adata =~ 'herbarium') {
                     if (q.displayHint == 'combobox') {
-                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 38)
+                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 38, value: q.answerValueStr)
                     }
                     result += select(name: q.ident(), from: ListLoaderService.herbaria, value: q.answerValueStr,
                                         noSelection: ['':'Select a herbarium'])
@@ -506,7 +506,7 @@ class WorkforceTagLib {
                 }
                 else if (q.adata =~ 'museum') {
                     if (q.displayHint == 'combobox') {
-                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 38)
+                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 38, value: q.answerValueStr)
                     }
                     result += select(name: q.ident(), from: ListLoaderService.museums, value: q.answerValueStr,
                                         noSelection: ['':'Select a museum'])
@@ -516,7 +516,7 @@ class WorkforceTagLib {
                 }
                 else if (q.adata =~ 'university') {
                     if (q.displayHint == 'combobox') {
-                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 38)
+                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 38, value: q.answerValueStr)
                     }
                     result += select(name: q.ident(), from: ListLoaderService.universities, value: q.answerValueStr,
                                         noSelection: ['':'Select a university'])
@@ -623,12 +623,12 @@ class WorkforceTagLib {
     }
 
     def combobox = {attrs ->
-        def sizeOption = attrs.size ? "{ size: ${attrs.size} }" : ''
+        def options = "{value: '${attrs.value}'" + (attrs.size ? ", size: ${attrs.size}" : '') + '}'
         return """
         <script type='text/javascript' src='/workforce/js/jquery-ui-combobox.js'></script>
         <script type='text/javascript'>
             \$(function() {
-                \$('#${attrs.name}').combobox(${sizeOption});
+                \$('#${attrs.name}').combobox(${options});
             });
         </script>
 """
