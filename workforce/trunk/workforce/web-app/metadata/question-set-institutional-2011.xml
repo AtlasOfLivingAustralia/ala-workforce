@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<questionSet set="2">
+<questionSet>
   <title>Resources of Australian Natural Science Collections</title>
   <shortName>Institutional Survey</shortName>
   <requiredRole>ROLE_ABRS_INSTITUTION</requiredRole>
