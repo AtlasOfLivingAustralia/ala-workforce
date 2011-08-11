@@ -52,7 +52,7 @@
               </div>
               </g:if>
 
-              <div class="dialog">
+              <div style='padding: 5px 0'>
                   <table class="questions">
                       <colgroup><col width="4%"><col width="33%"><col width="70%"></colgroup>
                       <tbody>
