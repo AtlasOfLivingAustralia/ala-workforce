@@ -14,7 +14,7 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <div class="dialog">
+            <div>
                 <table class="questions">
                     <colgroup><col width="4%"><col width="35%"><col width="61%"></colgroup>
                     <tbody>
