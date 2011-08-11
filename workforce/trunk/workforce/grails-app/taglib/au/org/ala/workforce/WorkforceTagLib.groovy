@@ -623,7 +623,8 @@ class WorkforceTagLib {
     }
 
     def combobox = {attrs ->
-        def options = "{value: '${attrs.value}'" + (attrs.size ? ", size: ${attrs.size}" : '') + '}'
+        def value = attrs.value ?: ''
+        def options = "{value: '${value}'" + (attrs.size ? ", size: ${attrs.size}" : '') + '}'
         return """
         <script type='text/javascript' src='/workforce/js/jquery-ui-combobox.js'></script>
         <script type='text/javascript'>
