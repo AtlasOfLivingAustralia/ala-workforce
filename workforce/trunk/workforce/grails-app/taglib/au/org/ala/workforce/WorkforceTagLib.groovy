@@ -139,6 +139,7 @@ class WorkforceTagLib {
     def report = { attrs ->
         QuestionModel model = attrs.question
         QuestionSet qset = attrs.qset
+        def user = params.id as int
 
         List secondLevel = model.questions
         int secondLevelIndex = 0
@@ -179,7 +180,7 @@ class WorkforceTagLib {
                 // question text should span q & a columns only if there are answers
                 firstCellRowSpan++
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset)}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset, user)}</td>"
                     if (firstCellRowSpan > 1) {
                         out << "<td colspan='2'>${getQuestionTextForReport(model)}</td>"
                     } else {
@@ -190,7 +191,7 @@ class WorkforceTagLib {
             } else {
                 // go straight to first sub-question
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset)}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset, user)}</td>"
                 if (secondLevel) {
                     QuestionModel q = secondLevel[0]
                     if (contents) {contents.remove(0)}
@@ -207,7 +208,7 @@ class WorkforceTagLib {
                 // real question - with text and answer
                 firstCellRowSpan++
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset)}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset, user)}</td>"
                     out << "<td>${getQuestionTextForReport(model)}</td>"
                     out << "<td>" + layoutAnswer(model) + "</td>"
                 out << "</tr>"
@@ -215,7 +216,7 @@ class WorkforceTagLib {
             } else {
                 // probably won't occur
                 out << "<tr>"
-                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset)}</td>"
+                    out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset, user)}</td>"
                     out << "<td colspan=2>" + layoutAnswer(model) + "</td>"
                 out << "</tr>"
             }
@@ -1379,8 +1380,13 @@ class WorkforceTagLib {
         }
     }
 
-    private String getQuestionLink(QuestionModel q, QuestionSet qset) {
+    private String getQuestionLink(QuestionModel q, QuestionSet qset, int userId) {
         def page = qset.findPageByQuestionNumber(q.questionNumber)
-        return "<a class='' href='/workforce/set/${q.qset}/page/${page.pageNumber}'>Q${q.questionNumber}</a>"
+        def loggedInUserId = request.userPrincipal.attributes.userid as int
+        if (userId == loggedInUserId) {
+            return "<a class='' href='/workforce/set/${q.qset}/page/${page.pageNumber}'>Q${q.questionNumber}</a>"
+        } else {
+            return "Q${q.questionNumber}"
+        }
     }
 }
