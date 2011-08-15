@@ -139,7 +139,7 @@ class WorkforceTagLib {
     def report = { attrs ->
         QuestionModel model = attrs.question
         QuestionSet qset = attrs.qset
-        def user = params.id as int
+        def user = params.id
 
         List secondLevel = model.questions
         int secondLevelIndex = 0
@@ -1380,11 +1380,15 @@ class WorkforceTagLib {
         }
     }
 
-    private String getQuestionLink(QuestionModel q, QuestionSet qset, int userId) {
+    private String getQuestionLink(QuestionModel q, QuestionSet qset, String userId) {
         def page = qset.findPageByQuestionNumber(q.questionNumber)
-        def loggedInUserId = request.userPrincipal.attributes.userid as int
-        if (userId == loggedInUserId) {
-            return "<a class='' href='/workforce/set/${q.qset}/page/${page.pageNumber}'>Q${q.questionNumber}</a>"
+        def loggedInUserId = request.userPrincipal.attributes.userid
+        if (userId) {
+            if (userId == loggedInUserId) {
+                return "<a class='' href='/workforce/set/${q.qset}/page/${page.pageNumber}'>Q${q.questionNumber}</a>"
+            } else {
+                return "Q${q.questionNumber}"
+            }
         } else {
             return "Q${q.questionNumber}"
         }
