@@ -13,7 +13,7 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <div class="list">
+            <div>
                 <table class="answers">
                     <colgroup><col width="4%"><col width="50%"><col width="46%"></colgroup>
                     <tbody>
