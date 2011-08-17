@@ -57,7 +57,8 @@
             </tbody>
         </table>
     </div>
-
+    <p><g:link controller="survey" action="new" params="${[set: 1]}"><strong>New Personal Survey</strong></g:link></p>
+    <p><g:link controller="survey" action="new" params="${[set: 2]}"><strong>New Institutional Survey</strong></g:link></p>
 </div>
 </body>
 </html>
