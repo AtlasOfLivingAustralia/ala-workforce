@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.workforce.SurveyType; org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.workforce.QuestionSet; au.org.ala.workforce.Survey" %>
+<%@ page import="au.org.ala.workforce.SurveyType; org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.workforce.QuestionSet; au.org.ala.workforce.Survey; au.org.ala.workforce.DateUtil" %>
 <html>
     <head>
         <title>ABRS Surveys</title>
@@ -6,12 +6,13 @@
     </head>
     <body>
         <g:set var="type" value="${wf.selectSurvey()}"/>
+        <g:set var="currentYear" value="${DateUtil.getCurrentYear()}"/>
         <g:if test="${flash.message}"><div class="message">${flash.message}</div></g:if>
 
         <div class='links'>
             <g:if test="${type == 'personal'}">
                 <h1>ABRS Taxonomic Capacity Survey</h1>
-                <p>You are invited to participate in the 2011 ABRS Taxonomic Capacity Survey.</p>
+                <p>You are invited to participate in the ${currentYear} ABRS Taxonomic Capacity Survey.</p>
                 <p>If you work in taxonomy in an Australian context, please complete the
                   <g:link controller="question" action="page" params='[set:1,page:1]'><strong>Australian Taxonomic Workforce - Personal Survey</strong></g:link>.</p>
                 <p>The survey questions are presented over a number of pages. Your answers are saved each time you navigate away from a page
@@ -22,7 +23,7 @@
             </g:if>
             <g:elseif test="${type == 'institution'}">
                 <h1>ABRS Taxonomic Capacity Survey</h1>
-                <p>You are invited to participate in the 2011 ABRS taxonomic capacity survey.</p>
+                <p>You are invited to participate in the ${currentYear} ABRS Taxonomic Capacity Survey.</p>
                 <p>If you are responsible for an Australian natural science collection, please complete the
                     <g:link controller="question" action="page" params='[set:2,page:1]'><strong>Institution Survey</strong></g:link>.</p>
                 <p>The survey questions are presented over a number of pages. Your answers are saved each time you navigate away from a page
@@ -33,7 +34,7 @@
             </g:elseif>
             <g:else>
                 <h1>ABRS Taxonomic Capacity Surveys</h1>
-                <p>You are invited to participate in the 2011 ABRS Taxonomic Capacity Surveys.</p>
+                <p>You are invited to participate in the ${currentYear} ABRS Taxonomic Capacity Surveys.</p>
                 <p>You need to log in to answer a survey.</p>
                 <h2>Personal survey</h2>
                 <p>You may use your existing logon for the Atlas of Living Australia or click the button below to register a new account.</p>
