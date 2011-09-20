@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
+<%@ page import="au.org.ala.workforce.Config; org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
 <html>
     <head>
         <title><g:layoutTitle default="ABRS Surveys" /></title>
@@ -34,8 +34,8 @@
         <g:layoutBody />
         <div class='footer'>
             <a href="http://www.ala.org.au"><img src="${resource(dir:'images',file:'atlas-poweredby_rgb-lightbg.png')}"/></a>
-            <p><a href="mailto:abrs@environment.gov.au">Survey feedback</a></p>
-            <p><a href="mailto:support@ala.org.au">Technical support</a></p>
+            <p><a href="mailto:${Config.getFeedbackAddress()}">Survey feedback</a></p>
+            <p><a href="mailto:${Config.getSupportAddress()}">Technical support</a></p>
         </div>
     </body>
 </html>
