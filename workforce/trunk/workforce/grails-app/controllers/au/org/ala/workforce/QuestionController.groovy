@@ -296,7 +296,7 @@ class QuestionController {
         injectAnswers(questionList, params)
 
         // if navigating backwards and current page has no answers then don't validate
-        if (params._action_previous == 'Prev' || (params._action_jumpPage && params._action_jumpPage < params.pageNumber)) {
+        if (params._action_previous == 'Prev' || (params._action_jumpPage && (params._action_jumpPage as int) < (params.pageNumber as int))) {
             if (!areAnswers(questionList)) {
                 return [questionList:questionList, errors:[:]]
             }
