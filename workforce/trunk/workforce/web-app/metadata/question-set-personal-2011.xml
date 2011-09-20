@@ -20,11 +20,13 @@
       <shortText>Curatorial and/or taxonomic work your major responsibility</shortText>
       <data>YES/NO</data>
       <answer dataType="bool" type="bool" required="true"/>
+      <aggregate order="desc" type="countByAnswer"/>
     </question>
     <question type="none">
       <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
       <shortText>Time spent on curatorial and/or taxonomic duties</shortText>
       <validation>percent-total-lessThanOrEqual-100</validation>
+      <aggregate groupBy="decile/10/%" subLevel="1" type="sumByAnswer"/>
       <question id="fdefd907-6690-4633-99d6-5f3497c379e3">
         <text>Scientist/Taxonomist (permanent)</text>
         <answer dataType="integer" label="%" type="percent"/>
@@ -72,6 +74,10 @@
     <text>Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?</text>
     <shortText>Organisation and location</shortText>
     <validation>minimum-1-answer</validation>
+    <aggregations>
+      <aggregate result="percentage" order="desc" answer="qtext" subLevel="1" type="countByAnswer"/>
+      <aggregate result="percentage" order="desc" subLevel="2/qtext=State" type="countByAnswer"/>
+    </aggregations>
     <question id="fd7d56cf-ae3d-4673-a1b5-1ad299f62a53">
       <text>Museum</text>
       <displayHint>checkbox</displayHint>
@@ -87,7 +93,7 @@
       <question id="96d5b5ce-be58-417e-a21b-0875b084930a">
         <text>Name</text>
         <displayHint>combobox</displayHint>
-        <answer type="externalRef" requiredIf="..=on|University">
+        <answer type="externalRef" requiredIf="..=on|Museum">
           <data>museum</data>
         </answer>
       </question>
@@ -107,7 +113,7 @@
       <question id="2c8495ab-41d7-46f7-8601-a9b4465f09a0">
         <text>Name</text>
         <displayHint>combobox</displayHint>
-        <answer type="externalRef" requiredIf="..=on|University">
+        <answer type="externalRef" requiredIf="..=on|Herbarium">
           <data>herbarium</data>
         </answer>
       </question>
@@ -220,6 +226,7 @@
     <question type="none">
       <text>For each applicable category, please indicate how many hours per week you work on average.</text>
       <shortText>Hours worked per week</shortText>
+      <aggregate groupBy="decile/7/hours" result="percentageInDecile" subLevel="1/type=number" type="sumByAnswer"/>
       <question id="c929c23c-be56-411a-bea9-5b5e289b14f2">
         <text>Full-time (permanent), paid by organisation</text>
         <answer type="number">
@@ -333,6 +340,7 @@
   <question id="717f12ff-5d07-4cdb-804c-5d82cae1ab76" type="range" heightHint="5">
     <text>How long have you been working in the field of taxonomy?</text>
     <shortText>Years in taxonomy</shortText>
+    <aggregate order="desc" type="countByAnswer"/>
     <answer dataType="numberRange" type="range" required="true">
       <data>
         <interval value="int">5</interval>
@@ -346,6 +354,7 @@
   <question id="18e8d297-8c6f-4e71-8ac1-32f9f7aac775" heightHint="1">
     <text>And do you intend to be working in this field in 12 months time?</text>
     <shortText>Working in taxonomy in 12 months</shortText>
+    <aggregate order="desc" type="countByAnswer"/>
     <answer type="bool" required="true"/>
     <onchange>disable('q7_1',this)</onchange>
   </question>
@@ -354,6 +363,7 @@
     <shortText>Likelihood of continuing in taxonomy</shortText>
     <question id="5a11f1ce-8e29-44cb-94d0-42e09c8105f6" datatype="text" type="pick">
       <text>Would you say that it is:</text>
+      <aggregate result="percentage" order="desc" type="countByAnswer"/>
       <shortText/>
       <answer type="radio" requiredIf="enabled">
         <data>
@@ -370,12 +380,16 @@
     <text>How many days of taxonomic field-work have you undertaken in the last two calendar years and how were they funded?</text>
     <shortText>Days of taxonomic field-work</shortText>
     <question defaultDataType="number" defaultAnswerType="number" type="matrix">
+      <aggregations>
+        <aggregate result="sumAndPercentage" subLevel="1/col=1" type="sumByAnswerByGuid"/>
+        <aggregate result="sumAndPercentage" subLevel="1/col=2" type="sumByAnswerByGuid"/>
+      </aggregations>
       <text>Method of funding</text>
       <data>
         <rows>
-          <item>(a) Funded by institution</item>
-          <item>(b) Funded by grant</item>
-          <item>(c) Unfunded</item>
+          <item>Funded by institution</item>
+          <item>Funded by grant</item>
+          <item>Unfunded</item>
         </rows>
         <cols>
           <item>No. Days in ${year1}</item>
@@ -390,18 +404,21 @@
     <shortText>Percentage of full time work</shortText>
     <validation>percent-total-lessThanOrEqual-100</validation>
     <validation>percent-total-greaterThan-0</validation>
+    <aggregate order="desc" subLevel="all/type=percent" type="averageByAnswer"/>
     <question>
       <text>Acquisition of taxonomic specimens &lt;em&gt;(including collecting, essential preparation, registration and incorporation into the collection)&lt;/em&gt;:</text>
       <shortText>Acquisition of taxonomic specimens:</shortText>
       <label>i</label>
       <question id="1f2eeaee-34db-4eb9-843c-0a535c67ba1d">
         <text>Field component</text>
+        <aggregationText>Collecting specimens (field)</aggregationText>
         <answer type="percent"/>
         <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
       <question id="276ff568-e272-425b-a5d0-cc98c72e6bf3">
         <text>"In-House" component</text>
+        <aggregationText>Collecting specimens (in house)</aggregationText>
         <answer type="percent"/>
         <onchange>updateSum</onchange>
         <label>(a)</label>
@@ -409,6 +426,7 @@
     </question>
     <question id="a240e798-8cd6-4711-9e1e-3718b22db1ac">
       <text>Specialist identification services</text>
+      <aggregationText>Identification services</aggregationText>
       <answer type="percent"/>
       <onchange>updateSum</onchange>
       <label>i</label>
@@ -419,6 +437,7 @@
       <question id="67ff0a17-df18-4a51-b557-6ae508c5d271">
         <text>For own institution &lt;em&gt;(including borrowing material, final preparation of specimens and "writing up"&lt;/em&gt;)</text>
         <shortText>For own institution</shortText>
+        <aggregationText>Research (for institution)</aggregationText>
         <answer type="percent"/>
         <onchange>updateSum</onchange>
         <label>(a)</label>
@@ -426,6 +445,7 @@
       <question id="d1e7e88e-6c62-477f-9f1f-daccfc5a22d0">
         <text>Conducted for others &lt;em&gt;(e.g. other government depts., environmental agencies, including work on and writing of reports not for publication)&lt;/em&gt;</text>
         <shortText>Conducted for others</shortText>
+        <aggregationText>Research (for others)</aggregationText>
         <answer type="percent"/>
         <onchange>updateSum</onchange>
         <label>(a)</label>
@@ -433,6 +453,7 @@
     </question>
     <question id="b4468cf4-2dc6-43f4-a6ab-82ff9cff0e8a">
       <text>Writing descriptive publications</text>
+      <aggregationText>Writing publications</aggregationText>
       <answer type="percent"/>
       <onchange>updateSum</onchange>
       <label>i</label>
@@ -440,18 +461,21 @@
     <question id="cdd22923-26b3-4603-bf10-cf7ef6a648ee">
       <text>Theoretical taxonomic work &lt;em&gt;(e.g. phylogenetic, cladistic)&lt;/em&gt;</text>
       <shortText>Theoretical taxonomic work</shortText>
+      <aggregationText>Theoretical taxonomy</aggregationText>
       <answer type="percent"/>
       <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question id="c777cace-a8d1-4b1b-a308-fc9f6fba3afd">
       <text>Constructing electronic ID tools</text>
+      <aggregationText>Construct electronic ID tools</aggregationText>
       <answer type="percent"/>
       <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question id="2ebd34b9-bbe2-494c-a53f-352dd65733c3">
       <text>Building databases, websites</text>
+      <aggregationText>Database/websites</aggregationText>
       <answer type="percent"/>
       <onchange>updateSum</onchange>
       <label>i</label>
@@ -459,12 +483,14 @@
     <question id="90b32871-f3fd-4fdc-a41f-097866532828">
       <text>Teaching and lecturing &lt;em&gt;(as part of official work)&lt;/em&gt;</text>
       <shortText>Teaching and lecturing</shortText>
+      <aggregationText>Teaching/lecturing</aggregationText>
       <answer type="percent"/>
       <onchange>updateSum</onchange>
       <label>i</label>
     </question>
     <question id="717f59c5-787b-41a8-8abd-10f2ec7df088">
       <text>Official editorial work, work for learned societies etc</text>
+      <aggregationText>Editorial work</aggregationText>
       <answer type="percent"/>
       <onchange>updateSum</onchange>
       <label>i</label>
@@ -472,6 +498,7 @@
     <question id="cbbb3794-bb9e-406f-9743-952b0f28e70b">
       <text>Administration &lt;em&gt;(including staff supervision, meetings policy and program management)&lt;/em&gt;</text>
       <shortText>Administration</shortText>
+      <aggregationText>Administration</aggregationText>
       <answer type="percent"/>
       <onchange>updateSum</onchange>
       <label>i</label>
@@ -481,12 +508,14 @@
       <label>i</label>
       <question id="93b50d81-b9d2-422e-98be-ad5bc0b05b03">
         <text>Maintaining the condition and order of the collection</text>
+        <aggregationText>Curating (maintenance)</aggregationText>
         <answer type="percent"/>
         <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
       <question id="7354fe50-f7fa-49a2-90a1-02654dba0303">
         <text>Processing outgoing and returned loans of material</text>
+        <aggregationText>Curating (loans)</aggregationText>
         <answer type="percent"/>
         <onchange>updateSum</onchange>
         <label>(a)</label>
@@ -497,12 +526,14 @@
       <label>i</label>
       <question id="92c9cea9-4bb0-4ff6-9675-51f90509e5e4">
         <text>General public</text>
+        <aggregationText>Answering queries (gen. public)</aggregationText>
         <answer type="percent"/>
         <onchange>updateSum</onchange>
         <label>(a)</label>
       </question>
       <question id="d2560a4f-7583-4447-ae9b-20c010c5d277">
-        <text>Public/private sector organizations</text>
+        <text>Public/private sector organisations</text>
+        <aggregationText>Answering queries (organisations)</aggregationText>
         <answer type="percent"/>
         <onchange>updateSum</onchange>
         <label>(a)</label>
@@ -512,6 +543,7 @@
       <text>Other (please specify)</text>
       <label>i</label>
       <question id="c018144c-dbcb-4970-8e99-0785ed99f675">
+        <aggregationText>Other</aggregationText>
         <answer type="percent"/>
         <onchange>updateSum</onchange>
       </question>
@@ -533,6 +565,11 @@
     <text>To assist ABRS to identify research and skills gaps please indicate on which taxa of Australian living or fossil organisms you currently conduct taxonomic research.</text>
     <shortText>Taxa of Australian living or fossil organisms</shortText>
     <validation>minimum-1-answer</validation>
+    <aggregations>
+      <aggregate type="countByAnswer" subLevel="2/range=1..4" answer="qtext" order="desc"/>
+      <aggregate type="countByAnswer" subLevel="2/range=1..2" answer="qtext" order="desc"/>
+      <aggregate type="countByAnswer" subLevel="2/range=3..4" answer="qtext" order="desc"/>
+    </aggregations>
     <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
       <question id="b818a1ad-5799-4404-a341-098ba58147fd">
         <layoutHint>subgroup:Mammals</layoutHint>
@@ -801,6 +838,7 @@
     <question id="0b4c36ce-f7d9-44ae-8fe3-ef7b7af9a131" type="pick">
       <text>Please select one:</text>
       <shortText>Level</shortText>
+      <aggregate type="countByAnswer" result="percentage" order="desc"/>
       <data>
         <align>right</align>
       </data>
@@ -826,12 +864,14 @@
     <question id="05c7a5a3-a984-4ef9-bd31-0ebc06f790ff">
       <text>In what subject areas did you major?</text>
       <shortText>Subject area(s)</shortText>
+      <aggregate type="countByAnswer" result="percentage" order="desc"/>
       <answer type="textarea"/>
     </question>
   </question>
   <question id="f6f77726-9b9b-4d9d-a8d0-ef8574873d70" heightHint="1">
     <text>Are you male or female?</text>
     <shortText>Gender</shortText>
+    <aggregate type="countByAnswer" result="percentage" order="desc"/>
     <answer type="radio" required="true">
       <data>
         <item>Male</item>
@@ -843,6 +883,7 @@
   <question id="9d8a246d-9957-4df9-b55d-72a075359c19" heightHint="5" type="range">
     <text>Which of the following age categories are you in?</text>
     <shortText>Age range</shortText>
+    <aggregate type="countByAnswer" order="desc"/>
     <answer dataType="numberRange" type="range" required="true">
       <data>
         <interval value="int">5</interval>
@@ -857,6 +898,7 @@
   <question id="973b99f7-7f15-48cf-8585-f0b34d2de085" heightHint="9" type="range">
     <text>Which of the following best describes your approximate annual income before tax?</text>
     <shortText>Income range</shortText>
+    <aggregate type="countByAnswer" result="percentage" order="desc"/>
     <answer dataType="numberRange" type="range" required="true">
       <data>
         <interval value="int">5000</interval>
