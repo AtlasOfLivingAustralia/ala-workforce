@@ -50,6 +50,34 @@ class ReportController {
 
     
     /**
+     * Display aggregated totals for survey.
+     *
+     */
+    def totals = {
+        cache false
+
+        def questionList = []
+
+        def setId = params.set as int ?: Survey.getCurrentQSetId(SurveyType.personal)
+        def qset = QuestionSet.findBySetId(setId)
+        def year = DateUtil.getYear(params.year)
+        def userId = request.userPrincipal.attributes.userid as int
+
+        def questions = Question.findAllByLevel2AndQset(0, setId)
+
+        def answers = Answer.getAnswers(setId, userId, year)
+        questions.each {
+            questionList <<  modelLoaderService.loadQuestionWithAnswer(setId, it.level1, answers)
+        }
+
+        assert questionList
+
+        // render the page
+        [qset: qset, questions: questionList, year: year]
+    }
+
+
+    /**
      * Display a single question with answers.
      *
      */
