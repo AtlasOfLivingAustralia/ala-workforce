@@ -4,6 +4,7 @@ import au.org.ala.cas.util.AuthenticationCookieUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import java.text.NumberFormat
 import org.jasig.cas.client.authentication.AttributePrincipal
+import grails.converters.JSON
 
 /**
  * Notes:
@@ -50,14 +51,14 @@ class WorkforceTagLib {
             if (model.qtext) {
                 // question text should span q & a columns
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td rowspan='${firstCellRowSpan}' id='Q${model.questionNumber}'>Q${model.questionNumber}</td>"
                   out << "<td colspan=2>${buildText(model)}</td>"
                 out << "</tr>"
 
             } else {
                 // go straight to first sub-question
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td rowspan='${firstCellRowSpan}' id='Q${model.questionNumber}'>Q${model.questionNumber}</td>"
                 if (secondLevel) {
                   QuestionModel q = secondLevel[secondLevelIndex++]
                   out << "<td>${buildText(q)}</td>"
@@ -72,7 +73,7 @@ class WorkforceTagLib {
             if (model.qtext) {
                 // real question - with text and answer
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td rowspan='${firstCellRowSpan}' id='Q${model.questionNumber}'>Q${model.questionNumber}</td>"
                   out << "<td>${buildText(model)}</td>"
                   out << "<td>" + layoutWidget(model) + "</td>"
                 out << "</tr>"
@@ -80,7 +81,7 @@ class WorkforceTagLib {
             } else {
                 // probably won't occur
                 out << "<tr>"
-                  out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+                  out << "<td rowspan='${firstCellRowSpan}' id='Q${model.questionNumber}'>Q${model.questionNumber}</td>"
                   out << "<td colspan=2>" + layoutWidget(model) + "</td>"
                 out << "</tr>"
             }
@@ -245,6 +246,92 @@ class WorkforceTagLib {
         }
     }
 
+    /**
+     * Return html for the aggregated totals report for a single question.
+     *
+     * @attr question the actual question model
+     */
+    def totals = { attrs ->
+        QuestionModel model = attrs.question
+
+        List secondLevel = model.questions
+        int secondLevelIndex = 0
+
+        // second and third level questions
+        /**
+         * Sub-questions may be repeating.
+         *
+         * A single sub-question can:
+         *  span the entire 2 column space; or
+         *  have text in the left column and a widget in the right; or
+         *
+         */
+        def contents = []
+        for (secondLevelIndex; secondLevelIndex < secondLevel.size(); secondLevelIndex++) {
+
+            QuestionModel q = secondLevel[secondLevelIndex]
+
+            if (q.aggregations) {
+                contents << generateContentForTotals(q)
+            }
+        }
+
+        // calculate row span for 1st column
+        int firstCellRowSpan = contents.size();
+
+        /*
+         * The top level may:
+         *  - just be a container for subquestions (no qtext and no answer)
+         *  - just be the carrier for the question text (qtext but no answer)
+         *  - be a real question (both qtext and answer)
+         *  - (?) take an answer but have no question text (no qtext but answer)
+         * This determines top-level layout.
+         */
+        if (contents) {
+            // go straight to first sub-question
+            out << "<tr>"
+                out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
+            if (secondLevel) {
+                QuestionModel q = secondLevel[0]
+                if (contents) {contents.remove(0)}
+                out << "<td>${getQuestionTextForReport(q)}</td>"
+                out << "<td>" + layoutTotals(q) + "</td>"
+            } else {
+                out << "<td></td><td></td>"
+            }
+            out << "</tr>"
+
+        } else if (model.aggregations) {
+            out << "<tr>"
+            out << "<td>Q${model.questionNumber}</td>"
+            out << "<td>${getQuestionTextForReport(model)}</td>"
+            out << "<td>${layoutTotals(model)}</td>"
+            out << "</tr>"
+        }
+
+        contents.each {
+            out << "<tr>"
+
+//            QuestionModel q = it.question
+
+            // add cell with optional label unless the very first cell is spanning all rows
+//            if (firstCellRowSpan == 1) {
+//                out << "<td>${makeLabel(q)}</td>"
+//            }
+
+            // add cells 2 and 3
+            if (it.spanColumns2and3) {
+                out << "<td colspan=2>" + it.secondColumnHtml + "</td>"
+            } else {
+                //println "secondColumnHtml = ${contents.secondColumnHtml}"
+                def style = '' //q.qdata?.align ? " style='text-align:${q.qdata.align};'" : ''
+                out << "<td${style}>" + it.secondColumnHtml + "</td><td>" + it.thirdColumnHtml + "</td>"
+            }
+
+            out << "</tr>"
+        }
+    }
+
     private Map generateContentFor(QuestionModel q) {
         Map result = [secondColumnHtml: "", thirdColumnHtml: "", spanColumns2and3: false]
         /*
@@ -354,6 +441,18 @@ class WorkforceTagLib {
             } else {
                 result.thirdColumnHtml = layoutAnswer(q)
             }
+        }
+        return result
+    }
+
+    private Map generateContentForTotals(QuestionModel q) {
+        Map result = [secondColumnHtml: "", thirdColumnHtml: "", spanColumns2and3: false, question: q]
+
+        if (q.qtext) {
+            result.secondColumnHtml = getQuestionTextForReport(q)
+            result.thirdColumnHtml = layoutTotals(q)
+        } else {
+            result.thirdColumnHtml = layoutTotals(q)
         }
         return result
     }
@@ -718,6 +817,171 @@ class WorkforceTagLib {
         } else {
             return ""
         }
+    }
+
+    private String layoutTotals(QuestionModel q) {
+        if (q.aggregations) {
+            String content = ''
+
+            q.aggregations.each {
+                switch (it.type) {
+                    case 'countByAnswer':
+                        def guids = it.subLevel ? getQuestionGuids(q, it.subLevel) : [q.guid]
+                        Map counts = Answer.getAnswerCounts(guids, DateUtil.getCurrentYear(), it.answer == 'qtext')
+                        switch (it.result) {
+                            case 'percentage':
+                                def total = 0
+                                counts.each { key, value ->
+                                    total += value
+                                }
+                                content += "<table class='shy'>"
+                                counts.each { key, value ->
+                                    content += "<tr><td>${key}</td><td><span class='answer'>${percentage(value,total)} %</span></td></tr>"
+                                }
+                                content += "</table>"
+
+                                break
+
+                            default:
+                                content += "<table class='shy'>"
+                                counts.each {
+                                    content += "<tr><td>${it.key}</td><td><span class='answer'>${it.value}</span></td></tr>"
+                                }
+                                content += "</table>"
+                                break
+                        }
+                        break
+
+                    case 'sumByAnswer':
+                        def guids = it.subLevel ? getQuestionGuids(q, it.subLevel) : [q.guid]
+                        List totals = Answer.getAnswerTotalsByUser(guids, DateUtil.getCurrentYear(), it.answer == 'qtext')
+                        if (it.groupBy) {
+                            Map options = getGroupByOptions(it.groupBy)
+                            switch (options['type']) {
+                                case 'decile':
+                                    def range = options['range'] as int
+                                    def unit = options['unit']
+                                    def total = totals.size()
+                                    List deciles = []
+                                    for (def i = 0; i < range; i++) { deciles << 0 }
+                                    if (it.result && it.result == 'percentageInDecile') {
+                                        totals.each {
+                                            int decile = min(((it - 1)/10) as int, range - 1)
+                                            deciles[decile]++
+                                        }
+                                    } else {
+                                        // count occurrences of % in corresponding decile
+                                        totals.each {
+                                            deciles[((it - 1)/10) as int]++
+                                        }
+                                    }
+
+                                    content += "<table class='shy'>"
+                                    deciles.eachWithIndex { it2, i ->
+                                        def decile
+                                        if (i == 0) {
+                                            decile = '0-10 ' + unit
+                                        } else if (i == range - 1 && range < 10) {
+                                            decile = ">${(range - 1) * 10} ${unit}"
+                                        } else {
+                                            decile = "${i * 10 + 1}-${(i + 1) * 10} ${unit}"
+                                        }
+                                        def value = it2
+                                        if (it.result && it.result == 'percentageInDecile') {
+                                            value = percentage(value, total) + ' %'
+                                        }
+                                        content += "<tr><td>${decile}</td><td><span class='answer'>${value}</span></td></tr>"
+                                    }
+                                    content += "</table>"
+                                    break
+                            }
+                        }
+                        break
+
+                    case 'sumByAnswerByGuid':
+                        def guids = it.subLevel ? getQuestionGuids(q, it.subLevel) : [q.guid]
+                        Map totals = Answer.getAnswerTotalsByGuid(guids, DateUtil.getCurrentYear(), it.answer == 'qtext')
+                        switch (it.result) {
+                            case 'sumAndPercentage':
+                                def total = 0
+                                totals.each { key, value ->
+                                    total += value
+                                }
+                                content += "<table class='shy'>"
+                                totals.each { key, value ->
+                                    def question = Question.findByGuid(key)
+                                    def json = JSON.parse(question.adata)
+                                    def qtext = json.row
+                                    content += "<tr><td>${qtext}</td><td><span class='answer'>${value}</span></td><td><span class='answer'>${percentage(value,total)} %</span></td></tr>"
+                                }
+                                content += "</table>"
+
+                                break
+                        }
+                        break
+
+                    case 'averageByAnswer':
+                        def guids = it.subLevel ? getQuestionGuids(q, it.subLevel) : [q.guid]
+                        Map answers = Answer.getAllAnswers(guids, DateUtil.getCurrentYear(), it.answer == 'qtext')
+                        def noOfUsers = answers.size()
+
+                        // total up values grouped by guid
+                        def totals = [:]
+                        answers.each { answer ->
+                            answer.value.each { guid, value ->
+                                if (value['answer']) {
+                                    def answerVal = value['qtext'] ?: value['answer']
+                                    if (totals[guid]) {
+                                        totals[guid] += answerVal as int
+                                    } else {
+                                        totals[guid] = answerVal as int
+                                    }
+                                }
+                            }
+                        }
+
+                        content += "<table class='shy'>"
+                        totals.each { key, value ->
+                            def question = Question.findByGuid(key)
+                            def average = String.format('%.1f', value/noOfUsers)
+                            content += "<tr><td>${question.aggregationText}</td><td><span class='answer'>${average} %</span></td></tr>"
+                        }
+                        content += "</table>"
+
+                        // count occurrences of each guid
+                        def counts = [:]
+                        answers.each { answer ->
+                            answer.value.each { guid, value ->
+                                if (value['answer']) {
+                                    if (counts[guid]) {
+                                        counts[guid]++
+                                    } else {
+                                        counts[guid] = 1
+                                    }
+                                }
+                            }
+                        }
+
+                        content += "<table class='shy'>"
+                        counts.each { key, value ->
+                            def question = Question.findByGuid(key)
+                            def average = String.format('%.1f', value/noOfUsers)
+                            content += "<tr><td>${question.aggregationText}</td><td><span class='answer'>${average} %</span></td></tr>"
+                        }
+                        content += "</table>"
+
+                        break
+
+                    default:
+                        content += ''
+                }
+
+            }
+            return content
+        } else {
+            return ''
+        }
+
     }
 
     /*
@@ -1313,6 +1577,18 @@ class WorkforceTagLib {
         return false
     }
 
+    private boolean isAggregation(QuestionModel q) {
+        for (it in q.questions) {
+            if (it.aggregations) {
+                return true
+            }
+        }
+        if (q.aggregations) {
+            return true
+        }
+        return false
+    }
+
     private String getQuestionTextForReport(QuestionModel q) {
         def answer
         if (q.shorttext) {
@@ -1385,12 +1661,116 @@ class WorkforceTagLib {
         def loggedInUserId = request.userPrincipal.attributes.userid
         if (userId) {
             if (userId == loggedInUserId) {
-                return "<a class='' href='/workforce/set/${q.qset}/page/${page.pageNumber}'>Q${q.questionNumber}</a>"
+                return "<a class='' href='/workforce/set/${q.qset}/page/${page.pageNumber}#Q${q.questionNumber}'>Q${q.questionNumber}</a>"
             } else {
                 return "Q${q.questionNumber}"
             }
         } else {
             return "Q${q.questionNumber}"
+        }
+    }
+
+    private List getQuestionGuids(QuestionModel q, String subLevel) {
+        List guids = []
+        def tokens = subLevel.tokenize('/=')
+        def level = tokens[0]
+        def qtext
+        def col
+        def type
+        def range = []
+        if (tokens.size() > 1) {
+            switch (tokens[1]) {
+                case 'qtext':
+                    qtext = tokens[2]
+                    break
+                case 'col':
+                    col = tokens[2]
+                    break
+                case 'type':
+                    type = tokens[2]
+                    break
+                case 'range':
+                    def rangeLimits = tokens[2].tokenize('..')
+                    for (int i = rangeLimits[0] as int; i <= (rangeLimits[1] as int); i++) {
+                        range << i - 1
+                    }
+                    break
+            }
+        }
+
+        def getGuids = { list, question ->
+            if (qtext) {
+                if (question.qtext == qtext) {
+                    list << question.guid
+                }
+            } else if (col) {
+                if (q.qdata.cols[(col as int) - 1] == question.adata.col) {
+                    list << question.guid
+                }
+            } else if (type) {
+                if (question.atype == AnswerType.valueOf(type)) {
+                    list << question.guid
+                }
+            } else {
+                list << question.guid
+            }
+        }
+
+        switch (level) {
+            case '1':
+                q.questions.each { it ->
+                    getGuids(guids, it)
+                }
+                break
+
+            case '2':
+                q.questions.eachWithIndex { it, i ->
+                    if (range) {
+                        if (i in range) {
+                            it.questions.each { it2 ->
+                                getGuids(guids, it2)
+                            }
+                        }
+                    } else {
+                        it.questions.each { it2 ->
+                            getGuids(guids, it2)
+                        }
+                    }
+                }
+                break
+
+            case 'all':
+                q.questions.each { it ->
+                    getGuids(guids, it)
+                    it.questions.each { it2 ->
+                        getGuids(guids, it2)
+                    }
+                }
+                break
+        }
+
+        return guids
+    }
+
+    private Map getGroupByOptions(String groupBy) {
+        Map options = [:]
+        def tokens = groupBy.tokenize('/')
+        options['type'] = tokens[0]
+        options['range'] = tokens[1]
+        options['unit'] = tokens[2]
+        return options
+    }
+
+    private String percentage(int value, int total) {
+        def percent = value/total * 100.0
+        return String.format('%.1f', percent)
+    }
+
+    private int min(int a, int b) {
+        if (a < b) {
+            return a
+        } else {
+            return b
         }
     }
 }
