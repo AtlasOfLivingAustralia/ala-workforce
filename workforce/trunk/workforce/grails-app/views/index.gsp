@@ -69,7 +69,11 @@
         </g:else>
 
         <g:if test="${admin}">
-            <p><a href="${createLink(uri: '/')}">Home</a></p>
+            <p>
+                <a href="${createLink(uri: '/')}">Home</a>
+                <a href="${createLink(uri: '/survey')}" style="padding-left: 50px">Surveys</a>
+                <a href="${createLink(uri: '/config')}" style="padding-left: 50px">Config</a>
+            </p>
         </g:if>
         <g:else>
             <wf:isABRSAdmin>
