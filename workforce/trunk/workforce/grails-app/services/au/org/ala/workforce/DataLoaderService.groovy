@@ -245,6 +245,7 @@ class DataLoaderService implements ApplicationContextAware {
             q.qtext = it.text
             q.subtext = it.subtext
             q.shorttext = it.shortText
+            q.aggregationText = it.aggregationText
             q.onchangeAction = it.onchange
             def atype = valueOrDefault('type', it.answer?.@type?.text(), defaults, ident)
             q.atype = atype ? AnswerType.valueOf(atype as String) : AnswerType.none
@@ -269,6 +270,8 @@ class DataLoaderService implements ApplicationContextAware {
             q.dependentOn = it.@dependentOn
             q.adata = extractJsonString(it.answer?.data, metadata) as grails.converters.JSON
             q.alabel = it.answer?.label?.text()
+
+            q.aggregation = getAggregationList(it) as grails.converters.JSON
 
             q.save()
             if (q.hasErrors()) {
@@ -422,6 +425,49 @@ class DataLoaderService implements ApplicationContextAware {
         }
 
         return result
+    }
+
+    def getAggregationList(node) {
+
+        List aggNodes = []
+
+        if (node.aggregate != null && node.aggregate.size()) {
+            aggNodes << node.aggregate
+        } else if (node.aggregations != null && node.aggregations.size()) {
+            node.aggregations.children().each {
+                aggNodes << it
+            }
+        }
+
+        if (!aggNodes) {
+            return null
+        }
+
+        List aggList = []
+        aggNodes.each {
+            Map agg = [:]
+            if (it.@type != '') {
+                agg['type'] = it.@type as String
+            }
+            if (it.@result != '') {
+                agg['result'] = it.@result as String
+            }
+            if (it.@groupBy != '') {
+                agg['groupBy'] = it.@groupBy as String
+            }
+            if (it.@order != '') {
+                agg['order'] = it.@order as String
+            }
+            if (it.@subLevel != '') {
+                agg['subLevel'] = it.@subLevel as String
+            }
+            if (it.@answer != '') {
+                agg['answer'] = it.@answer as String
+            }
+            aggList << agg
+        }
+
+        return aggList
     }
 
     /**
