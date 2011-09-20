@@ -435,7 +435,8 @@
   <question>
     <text>FUNCTIONS:</text>
     <subtext>What are the primary functions of the collections?</subtext>
-    <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group" required="true">
+    <validation>minimum-1-answer</validation>
+    <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
       <question id="ecc1e4d2-8539-4c71-b6fb-95e5cbb12016">
         <text>Biosecurity/Quarantine</text>
       </question>
