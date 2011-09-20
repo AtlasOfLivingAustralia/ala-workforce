@@ -16,6 +16,7 @@ class Question {
     String qtext                    // the question text
     String subtext                  // sub-heading to the question text
     String shorttext                // abbreviated question text for answer report
+    String aggregationText          // question label for aggregation report
     QuestionType qtype              // question type, eg ranked, matrix, pick-one
     String qdata                    // json string describing data - format depends on the qType
     String instruction              // optional instructions
@@ -31,6 +32,7 @@ class Question {
     String validation               // cross-question validation
     String onchangeAction           // js function to call when answer value is changed
     String dependentOn              // the entire question can be dependent on the answer to another question - this holds the path and the condition
+    String aggregation              // json string describing aggregation instructions for a question
 
     static constraints = {
         level1(min:0)
@@ -40,7 +42,8 @@ class Question {
         label(nullable:true)
         qtext(nullable:true, maxSize:2048)
         subtext(nullable:true, maxSize:2048)
-        shorttext(nullable:true, maxSize:2048)
+        shorttext(nullable:true, maxSize:512)
+        aggregationText(nullable:true, maxSize:512)
         qtype(nullable:false)
         qdata(nullable:true, maxSize:20000)
         instruction(nullable:true, maxSize:2048)
@@ -55,6 +58,7 @@ class Question {
         dependentOn(nullable:true, maxSize:1024)
         validation(nullable:true, maxSize: 1024)
         onchangeAction(nullable: true, maxSize: 1024)
+        aggregation(nullable: true, maxSize: 2048)
     }
 
     // make the hash an index
