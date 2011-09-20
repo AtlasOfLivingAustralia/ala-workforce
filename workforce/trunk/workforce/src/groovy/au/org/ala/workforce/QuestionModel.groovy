@@ -23,6 +23,7 @@ class QuestionModel {
     String qtext                    // the question text
     String subtext                  // sub-heading to the question text
     String shorttext                // abbreviated question text for answers report
+    String aggregationText          // question label for aggregation report
     QuestionType qtype              // question type, eg rank, pick, range, matrix, group, none
     Object qdata                    // json string describing data - format depends on the qType
     String instruction              // optional instructions
@@ -45,6 +46,8 @@ class QuestionModel {
     QuestionModel owner            // reverse link
 
     List<QuestionModel> questions = [] // sub questions
+
+    Object aggregations             // data aggregation properties
 
     /* transient values */
     boolean disabled = false        // can be set based on the answer to a contingent question
@@ -79,6 +82,9 @@ class QuestionModel {
         }
         if (record.validation) {
             this.validation = record.validation.tokenize(' ')
+        }
+        if (record.aggregation) {
+            this.aggregations = JSON.parse(record.aggregation)
         }
 
         //println "loading props for ${record.level1}_${record.level2}_${record.level3}"
@@ -418,7 +424,7 @@ class QuestionModel {
         if (sibling) {
             return sibling.answerValueStr
         } else {
-            return null
+            return ''
         }
     }
 
@@ -781,7 +787,7 @@ class QuestionModel {
         // hack for now
         int rows = questions.size()
         if (qtext) rows++
-        if (instruction) rows++
+        if (instruction && instructionPosition != 'top') rows++
         return rows;
     }
 
