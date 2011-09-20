@@ -26,11 +26,11 @@
                 <span class='pageProgress'><wf:pageProgress set="${qset.setId}" page="${pagination.pageNumber}" total="${pagination.totalPages}"/></span>
                 <g:if test="${pagination.pageNumber != pagination.totalPages}">
                     <g:actionSubmit class="navButton" action="next" value="Next"/>
+                    <g:actionSubmit class="navButton" action="exit" value="Exit" style="padding-left: 100px"/>
                 </g:if>
                 <g:if test="${pagination.pageNumber == pagination.totalPages}">
                     <g:actionSubmit class="navButton" action="finish" value="Finish"/>
                 </g:if>
-                <g:actionSubmit class="navButton" action="exit" value="Exit" style="padding-left: 100px"/>
             </div>
             <div class="body">
                 <g:if test="${questions.size() == 1}">
@@ -80,11 +80,11 @@
                 <span class='pageProgress'><wf:pageProgress set="${qset.setId}" page="${pagination.pageNumber}" total="${pagination.totalPages}"/></span>
                 <g:if test="${pagination.pageNumber != pagination.totalPages}">
                     <g:actionSubmit class="navButton" action="next" value="Next"/>
+                    <g:actionSubmit class="navButton" action="exit" value="Exit" style="padding-left: 100px"/>
                 </g:if>
                 <g:if test="${pagination.pageNumber == pagination.totalPages}">
                     <g:actionSubmit class="navButton" action="finish" value="Finish"/>
                 </g:if>
-                <g:actionSubmit class="navButton" action="exit" value="Exit" style="padding-left: 100px"/>
             </div>
             </g:form>
         
