@@ -11,17 +11,20 @@ class SurveyController {
     }
 
     def newSurvey = {
+        cache false
         def surveyInstance = new Survey()
         surveyInstance.properties = params
         render(view:'newSurvey', model:[qset: QuestionSet.findBySetId(params.set), surveyInstance: surveyInstance])
     }
 
     def list = {
+        cache false
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [surveyInstanceList: Survey.list(params), surveyInstanceTotal: Survey.count()]
     }
 
     def create = {
+        cache false
         def surveyInstance = new Survey()
         surveyInstance.properties = params
         return [surveyInstance: surveyInstance]
@@ -55,6 +58,7 @@ class SurveyController {
     }
 
     def show = {
+        cache false
         def surveyInstance = Survey.get(params.id)
         if (!surveyInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'survey.label', default: 'Survey'), params.id])}"
@@ -66,6 +70,7 @@ class SurveyController {
     }
 
     def edit = {
+        cache false
         def surveyInstance = Survey.get(params.id)
         if (!surveyInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'survey.label', default: 'Survey'), params.id])}"
