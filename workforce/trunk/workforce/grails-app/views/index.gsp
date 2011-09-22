@@ -72,7 +72,7 @@
             <p>
                 <a href="${createLink(uri: '/')}">Home</a>
                 <a href="${createLink(uri: '/survey')}" style="padding-left: 50px">Surveys</a>
-                <a href="${createLink(uri: '/config')}" style="padding-left: 50px">Config</a>
+                <a href="${createLink(uri: '/configData')}" style="padding-left: 50px">Config</a>
             </p>
         </g:if>
         <g:else>
