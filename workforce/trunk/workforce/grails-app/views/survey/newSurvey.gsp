@@ -8,7 +8,7 @@
     <body>
         <div class="nav" id="breadcrumb">
             <span class="navButton"><a class="home" href="${createLink(uri: '/admin')}"><g:message code="default.home.label"/></a></span>
-            <span class="navButton"><a href="${createLink(uri: '/admin/set/' + qset.setId)}">${qset.shortName}</a></span>
+            <span class="navButton"><a href="${createLink(uri: '/survey/list')}">Survey List</a></span>
             <span class="navButton">Create New Survey</span>
         </div>
         <div class='body'>
@@ -99,9 +99,8 @@
                     </table>
                 </div>
 
-                <div class="buttons">
-                    <span class="button"><g:submitButton name="create" class="save"
-                                                         value="${message(code: 'default.button.create.label', default: 'Create')}"/></span>
+                <div class="">
+                    <g:actionSubmit class="navButton" action="save" value="Create" style="color: #666; font-size: 12px"/>
                 </div>
             </g:form>
         </div>
