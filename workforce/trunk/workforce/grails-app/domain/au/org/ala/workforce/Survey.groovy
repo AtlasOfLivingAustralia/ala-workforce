@@ -25,8 +25,7 @@ class Survey {
     }
 
     static int getCurrentQSetId(SurveyType type) {
-        int year = DateUtil.getCurrentYear()
-        Survey s = Survey.findByYearAndType(year, type)
+        Survey s = Survey.findByYearAndType(ConfigData.getSurveyYear(), type)
         return s.id
     }
 
