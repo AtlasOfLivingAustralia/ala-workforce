@@ -1,6 +1,6 @@
 import au.org.ala.workforce.Survey
 import au.org.ala.workforce.SurveyType
-import au.org.ala.workforce.Config
+import au.org.ala.workforce.ConfigData
 
 class BootStrap {
 
@@ -9,7 +9,7 @@ class BootStrap {
     def init = { servletContext ->
         listLoaderService.load()
         dataLoaderService.clearQuestionSets()
-        Config.init()
+        ConfigData.init()
         Survey.init()
         dataLoaderService.loadQuestionSet(Survey.getCurrentQSetId(SurveyType.personal))
         dataLoaderService.loadQuestionSet(Survey.getCurrentQSetId(SurveyType.institutional))
