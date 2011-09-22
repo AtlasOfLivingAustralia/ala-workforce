@@ -1,6 +1,6 @@
 package au.org.ala.workforce
 
-class ConfigController {
+class ConfigDataController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
@@ -9,9 +9,9 @@ class ConfigController {
     }
 
     def edit = {
-        def configInstance = Config.get(1)
+        def configInstance = ConfigData.get(1)
         if (!configInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'config.label', default: 'Config'), params.id])}"
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'config.label', default: 'ConfigData'), params.id])}"
             redirect(action: "list")
         }
         else {
@@ -20,20 +20,20 @@ class ConfigController {
     }
 
     def update = {
-        def configInstance = Config.get(1)
+        def configInstance = ConfigData.get(1)
         if (configInstance) {
             if (params.version) {
                 def version = params.version.toLong()
                 if (configInstance.version > version) {
 
-                    configInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'config.label', default: 'Config')] as Object[], "Another user has updated this Config while you were editing")
+                    configInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'config.label', default: 'ConfigData')] as Object[], "Another user has updated this ConfigData while you were editing")
                     render(view: "edit", model: [configInstance: configInstance])
                     return
                 }
             }
             configInstance.properties = params
             if (!configInstance.hasErrors() && configInstance.save(flush: true)) {
-                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'config.label', default: 'Config'), ''])}"
+                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'config.label', default: 'ConfigData'), ''])}"
                 redirect(action: "edit", id: configInstance.id)
             }
             else {
@@ -41,7 +41,7 @@ class ConfigController {
             }
         }
         else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'config.label', default: 'Config'), params.id])}"
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'config.label', default: 'ConfigData'), params.id])}"
             redirect(action: "edit")
         }
     }
