@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.workforce.SurveyType; org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.workforce.QuestionSet; au.org.ala.workforce.Survey; au.org.ala.workforce.DateUtil" %>
+<%@ page import="au.org.ala.workforce.ConfigData; au.org.ala.workforce.SurveyType; org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.workforce.QuestionSet; au.org.ala.workforce.Survey" %>
 <html>
     <head>
         <title>ABRS Surveys</title>
@@ -6,7 +6,7 @@
     </head>
     <body>
         <g:set var="type" value="${wf.selectSurvey()}"/>
-        <g:set var="currentYear" value="${DateUtil.getCurrentYear()}"/>
+        <g:set var="currentYear" value="${ConfigData.getSurveyYear()}"/>
         <g:if test="${flash.message}"><div class="message">${flash.message}</div></g:if>
 
         <div class='links'>
