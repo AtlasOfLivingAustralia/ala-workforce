@@ -4,21 +4,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="main"/>
     <g:set var="entityName" value="${message(code: 'survey.label', default: 'Survey')}"/>
-    <title><g:message code="default.show.label" args="[entityName]"/></title>
+    <title>ABRS Survey Administration</title>
 </head>
 
 <body>
-<div class="nav">
-    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a>
-    </span>
-    <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label"
-                                                                           args="[entityName]"/></g:link></span>
-    <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label"
-                                                                               args="[entityName]"/></g:link></span>
+<div class="nav" id="breadcrumb">
+    <span class="navButton"><a class="home" href="${createLink(uri: '/admin')}"><g:message code="default.home.label"/></a></span>
+    <span class="navButton"><a href="${createLink(uri: '/survey/list')}">Survey List</a></span>
+    <span class="navButton">Show Survey</span>
 </div>
 
 <div class="body">
-    <h1><g:message code="default.show.label" args="[entityName]"/></h1>
+    <h1>Show ABRS Survey Metadata</h1>
     <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
     </g:if>
@@ -65,14 +62,11 @@
         </table>
     </div>
 
-    <div class="buttons">
+    <div style="margin-top: 20px">
         <g:form>
             <g:hiddenField name="id" value="${surveyInstance?.id}"/>
-            <span class="button"><g:actionSubmit class="edit" action="edit"
-                                                 value="${message(code: 'default.button.edit.label', default: 'Edit')}"/></span>
-            <span class="button"><g:actionSubmit class="delete" action="delete"
-                                                 value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                                                 onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
+            <g:actionSubmit class="navButton" action="edit" value="Edit" style="color: #666; font-size: 12px"/>
+            <g:actionSubmit class="navButton" action="delete" value="Delete" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" style="color: #666; font-size: 12px"/>
         </g:form>
     </div>
 </div>
