@@ -20,6 +20,15 @@ class ConfigData {
         }
     }
 
+    static int getSurveyYear() {
+        def config = ConfigData.get(1)
+        if (config) {
+            return config.currentSurveyYear
+        } else {
+            return DateUtil.getCurrentYear()
+        }
+    }
+
     static String getFeedbackAddress() {
         def config = ConfigData.get(1)
         if (config) {
