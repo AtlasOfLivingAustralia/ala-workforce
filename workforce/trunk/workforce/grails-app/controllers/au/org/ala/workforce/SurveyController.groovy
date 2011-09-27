@@ -7,6 +7,7 @@ class SurveyController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {
+        cache false
         redirect(action: "list", params: params)
     }
 
