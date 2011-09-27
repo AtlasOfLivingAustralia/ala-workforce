@@ -553,6 +553,11 @@
           <item>Total No of Specimens (approx)</item>
           <item>Total No of Types (approx)</item>
         </cols>
+        <validation>greaterThanOrEqual[1,2]</validation>
+        <validationRange>
+          <start>1</start>
+          <finish>2</finish>
+        </validationRange>
         <guids>7b4557ef-00c6-4cca-b294-32a05cdc211f,7db41a01-b1e8-4948-b428-853528030d53,150f876b-9730-49a1-b35b-ccde33f3b386,bf778a1f-5632-4e77-843d-afff38f4ea8a,73ff692a-c103-45da-a931-ffb76e12c669,2f3059e4-b1dd-4649-bf80-b86c37692794</guids>
       </data>
     </question>
@@ -628,6 +633,11 @@
           <item>Total No of Specimens (approx)</item>
           <item>Total No of Types (approx)</item>
         </cols>
+        <validation>greaterThanOrEqual[1,2]</validation>
+        <validationRange>
+          <start>1</start>
+          <finish>2</finish>
+        </validationRange>
         <guids>3de7afac-e632-4bd3-aac7-d0a97eec8216,0942b50b-9912-4b34-aa99-852eb884f69c,485285ba-5eb9-4f4f-8517-faa28a2e1c3e,164bfb97-c999-44c9-9b70-144ad8b85ccd,6c80ef18-7809-42bd-afbf-ac0cb9d0a8c6,27671f03-a71b-477d-9085-8143fd7a08c4</guids>
       </data>
     </question>
@@ -696,6 +706,11 @@
           <item>Total No of Specimens (approx)</item>
           <item>Total No of Types (approx)</item>
         </cols>
+        <validation>greaterThanOrEqual[1,2]</validation>
+        <validationRange>
+          <start>1</start>
+          <finish>2</finish>
+        </validationRange>
         <guids>7812f3e0-573f-44fe-aab5-6cd8e597220c,d6d90ad0-48c7-4eab-a1ab-9052564817ec,b37f14e9-49cd-4814-8eee-185efa84410f,859aba47-9368-4c3a-80ee-8e2362169753,33e55503-7f83-4567-a797-2da89683aa47,fa3af849-36d2-4635-bf9f-65c5de3dd2e3</guids>
       </data>
     </question>
