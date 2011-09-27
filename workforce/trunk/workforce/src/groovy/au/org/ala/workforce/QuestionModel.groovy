@@ -117,10 +117,10 @@ class QuestionModel {
          * rest of the question. We don't want to store any entered or default values from the sub-questions
          * if the parent checkbox is not ticked.
          */
-        if (owner && owner.atype == AnswerType.bool && !owner.isAnswerTrue()) {
-            // do not set the answer as it has no meaning
-            return
-        }
+//        if (owner && owner.atype == AnswerType.bool && !owner.isAnswerTrue()) {
+//            // do not set the answer as it has no meaning
+//            return
+//        }
 
         /* This handles the case where selecting other in the previous sibling question acts as a 'gatekeeper' to the
          * 'If other please specify' text. We don't want to store any entered or default values from the 'if other'
@@ -181,7 +181,11 @@ class QuestionModel {
                         // don't allow 'other' text if 'other' is not selected
                         if (badOtherText()) {
                             valid = false
-                            errorMessage = "You have provided 'if other' text but not selected the 'other' option."
+                            if (this.owner && this.owner.atype == AnswerType.bool) {
+                                errorMessage = "You have provided additional text but not selected 'Yes'."
+                            } else {
+                                errorMessage = "You have provided 'if other' text but not selected the 'other' option."
+                            }
                         }
                         else {
                             // otherwise only needs to have a value
@@ -253,6 +257,9 @@ class QuestionModel {
                             // perform any validations between fields
                             if (this.owner.qdata instanceof JSONObject && this.owner.qdata.has('validation')) {
                                 def validations = this.owner.qdata.validation
+                                if (validations instanceof String) {
+                                    validations = [validations]
+                                }
                                 def thisColumn = getThisColumnNumber()
                                 def thisRow = getThisRowNumber()
                                 if (isRowSubjectToValidation(thisRow)) {
