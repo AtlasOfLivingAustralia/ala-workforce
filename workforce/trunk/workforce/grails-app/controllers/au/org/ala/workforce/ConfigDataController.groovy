@@ -5,10 +5,12 @@ class ConfigDataController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {
+        cache false
         redirect(action: "edit", params: params)
     }
 
     def edit = {
+        cache false
         def configInstance = ConfigData.get(1)
         if (!configInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'config.label', default: 'ConfigData'), params.id])}"
@@ -20,6 +22,7 @@ class ConfigDataController {
     }
 
     def update = {
+        cache false
         def configInstance = ConfigData.get(1)
         if (configInstance) {
             if (params.version) {
