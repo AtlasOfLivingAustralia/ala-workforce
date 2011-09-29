@@ -273,7 +273,8 @@ class QuestionModel {
                                                     if (columnValue.isNumber()) {
                                                         if ((val as int) < (columnValue as int)) {
                                                             valid = false
-                                                            errorMessage = "Number must not be less than that in column '${this.owner.qdata.cols[objectColumn - 1]}'"
+                                                            def rowLabel = adata.row
+                                                            errorMessage = "Number for ${rowLabel} must not be less than that in column '${this.owner.qdata.cols[objectColumn - 1]}'"
                                                         }
                                                     }
                                                     break
