@@ -430,7 +430,7 @@ class QuestionModel {
         def rowLabel = adata.row
         def sibling = owner.questions.find { it.adata.col == columnLabel && it.adata.row == rowLabel}
         if (sibling) {
-            return sibling.answerValueStr
+            return sibling.answerValueStr ?: ''
         } else {
             return ''
         }
