@@ -109,7 +109,7 @@
             $('input[onclick*="disable"][value="no"]').each(function(index,element) {
                 var funct = this.getAttributeNode('onclick').value;
                 var ident = funct.substring(funct.indexOf("'")+1,funct.lastIndexOf("',"));
-                if ($(this).attr('checked') == 'checked') {
+                if ($(this).attr('checked')) {
                     disable(ident, this);
                 } else {
                     // make sure the hidden input state is enabled
