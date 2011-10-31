@@ -13,6 +13,7 @@ function updateSum(target) {
           sum = sum + num
         }
     });
+    sum = sum.toFixed(2)
     $('input.sumTotal').attr('value',sum);
     $('span.calculated').html(sum);
 }
