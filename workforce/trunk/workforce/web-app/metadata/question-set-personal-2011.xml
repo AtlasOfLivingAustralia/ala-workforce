@@ -379,6 +379,7 @@
   <question heightHint="5">
     <text>How many days of taxonomic field-work have you undertaken in the last two calendar years and how were they funded?</text>
     <shortText>Days of taxonomic field-work</shortText>
+    <validation>minimum-1-answer</validation>
     <question defaultDataType="number" defaultAnswerType="number" type="matrix">
       <aggregations>
         <aggregate type="sumByAnswerByGuid" result="sumAndPercentage" subLevel="1/col=1" chart="pie" title="Days of taxonomic field-work - ${year1}"/>
