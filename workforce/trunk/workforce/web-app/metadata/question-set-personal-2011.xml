@@ -556,7 +556,7 @@
     </question>
     <question id="388729e3-eb21-47ab-92aa-546fa3caef65">
       <text>Total</text>
-      <answer type="calculate">
+      <answer type="calculate" dataType="number" >
         <data>
           <action>updateSum</action>
         </data>
