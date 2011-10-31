@@ -20,13 +20,13 @@
       <shortText>Curatorial and/or taxonomic work your major responsibility</shortText>
       <data>YES/NO</data>
       <answer dataType="bool" type="bool" required="true"/>
-      <aggregate order="desc" type="countByAnswer"/>
+      <aggregate type="countByAnswer" result="percentage" order="desc" chart="pie"/>
     </question>
     <question type="none">
       <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
       <shortText>Time spent on curatorial and/or taxonomic duties</shortText>
       <validation>percent-total-lessThanOrEqual-100</validation>
-      <aggregate groupBy="decile/10/%" subLevel="1" type="sumByAnswer"/>
+      <aggregate type="sumByAnswer" subLevel="1" groupBy="decile/10/%" result="percentageInDecile" chart="column" yAxisLabel="Percentage of Employees"/>
       <question id="fdefd907-6690-4633-99d6-5f3497c379e3">
         <text>Scientist/Taxonomist (permanent)</text>
         <answer dataType="integer" label="%" type="percent"/>
@@ -75,8 +75,8 @@
     <shortText>Organisation and location</shortText>
     <validation>minimum-1-answer</validation>
     <aggregations>
-      <aggregate result="percentage" order="desc" answer="qtext" subLevel="1" type="countByAnswer"/>
-      <aggregate result="percentage" order="desc" subLevel="2/qtext=State" type="countByAnswer"/>
+      <aggregate type="countByAnswer" result="percentage" order="desc" answer="qtext" subLevel="1" chart="pie" title="Type of Organisation"/>
+      <aggregate type="countByAnswer" result="percentage" order="desc" subLevel="2/qtext=State" chart="pie" title="Location of Organisation"/>
     </aggregations>
     <question id="fd7d56cf-ae3d-4673-a1b5-1ad299f62a53">
       <text>Museum</text>
@@ -226,7 +226,7 @@
     <question type="none">
       <text>For each applicable category, please indicate how many hours per week you work on average.</text>
       <shortText>Hours worked per week</shortText>
-      <aggregate groupBy="decile/7/hours" result="percentageInDecile" subLevel="1/type=number" type="sumByAnswer"/>
+      <aggregate type="sumByAnswer" subLevel="1/type=number" groupBy="decile/7/hours" result="percentageInDecile" chart="pie"/>
       <question id="c929c23c-be56-411a-bea9-5b5e289b14f2">
         <text>Full-time (permanent), paid by organisation</text>
         <answer type="number">
@@ -340,7 +340,7 @@
   <question id="717f12ff-5d07-4cdb-804c-5d82cae1ab76" type="range" heightHint="5">
     <text>How long have you been working in the field of taxonomy?</text>
     <shortText>Years in taxonomy</shortText>
-    <aggregate order="desc" type="countByAnswer"/>
+    <aggregate type="countByAnswer" result="percentage" order="desc" chart="pie"/>
     <answer dataType="numberRange" type="range" required="true">
       <data>
         <interval value="int">5</interval>
@@ -354,16 +354,16 @@
   <question id="18e8d297-8c6f-4e71-8ac1-32f9f7aac775" heightHint="1">
     <text>And do you intend to be working in this field in 12 months time?</text>
     <shortText>Working in taxonomy in 12 months</shortText>
-    <aggregate order="desc" type="countByAnswer"/>
+    <aggregate type="countByAnswer" result="percentage" order="desc" chart="pie"/>
     <answer type="bool" required="true"/>
-    <onchange>disable('q7_1',this)</onchange>
+    <onchange>disable('q6_1',this)</onchange>
   </question>
-  <question dependentOn="Q6=yes" heightHint="6">
+  <question dependentOn="Q5=yes" heightHint="6">
     <text>And thinking about your longer-term future, how likely is it that you will continue your career in taxonomy?</text>
     <shortText>Likelihood of continuing in taxonomy</shortText>
     <question id="5a11f1ce-8e29-44cb-94d0-42e09c8105f6" datatype="text" type="pick">
       <text>Would you say that it is:</text>
-      <aggregate result="percentage" order="desc" type="countByAnswer"/>
+      <aggregate type="countByAnswer" result="percentage" order="desc" chart="pie"/>
       <shortText/>
       <answer type="radio" requiredIf="enabled">
         <data>
@@ -381,8 +381,8 @@
     <shortText>Days of taxonomic field-work</shortText>
     <question defaultDataType="number" defaultAnswerType="number" type="matrix">
       <aggregations>
-        <aggregate result="sumAndPercentage" subLevel="1/col=1" type="sumByAnswerByGuid"/>
-        <aggregate result="sumAndPercentage" subLevel="1/col=2" type="sumByAnswerByGuid"/>
+        <aggregate type="sumByAnswerByGuid" result="sumAndPercentage" subLevel="1/col=1" chart="pie" title="Days of taxonomic field-work - ${year1}"/>
+        <aggregate type="sumByAnswerByGuid" result="sumAndPercentage" subLevel="1/col=2" chart="pie" title="Days of taxonomic field-work - ${year2}"/>
       </aggregations>
       <text>Method of funding</text>
       <data>
@@ -404,7 +404,10 @@
     <shortText>Percentage of full time work</shortText>
     <validation>percent-total-lessThanOrEqual-100</validation>
     <validation>percent-total-greaterThan-0</validation>
-    <aggregate order="desc" subLevel="all/type=percent" type="averageByAnswer"/>
+    <aggregations>
+      <aggregate type="averageByAnswer" order="desc" subLevel="all/type=percent" chart="bar" title="Average percentage of time spent on specified tasks" yAxisLabel="Average percentage"/>
+      <aggregate type="countByCategory" order="desc" subLevel="all/type=percent" result="percentage" chart="bar" title="Percentage of respondents carrying out tasks" yAxisLabel="Percentage of respondents"/>
+    </aggregations>
     <question>
       <text>Acquisition of taxonomic specimens &lt;em&gt;(including collecting, essential preparation, registration and incorporation into the collection)&lt;/em&gt;:</text>
       <shortText>Acquisition of taxonomic specimens:</shortText>
@@ -566,9 +569,9 @@
     <shortText>Taxa of Australian living or fossil organisms</shortText>
     <validation>minimum-1-answer</validation>
     <aggregations>
-      <aggregate type="countByAnswer" subLevel="2/range=1..4" answer="qtext" order="desc"/>
-      <aggregate type="countByAnswer" subLevel="2/range=1..2" answer="qtext" order="desc"/>
-      <aggregate type="countByAnswer" subLevel="2/range=3..4" answer="qtext" order="desc"/>
+      <aggregate type="countByCategory" subLevel="2/range=1..4" answer="qtext" order="desc" chart="column" allCategories="true" title="Number of researchers for all groups" yAxisLabel="Number of researchers"/>
+      <aggregate type="countByCategory" subLevel="2/range=1..2" answer="qtext" order="desc" chart="column" allCategories="true" title="Number of researchers for animal groups" yAxisLabel="Number of researchers"/>
+      <aggregate type="countByCategory" subLevel="2/range=3..4" answer="qtext" order="desc" chart="column" allCategories="true" title="Number of researchers for plant groups" yAxisLabel="Number of researchers"/>
     </aggregations>
     <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
       <question id="b818a1ad-5799-4404-a341-098ba58147fd">
