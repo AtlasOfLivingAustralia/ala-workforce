@@ -318,7 +318,7 @@ class QuestionController {
     def areAnswers(questions) {
         def result
         for (q in questions) {
-            if (q.answerValueStr != null && q.answerValueStr != "") {
+            if (q.answerValueStr != null && q.answerValueStr != "" && q.atype != AnswerType.calculate) {
                 result = true
             } else if (q.questions) {
                 result = areAnswers(q.questions)
