@@ -153,6 +153,12 @@ class QuestionModel {
         }
          */
 
+        /* This handles case where textarea contains only whitespace
+         */
+        if (this.atype == AnswerType.textarea && answer && answer.trim() == '') {
+            return
+        }
+
         // the default action is to set the property
         this.answerValueStr = answer
     }
