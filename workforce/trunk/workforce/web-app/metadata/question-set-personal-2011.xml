@@ -85,7 +85,7 @@
       <answer type="bool"/>
       <question id="45c0892e-0bcd-4bc7-adf7-e86cb1bde5d3" type="pick">
         <text>State</text>
-        <displayHint>dropdown</displayHint>
+        <displayHint>combobox</displayHint>
         <answer type="externalRef" requiredIf="..=on|Museum">
           <data>state</data>
         </answer>
@@ -105,7 +105,7 @@
       <answer type="bool"/>
       <question id="65bddfea-98c9-4656-b098-f212f92125a7" type="pick">
         <text>State</text>
-        <displayHint>dropdown</displayHint>
+        <displayHint>combobox</displayHint>
         <answer type="externalRef" requiredIf="..=on|Herbarium">
           <data>state</data>
         </answer>
@@ -125,7 +125,7 @@
       <answer type="bool"/>
       <question id="f38fcc86-f15d-417d-9137-20041afdc2cd" type="pick">
         <text>State</text>
-        <displayHint>dropdown</displayHint>
+        <displayHint>combobox</displayHint>
         <answer type="externalRef" requiredIf="..=on|University">
           <data>state</data>
         </answer>
@@ -150,7 +150,7 @@
       <answer type="bool"/>
       <question id="d16a568d-0c4d-4736-899d-911083cb6cbb" type="pick">
         <text>State</text>
-        <displayHint>dropdown</displayHint>
+        <displayHint>combobox</displayHint>
         <answer type="externalRef" requiredIf="..=on|CSIRO">
           <data>state</data>
         </answer>
@@ -168,7 +168,7 @@
       <answer type="bool"/>
       <question id="06d48664-3ddf-4d99-8afe-96f9ad30a46f" type="pick">
         <text>State</text>
-        <displayHint>dropdown</displayHint>
+        <displayHint>combobox</displayHint>
         <answer type="externalRef" requiredIf="..=on|Commonwealth Department">
           <data>state</data>
         </answer>
@@ -186,7 +186,7 @@
       <answer type="bool"/>
       <question id="57792b47-57ab-48f6-ae8b-d42b83befeaf" type="pick">
         <text>State</text>
-        <displayHint>dropdown</displayHint>
+        <displayHint>combobox</displayHint>
         <answer type="externalRef" requiredIf="..=on|State Department">
           <data>state</data>
         </answer>
