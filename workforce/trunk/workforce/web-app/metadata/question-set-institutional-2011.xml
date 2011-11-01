@@ -346,7 +346,7 @@
     </question>
     <question id="4ef2bf98-8961-4d4f-a601-996e8a5cf007" type="pick">
       <text>State:</text>
-      <displayHint>dropdown</displayHint>
+      <displayHint>combobox</displayHint>
       <answer type="externalRef" required="true">
         <data>state</data>
       </answer>
@@ -468,6 +468,7 @@
     <text>TAXONOMIC SCOPE:</text>
     <subtext>Please provide the following information about collections held in your institution:</subtext>
     <question id="fa09ba17-7f3b-4d7a-9cc9-db1314f83ae3" defaultDataType="integer" defaultAnswerType="number" datatype="text" type="matrix">
+      <aggregate type="sumByAnswerByGuid" subLevel="1/col=1" chart="pie" title="Number of animal specimens in natural science collections"/>
       <text>TAXON</text>
       <answer type="summable">
         <data>
@@ -562,6 +563,7 @@
       </data>
     </question>
     <question id="f5bba6b6-85dd-4880-b2af-49bb64551dbb" defaultDataType="integer" defaultAnswerType="number" datatype="text" type="matrix">
+      <aggregate type="sumByAnswerByGuid" subLevel="1/col=1" chart="pie" title="Number of plant and related specimens in natural science collections"/>
       <text>TAXON</text>
       <answer type="summable">
         <data>
@@ -642,6 +644,7 @@
       </data>
     </question>
     <question id="e5f36b37-ca55-4b02-bf0a-8e02db2da38a" defaultDataType="integer" defaultAnswerType="number" datatype="text" type="matrix">
+      <aggregate type="sumByAnswerByGuid" subLevel="1/col=1" chart="pie" title="Number of other specimens in natural science collections"/>
       <text>TAXON</text>
       <answer type="summable">
         <data>
@@ -741,6 +744,7 @@
     </question>
   </question>
   <question defaultDataType="number" defaultAnswerType="number" instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) please indicate     Taxonomist as 0.5, and Administrator as 0.5. Similarly with part-time staff please indicate proportion of full time duties undertaken.">
+    <aggregate type="sumByAnswerByGuid" subLevel="1" chart="column" title="Taxonomic workforce" yAxisLabel="Numbers"/>
     <text>STAFF AND SUPPORT</text>
     <subtext>Please provide the following details against category on total numbers of taxonomic staff and support.
         </subtext>
