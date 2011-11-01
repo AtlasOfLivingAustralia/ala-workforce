@@ -2,7 +2,8 @@
     $.widget( "ui.combobox", {
         options: {
             value: '',
-            size: 30
+            size: 30,
+            mode: ''
         },
 
         _create: function() {
@@ -42,25 +43,27 @@
                         self._trigger( "selected", event, {
                             item: ui.item.option
                         });
-//                    },
-//                    change: function( event, ui ) {
-//                        if ( !ui.item ) {
-//                            var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( $(this).val() ) + "$", "i" ),
-//                                valid = false;
-//                            select.children( "option" ).each(function() {
-//                                if ( $( this ).text().match( matcher ) ) {
-//                                    this.selected = valid = true;
-//                                    return false;
-//                                }
-//                            });
-//                            if ( !valid ) {
-//                                // remove invalid value, as it didn't match anything
-//                                $( this ).val( "" );
-//                                select.val( "" );
-//                                input.data( "autocomplete" ).term = "";
-//                                return false;
-//                            }
-//                        }
+                    },
+                    change: function( event, ui ) {
+                        if ( self.options.mode == "exclusive" ) {
+                            if ( !ui.item ) {
+                                var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( $(this).val() ) + "$", "i" ),
+                                    valid = false;
+                                select.children( "option" ).each(function() {
+                                    if ( $( this ).text().match( matcher ) ) {
+                                        this.selected = valid = true;
+                                        return false;
+                                    }
+                                });
+                                if ( !valid ) {
+                                    // remove invalid value, as it didn't match anything
+                                    $( this ).val( "" );
+                                    select.val( "" );
+                                    input.data( "autocomplete" ).term = "";
+                                    return false;
+                                }
+                            }
+                        }
                     }
                 })
                 .addClass( "ui-widget ui-widget-content ui-corner-left" );
