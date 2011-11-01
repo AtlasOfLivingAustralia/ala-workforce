@@ -589,7 +589,9 @@ class WorkforceTagLib {
                 break
             case AnswerType.externalRef:
                 if (q.adata =~ 'state') {
-                    result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 25, value: q.answerValueStr)
+                    if (q.displayHint == 'combobox') {
+                        result += '<div class="ui-widget">' + combobox(name: q.ident(), size: 25, value: q.answerValueStr, mode: 'exclusive')
+                    }
                     result += select(name: q.ident(), from: ListLoaderService.states, value: q.answerValueStr,
                             noSelection: ['':'Select a state or territory'])
                     result += '</div>'
@@ -724,7 +726,7 @@ class WorkforceTagLib {
 
     def combobox = {attrs ->
         def value = attrs.value ?: ''
-        def options = "{value: '${value}'" + (attrs.size ? ", size: ${attrs.size}" : '') + '}'
+        def options = "{value: '${value}'" + (attrs.size ? ", size: ${attrs.size}" : '') + (attrs.mode ? ", mode: '${attrs.mode}'" : '') + '}'
         return """
         <script type='text/javascript' src='/workforce/js/jquery-ui-combobox.js'></script>
         <script type='text/javascript'>
@@ -965,8 +967,8 @@ class WorkforceTagLib {
                         content += "<table class='shy'>"
                         counts.each { key, value ->
                             def question = Question.findByGuid(key)
-                            def average = String.format('%.1f', value/noOfUsers)
-                            content += "<tr><td>${question.aggregationText}</td><td><span class='answer'>${average} %</span></td></tr>"
+                            def percentage = percentage(value, noOfUsers)
+                            content += "<tr><td>${question.aggregationText}</td><td><span class='answer'>${percentage} %</span></td></tr>"
                         }
                         content += "</table>"
 
