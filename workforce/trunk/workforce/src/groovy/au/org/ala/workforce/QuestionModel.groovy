@@ -509,11 +509,11 @@ class QuestionModel {
                     boolean atLeastOneAnswer = false
                     // iterate max of 2 levels
                     questions.each { r1 ->
-                        if (r1.answerValueStr) {
+                        if (r1.answerValueStr && r1.atype != AnswerType.calculate) {
                             atLeastOneAnswer = true
                         }
                         r1.questions.each { r2 ->
-                            if (r2.answerValueStr) {
+                            if (r2.answerValueStr && r2.atype != AnswerType.calculate) {
                                 atLeastOneAnswer = true
                             }
                         }
