@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.workforce.SurveyType; au.org.ala.workforce.Institution; au.org.ala.workforce.User; au.org.ala.workforce.Survey" %>
+<%@ page import="au.org.ala.workforce.SurveyType; au.org.ala.workforce.Institution; au.org.ala.workforce.User; au.org.ala.workforce.Survey; au.org.ala.workforce.Event" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -46,7 +46,11 @@
                             <p style="margin-top: 5px;">Click a name to show answers.</p>
                             <ul class="respondents">
                             <g:each in="${users}" var="u">
-                                <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:u.userid]}">${u.name}</g:link></li>
+                                <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:u.userid]}">${u.name}</g:link>
+                                <g:if test="${!Event.isComplete(qset.setId, u.userid, year as int)}">
+                                    <span style="color: green">(incomplete)</span>
+                                </g:if>
+                                </li>
                             </g:each>
                             </ul>
                         </g:if>
@@ -58,7 +62,11 @@
                                 <g:each in="${Institution.listInstitutionsForSet(qset.setId)}" var="i">
                                     <g:set var="userid" value="${users.find{it.name == i.account}?.userid}"/>
                                     <g:if test="${userid}">
-                                        <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:userid]}">${i.name}</g:link></li>
+                                        <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:userid]}">${i.name}</g:link>
+                                        <g:if test="${!Event.isComplete(qset.setId, userid, year as int)}">
+                                            <span style="color: green">(incomplete)</span>
+                                        </g:if>
+                                        </li>
                                     </g:if>
                                     <g:else>
                                         <li class="dull">${i.name}</li>
