@@ -157,9 +157,9 @@ class Answer {
                 if (value['answer']) {
                     def answer = getQText ? value['qtext'] : value['answer']
                     if (totals[guid]) {
-                        totals[guid] += answer as int
+                        totals[guid] += answer as BigDecimal
                     } else {
-                        totals[guid] = answer as int
+                        totals[guid] = answer as BigDecimal
                     }
                 }
             }
