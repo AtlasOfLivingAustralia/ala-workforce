@@ -10,10 +10,10 @@
         <link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}" />
         <link rel="stylesheet" href="${resource(dir:'css',file:'jquery-ui-1.8.14.custom.css')}" />
         <link rel="shortcut icon" href="${resource(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
-        <g:layoutHead />
         <g:javascript library="application" />
         <g:javascript library="jquery-1.5.1.min" />
         <g:javascript library="jquery-ui-1.8.14.custom.min" />
+        <g:layoutHead />
     </head>
     <body>
         <div class='header'>
