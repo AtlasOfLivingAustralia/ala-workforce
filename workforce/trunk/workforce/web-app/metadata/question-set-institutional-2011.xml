@@ -467,6 +467,7 @@
   <question>
     <text>TAXONOMIC SCOPE:</text>
     <subtext>Please provide the following information about collections held in your institution:</subtext>
+    <validation>minimum-1-answer</validation>
     <question id="fa09ba17-7f3b-4d7a-9cc9-db1314f83ae3" defaultDataType="integer" defaultAnswerType="number" datatype="text" type="matrix">
       <aggregate type="sumByAnswerByGuid" subLevel="1/col=1" chart="pie" title="Number of animal specimens in natural science collections"/>
       <text>TAXON</text>
@@ -746,8 +747,8 @@
   <question defaultDataType="number" defaultAnswerType="number" instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) please indicate     Taxonomist as 0.5, and Administrator as 0.5. Similarly with part-time staff please indicate proportion of full time duties undertaken.">
     <aggregate type="sumByAnswerByGuid" subLevel="1" chart="column" title="Taxonomic workforce" yAxisLabel="Numbers"/>
     <text>STAFF AND SUPPORT</text>
-    <subtext>Please provide the following details against category on total numbers of taxonomic staff and support.
-        </subtext>
+    <subtext>Please provide the following details against category on total numbers of taxonomic staff and support.</subtext>
+    <validation>minimum-1-answer</validation>
     <question id="c994bf87-d861-4d52-9479-40ee13727cd6">
       <text>Scientist/Taxonomist (permanent)</text>
       <onchange>updateSum</onchange>
@@ -788,6 +789,7 @@
   <question instructionPosition="top" instruction="If a staff member has shared responsibilities (i.e. 50% director, 50% taxonomy) and spends half their research time, for example, on mammals please indicate this as Mammals Scientist/Taxonomist as 0.25 (ie half their research time). Similarly with part-time staff please indicate proportion of full time duties undertaken. The Number of Publications field includes scientific articles, books and reports for the surveyed period">
     <text>Please provide the following details against specialty on your taxonomic staff, support and publications.</text>
     <shortText>PROPORTION OF DUTIES</shortText>
+    <validation>minimum-1-answer</validation>
     <question id="b9783be4-3819-4d75-bd0b-cca08a9ed660" defaultDataType="number" defaultAnswerType="number" type="matrix">
       <text>SPECIALTY</text>
       <answer type="summable">
