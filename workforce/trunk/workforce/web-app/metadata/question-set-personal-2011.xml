@@ -14,19 +14,24 @@
     <page>14-15</page>
     <page>16-17</page>
   </pageSequence>
+  <knownQuestions>
+    <employmentStatus>3</employmentStatus>
+    <gender>15</gender>
+    <ageGroup>16</ageGroup>
+  </knownQuestions>
   <question instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
     <question id="1b591a08-6d45-404a-b483-3a80f64d0139">
       <text>Is curatorial and/or taxonomic work your major responsibility in your organisation?</text>
       <shortText>Curatorial and/or taxonomic work your major responsibility</shortText>
       <data>YES/NO</data>
       <answer dataType="bool" type="bool" required="true"/>
-      <aggregate type="countByAnswer" result="percentage" order="desc" chart="pie"/>
+      <aggregate type="countByAnswer" chart="pie" order="desc"/>
     </question>
     <question type="none">
       <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
       <shortText>Time spent on curatorial and/or taxonomic duties</shortText>
       <validation>percent-total-lessThanOrEqual-100</validation>
-      <aggregate type="sumByAnswer" subLevel="1" groupBy="decile/10/%" result="percentageInDecile" chart="column" yAxisLabel="Percentage of Employees"/>
+      <aggregate type="sumByAnswer" chart="column" subLevel="1" groupBy="decile/10/%" result="percentageInDecile" yAxisLabel="Percentage of Employees"/>
       <question id="fdefd907-6690-4633-99d6-5f3497c379e3">
         <text>Scientist/Taxonomist (permanent)</text>
         <answer dataType="integer" label="%" type="percent"/>
@@ -75,8 +80,8 @@
     <shortText>Organisation and location</shortText>
     <validation>minimum-1-answer</validation>
     <aggregations>
-      <aggregate type="countByAnswer" result="percentage" order="desc" answer="qtext" subLevel="1" chart="pie" title="Type of Organisation"/>
-      <aggregate type="countByAnswer" result="percentage" order="desc" subLevel="2/qtext=State" chart="pie" title="Location of Organisation"/>
+      <aggregate type="countByAnswer" chart="pie" subLevel="1" title="Type of Organisation" order="desc" answer="qtext"/>
+      <aggregate type="countByAnswer" chart="pie" subLevel="2/qtext=State" title="Location of Organisation" order="desc"/>
     </aggregations>
     <question id="fd7d56cf-ae3d-4673-a1b5-1ad299f62a53">
       <text>Museum</text>
@@ -226,9 +231,14 @@
     <question type="none">
       <text>For each applicable category, please indicate how many hours per week you work on average.</text>
       <shortText>Hours worked per week</shortText>
-      <aggregate type="sumByAnswer" subLevel="1/type=number" groupBy="decile/7/hours" result="percentageInDecile" chart="pie"/>
+      <aggregations>
+        <aggregate type="sumByAnswerByGuid" chart="pie" subLevel="1/type=number" title="Employment status"/>
+        <aggregate type="sumByAnswerByGuid" chart="pie" subLevel="1/type=number" title="Taxonomic workforce by employment category" groupBy="employment"/>
+        <aggregate type="sumByAnswer" chart="pie" groupBy="decile/7/hours" subLevel="1/type=number"/>
+      </aggregations>
       <question id="c929c23c-be56-411a-bea9-5b5e289b14f2">
         <text>Full-time (permanent), paid by organisation</text>
+        <shortText>Full-time (permanent)</shortText>
         <answer type="number">
           <data>
             <min value="int">0</min>
@@ -239,6 +249,7 @@
       </question>
       <question id="8788b284-0a04-4497-bef4-fabbd979ca92">
         <text>Full-time (temporary), paid by organisation</text>
+        <shortText>Full-time (temporary)</shortText>
         <answer type="number">
           <data>
             <min value="int">0</min>
@@ -249,6 +260,7 @@
       </question>
       <question id="92c6c4c2-e8a0-4325-a7f0-ff3b7a796e78">
         <text>Full-time, on grant</text>
+        <shortText>Full-time (grant)</shortText>
         <answer type="number">
           <data>
             <min value="int">0</min>
@@ -259,6 +271,7 @@
       </question>
       <question id="69418fed-5c55-4b49-9aea-509dde3efe6b">
         <text>Part-time (permanent), paid by organisation</text>
+        <shortText>Part-time (permanent)</shortText>
         <answer type="number">
           <data>
             <min value="int">0</min>
@@ -269,6 +282,7 @@
       </question>
       <question id="9fba47cc-c6ca-406c-a176-6cc73f95bec5">
         <text>Part-time (temporary), paid by organisation</text>
+        <shortText>Part-time (temporary)</shortText>
         <answer type="number">
           <data>
             <min value="int">0</min>
@@ -279,6 +293,7 @@
       </question>
       <question id="2871142f-0a2d-4ed9-b587-c349be407c54">
         <text>Part-time, on grant</text>
+        <shortText>Part-time (grant)</shortText>
         <answer type="number">
           <data>
             <min value="int">0</min>
@@ -340,7 +355,7 @@
   <question id="717f12ff-5d07-4cdb-804c-5d82cae1ab76" type="range" heightHint="5">
     <text>How long have you been working in the field of taxonomy?</text>
     <shortText>Years in taxonomy</shortText>
-    <aggregate type="countByAnswer" result="percentage" order="desc" chart="pie"/>
+    <aggregate type="countByAnswer" chart="pie" order="desc"/>
     <answer dataType="numberRange" type="range" required="true">
       <data>
         <interval value="int">5</interval>
@@ -354,7 +369,7 @@
   <question id="18e8d297-8c6f-4e71-8ac1-32f9f7aac775" heightHint="1">
     <text>And do you intend to be working in this field in 12 months time?</text>
     <shortText>Working in taxonomy in 12 months</shortText>
-    <aggregate type="countByAnswer" result="percentage" order="desc" chart="pie"/>
+    <aggregate type="countByAnswer" chart="pie" order="desc"/>
     <answer type="bool" required="true"/>
     <onchange>disable('q6_1',this)</onchange>
   </question>
@@ -363,7 +378,20 @@
     <shortText>Likelihood of continuing in taxonomy</shortText>
     <question id="5a11f1ce-8e29-44cb-94d0-42e09c8105f6" datatype="text" type="pick">
       <text>Would you say that it is:</text>
-      <aggregate type="countByAnswer" result="percentage" order="desc" chart="pie"/>
+      <aggregations>
+        <aggregate type="countByAnswer" chart="pie" title="Likelihood of continuing with taxonomy" order="desc"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" yAxisLabel="Percentage" result="%Overall" title="Likelihood by Age Group" order="desc" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup" subset="Very likely|Fairly likely" yAxisLabel="Percentage" result="%AgeGroup" title="Percentage Very/Fairly likely to continue with taxonomy within age group" xAxisTitle="Age group"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="20-24" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="25-29" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="30-34" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="35-39" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="40-44" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="45-49" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="50-54" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="55-59" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="60 and over" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+      </aggregations>
       <shortText/>
       <answer type="radio" requiredIf="enabled">
         <data>
@@ -382,8 +410,9 @@
     <validation>minimum-1-answer</validation>
     <question defaultDataType="number" defaultAnswerType="number" type="matrix">
       <aggregations>
-        <aggregate type="sumByAnswerByGuid" result="sumAndPercentage" subLevel="1/col=1" chart="pie" title="Days of taxonomic field-work - ${year1}"/>
-        <aggregate type="sumByAnswerByGuid" result="sumAndPercentage" subLevel="1/col=2" chart="pie" title="Days of taxonomic field-work - ${year2}"/>
+        <aggregate type="sumByAnswerByGuid" chart="pie" subLevel="1/col=1" title="Days of taxonomic field-work - ${year1}" order="category"/>
+        <aggregate type="sumByAnswerByGuid" chart="pie" subLevel="1/col=2" title="Days of taxonomic field-work - ${year2}" order="category"/>
+        <aggregate type="sumByAnswerByEmploymentStatus" chart="pie" subLevel="1" title="Percentage field-work days by employment category" groupBy="employment"/>
       </aggregations>
       <text>Method of funding</text>
       <data>
@@ -406,8 +435,8 @@
     <validation>percent-total-lessThanOrEqual-100</validation>
     <validation>percent-total-greaterThan-0</validation>
     <aggregations>
-      <aggregate type="averageByAnswer" order="desc" subLevel="all/type=percent" chart="bar" title="Average percentage of time spent on specified tasks" yAxisLabel="Average percentage"/>
-      <aggregate type="countByCategory" order="desc" subLevel="all/type=percent" result="percentage" chart="bar" title="Percentage of respondents carrying out tasks" yAxisLabel="Percentage of respondents"/>
+      <aggregate type="averageByAnswer" chart="bar" subLevel="all/type=percent" yAxisLabel="Average percentage" title="Average percentage of time spent on specified tasks" order="desc"/>
+      <aggregate type="countByCategory" chart="bar" subLevel="all/type=percent" yAxisLabel="Percentage of respondents" title="Percentage of respondents carrying out tasks" order="desc" result="percentage"/>
     </aggregations>
     <question>
       <text>Acquisition of taxonomic specimens &lt;em&gt;(including collecting, essential preparation, registration and incorporation into the collection)&lt;/em&gt;:</text>
@@ -557,7 +586,7 @@
     </question>
     <question id="388729e3-eb21-47ab-92aa-546fa3caef65">
       <text>Total</text>
-      <answer type="calculate" dataType="number" >
+      <answer dataType="number" type="calculate">
         <data>
           <action>updateSum</action>
         </data>
@@ -570,9 +599,9 @@
     <shortText>Taxa of Australian living or fossil organisms</shortText>
     <validation>minimum-1-answer</validation>
     <aggregations>
-      <aggregate type="countByCategory" subLevel="2/range=1..4" answer="qtext" order="desc" chart="column" allCategories="true" title="Number of researchers for all groups" yAxisLabel="Number of researchers"/>
-      <aggregate type="countByCategory" subLevel="2/range=1..2" answer="qtext" order="desc" chart="column" allCategories="true" title="Number of researchers for animal groups" yAxisLabel="Number of researchers"/>
-      <aggregate type="countByCategory" subLevel="2/range=3..4" answer="qtext" order="desc" chart="column" allCategories="true" title="Number of researchers for plant groups" yAxisLabel="Number of researchers"/>
+      <aggregate type="countByCategory" chart="column" subLevel="2/range=1..4" yAxisLabel="Number of researchers" title="Number of researchers for all groups" order="desc" xAxisLabelOrientation="vertical" answer="qtext" allCategories="true"/>
+      <aggregate type="countByCategory" chart="column" subLevel="2/range=1..2" yAxisLabel="Number of researchers" title="Number of researchers for animal groups" order="desc" xAxisLabelOrientation="vertical" answer="qtext" allCategories="true"/>
+      <aggregate type="countByCategory" chart="column" subLevel="2/range=3..4" yAxisLabel="Number of researchers" title="Number of researchers for plant groups" order="desc" xAxisLabelOrientation="vertical" answer="qtext" allCategories="true"/>
     </aggregations>
     <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
       <question id="b818a1ad-5799-4404-a341-098ba58147fd">
@@ -731,15 +760,27 @@
     <text>Below is a list of things that previous survey respondents have identified as being important to increasing their taxonomic productivity. Thinking about your current position please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase your productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
     <shortText>Importance for personal taxonomic productivity</shortText>
     <question defaultDataType="rank" defaultAnswerType="rank" type="rank">
+      <aggregations>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Category rated as most important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Categories rated as not important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
+      </aggregations>
       <data>
         <max value="int">5</max>
         <maxRequired value="int">5</maxRequired>
       </data>
       <question id="c222ffd9-7cfb-4bae-9565-1c399233b3b5">
         <text>More technical support staff</text>
+        <aggregations>
+          <aggregate type="countByAnswer" chart="column" title="More Technical Staff" xAxisTitle="Importance" yAxisLabel="No of respondents" dataType="importance" size="medium"/>
+          <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup/importance" yAxisLabel="Percentage" result="%AgeGroup" title="Support for more technical staff by age group" xAxisTitle="Age group" legend="true"/>
+        </aggregations>
       </question>
       <question id="8f1ec8d1-d76f-439f-b082-0df6500a8595">
-        <text>More fieldwork</text>
+        <text>More field work</text>
+        <aggregations>
+          <aggregate type="countByAnswer" chart="column" title="More Field Work" xAxisTitle="Importance" yAxisLabel="No of respondents" dataType="importance" size="medium"/>
+          <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup/importance" yAxisLabel="Percentage" result="%AgeGroup" title="Support for more field work by age group" xAxisTitle="Age group" legend="true"/>
+        </aggregations>
       </question>
       <question id="66e425a8-6d5c-4696-9302-8edc51a33f97">
         <text>More travel to other institutions or conferences</text>
@@ -749,6 +790,10 @@
       </question>
       <question id="fc6cbdcb-0b25-45c0-8e06-16ffd9508895">
         <text>More post-doctoral research fellowships</text>
+        <aggregations>
+          <aggregate type="countByAnswer" chart="column" title="More Research Fellowships" xAxisTitle="Importance" yAxisLabel="No of respondents" dataType="importance" size="medium"/>
+          <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup/importance" yAxisLabel="Percentage" result="%AgeGroup" title="Support for more research fellowships by age group" xAxisTitle="Age group" legend="true"/>
+        </aggregations>
       </question>
       <question id="6d8fe19f-25e3-4343-b103-42847d0726a5">
         <text>Upgrading existing technology</text>
@@ -777,7 +822,7 @@
         <text>More technical support staff</text>
       </question>
       <question id="8677d0e2-d967-4047-8dc2-a576de0f6424">
-        <text>More fieldwork</text>
+        <text>More field work</text>
       </question>
       <question id="46f51656-edfb-460b-bd6e-7c73a2cc590b">
         <text>More travel to other institutions or conferences</text>
@@ -807,6 +852,7 @@
     <text>Below is a list of things related to the costs and opportunities in Taxonomy. Please indicate how much you think these issues impact on the taxonomic workforce.&lt;br/&gt;Do they impact &lt;strong&gt;a lot&lt;/strong&gt;, &lt;strong&gt;a little&lt;/strong&gt; or &lt;strong&gt;not at all&lt;/strong&gt;?</text>
     <shortText>Impact on the taxonomic workforce</shortText>
     <question id="2d3512d4-4d9a-46d2-816b-ed1b208f9736" type="matrix">
+      <aggregate type="countByAnswerByGuid" chart="column" subLevel="1" result="percentage" yAxisLabel="Percentage" title="Impact of costs and opportunities on taxonomic workforce" order="" legend="true" allCategories="true"/>
       <data>
         <rows>
           <item>Lack of career opportunities</item>
@@ -841,8 +887,8 @@
     <shortText>Highest level of formal education</shortText>
     <question id="0b4c36ce-f7d9-44ae-8fe3-ef7b7af9a131" type="pick">
       <text>Please select one:</text>
-      <shortText>Level</shortText>
-      <aggregate type="countByAnswer" result="percentage" order="desc"/>
+      <shortText>Level of education</shortText>
+      <aggregate type="countByAnswer" chart="pie" order="desc"/>
       <data>
         <align>right</align>
       </data>
@@ -868,14 +914,14 @@
     <question id="05c7a5a3-a984-4ef9-bd31-0ebc06f790ff">
       <text>In what subject areas did you major?</text>
       <shortText>Subject area(s)</shortText>
-      <aggregate type="countByAnswer" result="percentage" order="desc"/>
+      <aggregate type="countByAnswer" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Education subject" order="desc"/>
       <answer type="textarea"/>
     </question>
   </question>
   <question id="f6f77726-9b9b-4d9d-a8d0-ef8574873d70" heightHint="1">
     <text>Are you male or female?</text>
     <shortText>Gender</shortText>
-    <aggregate type="countByAnswer" result="percentage" order="desc"/>
+    <aggregate type="countByAnswer" chart="pie" order="desc"/>
     <answer type="radio" required="true">
       <data>
         <item>Male</item>
@@ -887,7 +933,12 @@
   <question id="9d8a246d-9957-4df9-b55d-72a075359c19" heightHint="5" type="range">
     <text>Which of the following age categories are you in?</text>
     <shortText>Age range</shortText>
-    <aggregate type="countByAnswer" order="desc"/>
+    <aggregations>
+      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age of taxonomic workforce including honorary staff" order="desc"/>
+      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age of taxonomic workforce excluding honorary staff" filter="notHonorary" order="desc"/>
+      <aggregate type="countByAnswerByGender" chart="column" yAxisLabel="Numbers" xAxisTitle="Age group" title="Age groups by gender" legend="true" legendAlignment="right" order="desc"/>
+      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age range of just full-time permanent staff" filter="fullTimePermanent" order="desc"/>
+    </aggregations>
     <answer dataType="numberRange" type="range" required="true">
       <data>
         <interval value="int">5</interval>
@@ -902,7 +953,7 @@
   <question id="973b99f7-7f15-48cf-8585-f0b34d2de085" heightHint="9" type="range">
     <text>Which of the following best describes your approximate annual income before tax?</text>
     <shortText>Income range</shortText>
-    <aggregate type="countByAnswer" result="percentage" order="desc"/>
+    <aggregate type="countByAnswerByEmploymentStatus" title="Annual income" chart="column" stacked="true" result="percentage" yAxisLabel="Percentage" xAxisTitle="Income range (thousands)" legend="true" legendAlignment="right" order="desc"/>
     <answer dataType="numberRange" type="range" required="true">
       <data>
         <interval value="int">5000</interval>
