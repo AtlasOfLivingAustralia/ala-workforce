@@ -1,0 +1,985 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questionSet>
+  <title>Survey of Australian Taxonomic Workforce - Personal Survey</title>
+  <shortName>Personal Survey</shortName>
+  <pageSequence>
+    <page>1-1</page>
+    <page>2-2</page>
+    <page>3-4</page>
+    <page>5-7</page>
+    <page>8-8</page>
+    <page>9-10</page>
+    <page>11-12</page>
+    <page>13-13</page>
+    <page>14-15</page>
+    <page>16-17</page>
+  </pageSequence>
+  <knownQuestions>
+    <employmentStatus>3</employmentStatus>
+    <gender>15</gender>
+    <ageGroup>16</ageGroup>
+  </knownQuestions>
+  <question instruction="If you answered 0% to all taxonomic roles you do not need to proceed with the questionnaire. Thank you for giving us your time.">
+    <question id="1b591a08-6d45-404a-b483-3a80f64d0139">
+      <text>Is curatorial and/or taxonomic work your major responsibility in your organisation?</text>
+      <shortText>Curatorial and/or taxonomic work your major responsibility</shortText>
+      <data>YES/NO</data>
+      <answer dataType="bool" type="bool" required="true"/>
+      <aggregate type="countByAnswer" chart="pie" order="desc"/>
+    </question>
+    <question type="none">
+      <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
+      <shortText>Time spent on curatorial and/or taxonomic duties</shortText>
+      <validation>percent-total-lessThanOrEqual-100</validation>
+      <aggregate type="sumByAnswer" chart="column" subLevel="1" groupBy="decile/10/%" result="percentageInDecile" yAxisLabel="Percentage of Employees"/>
+      <question id="fdefd907-6690-4633-99d6-5f3497c379e3">
+        <text>Scientist/Taxonomist (permanent)</text>
+        <answer dataType="integer" label="%" type="percent"/>
+      </question>
+      <question id="0cd5ec90-f7c8-45a4-bb68-18355239f76f">
+        <text>Scientist/Taxonomist (not permanent)</text>
+        <answer dataType="integer" label="%" type="percent"/>
+      </question>
+      <question id="af26a8de-ae11-435f-8abe-dbc9e36f1635">
+        <text>Technical (taxonomy) (permanent)</text>
+        <answer dataType="integer" label="%" type="percent"/>
+      </question>
+      <question id="953c86db-eff8-46c7-a351-fb9c6d53b4b2">
+        <text>Technical (taxonomy) (not permanent)</text>
+        <answer dataType="integer" label="%" type="percent"/>
+      </question>
+      <question id="76a660b1-db8e-4370-b8cf-cc09ba34d0c0">
+        <text>Administrator/Manager</text>
+        <answer dataType="integer" label="%" type="percent"/>
+      </question>
+      <question id="79ba056d-2525-42f4-b547-bec692d8f74e">
+        <text>Volunteer/Associate (retired)</text>
+        <answer dataType="integer" label="%" type="percent"/>
+      </question>
+      <question id="926a929b-ae5c-4f53-8694-969f709d8c92">
+        <text>Volunteer/Associate (not retired)</text>
+        <answer dataType="integer" label="%" type="percent"/>
+      </question>
+      <question id="9bbb4a78-4904-4f4f-8fbb-285d73917333">
+        <text>Other</text>
+        <answer dataType="integer" label="%" type="percent"/>
+      </question>
+    </question>
+    <question id="59fc3786-5dc9-4630-a01b-ca63a7bd8553">
+      <text>Any additional comments:</text>
+      <shortText>Additional comments</shortText>
+      <answer dataType="text" type="textarea">
+        <data>
+          <rows value="int">3</rows>
+        </data>
+      </answer>
+    </question>
+  </question>
+  <question>
+    <text>Please identify the type of organisation and the location where you currently carry out your curatorial or taxonomic work?</text>
+    <shortText>Organisation and location</shortText>
+    <validation>minimum-1-answer</validation>
+    <aggregations>
+      <aggregate type="countByAnswer" chart="pie" subLevel="1" title="Type of Organisation" order="desc" answer="qtext"/>
+      <aggregate type="countByAnswer" chart="pie" subLevel="2/qtext=State" title="Location of Organisation" order="desc"/>
+    </aggregations>
+    <question id="fd7d56cf-ae3d-4673-a1b5-1ad299f62a53">
+      <text>Museum</text>
+      <displayHint>checkbox</displayHint>
+      <layoutHint>20/80</layoutHint>
+      <answer type="bool"/>
+      <question id="45c0892e-0bcd-4bc7-adf7-e86cb1bde5d3" type="pick">
+        <text>State</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|Museum">
+          <data>state</data>
+        </answer>
+      </question>
+      <question id="96d5b5ce-be58-417e-a21b-0875b084930a">
+        <text>Name</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|Museum">
+          <data>museum</data>
+        </answer>
+      </question>
+    </question>
+    <question id="eddd29a5-9996-4062-9d2c-b6172e1e5084">
+      <text>Herbarium</text>
+      <displayHint>checkbox</displayHint>
+      <layoutHint>20/80</layoutHint>
+      <answer type="bool"/>
+      <question id="65bddfea-98c9-4656-b098-f212f92125a7" type="pick">
+        <text>State</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|Herbarium">
+          <data>state</data>
+        </answer>
+      </question>
+      <question id="2c8495ab-41d7-46f7-8601-a9b4465f09a0">
+        <text>Name</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|Herbarium">
+          <data>herbarium</data>
+        </answer>
+      </question>
+    </question>
+    <question id="d840e4ab-aff6-4056-bec6-2b00e5e57a5e">
+      <text>University</text>
+      <displayHint>checkbox</displayHint>
+      <layoutHint>20/80</layoutHint>
+      <answer type="bool"/>
+      <question id="f38fcc86-f15d-417d-9137-20041afdc2cd" type="pick">
+        <text>State</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|University">
+          <data>state</data>
+        </answer>
+      </question>
+      <question id="426755ba-ed3e-4799-ae57-7b9318d281c1" type="pick">
+        <text>Name</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|University">
+          <data>university</data>
+        </answer>
+      </question>
+      <question id="a4437690-423f-4693-8a06-eb8f025cce1b">
+        <text>Dept</text>
+        <displayHint>45</displayHint>
+        <answer type="text"/>
+      </question>
+    </question>
+    <question id="9c759d0f-ca6b-4b36-8c47-b3c03956c04d">
+      <text>CSIRO</text>
+      <displayHint>checkbox</displayHint>
+      <layoutHint>20/80</layoutHint>
+      <answer type="bool"/>
+      <question id="d16a568d-0c4d-4736-899d-911083cb6cbb" type="pick">
+        <text>State</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|CSIRO">
+          <data>state</data>
+        </answer>
+      </question>
+      <question id="30c9dd83-3329-4cae-bf4f-4e58a0b50209">
+        <text>Division</text>
+        <displayHint>45</displayHint>
+        <answer type="text"/>
+      </question>
+    </question>
+    <question id="0f05f22c-4f08-4d9c-94f2-424e5e27f635">
+      <text>Commonwealth Department</text>
+      <displayHint>checkbox</displayHint>
+      <layoutHint>20/80</layoutHint>
+      <answer type="bool"/>
+      <question id="06d48664-3ddf-4d99-8afe-96f9ad30a46f" type="pick">
+        <text>State</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|Commonwealth Department">
+          <data>state</data>
+        </answer>
+      </question>
+      <question id="56510446-9d8d-4bae-9e01-ed365cbda8c8">
+        <text>Dept</text>
+        <displayHint>45</displayHint>
+        <answer type="text"/>
+      </question>
+    </question>
+    <question id="ffdd38c5-edb6-494d-85b4-e985dc354c39">
+      <text>State Department</text>
+      <displayHint>checkbox</displayHint>
+      <layoutHint>20/80</layoutHint>
+      <answer type="bool"/>
+      <question id="57792b47-57ab-48f6-ae8b-d42b83befeaf" type="pick">
+        <text>State</text>
+        <displayHint>combobox</displayHint>
+        <answer type="externalRef" requiredIf="..=on|State Department">
+          <data>state</data>
+        </answer>
+      </question>
+      <question id="7c4d9768-405e-4664-9ec9-8d360ebb3704">
+        <text>Dept</text>
+        <displayHint>45</displayHint>
+        <answer type="text"/>
+      </question>
+    </question>
+    <question id="07a16c83-7d6e-4f70-996b-1e2d3beff194">
+      <text>Other</text>
+      <displayHint>checkbox</displayHint>
+      <layoutHint>20/80</layoutHint>
+      <answer type="bool"/>
+      <question id="7026dec5-21c3-4893-a9d4-6c16e609ebda">
+        <text>Country</text>
+        <displayHint>45</displayHint>
+        <answer type="text" requiredIf="..=on|Other"/>
+      </question>
+      <question id="237bc5f3-7677-4a6a-a27a-f775587aae69">
+        <text>State</text>
+        <displayHint>45</displayHint>
+        <answer type="text"/>
+      </question>
+      <question id="9564144c-a6e6-47b8-820b-3b6382b8a0b2">
+        <text>Name</text>
+        <displayHint>45</displayHint>
+        <answer type="text" requiredIf="..=on|Other"/>
+      </question>
+    </question>
+  </question>
+  <question>
+    <text>What is your employment status at this organisation?</text>
+    <shortText>Employment status</shortText>
+    <validation>minimum-1-answer</validation>
+    <question type="none">
+      <text>For each applicable category, please indicate how many hours per week you work on average.</text>
+      <shortText>Hours worked per week</shortText>
+      <aggregations>
+        <aggregate type="sumByAnswerByGuid" chart="pie" subLevel="1/type=number" title="Employment status"/>
+        <aggregate type="sumByAnswerByGuid" chart="pie" subLevel="1/type=number" title="Taxonomic workforce by employment category" groupBy="employment"/>
+        <aggregate type="sumByAnswer" chart="pie" groupBy="decile/7/hours" subLevel="1/type=number"/>
+      </aggregations>
+      <question id="c929c23c-be56-411a-bea9-5b5e289b14f2">
+        <text>Full-time (permanent), paid by organisation</text>
+        <shortText>Full-time (permanent)</shortText>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="8788b284-0a04-4497-bef4-fabbd979ca92">
+        <text>Full-time (temporary), paid by organisation</text>
+        <shortText>Full-time (temporary)</shortText>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="92c6c4c2-e8a0-4325-a7f0-ff3b7a796e78">
+        <text>Full-time, on grant</text>
+        <shortText>Full-time (grant)</shortText>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="69418fed-5c55-4b49-9aea-509dde3efe6b">
+        <text>Part-time (permanent), paid by organisation</text>
+        <shortText>Part-time (permanent)</shortText>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="9fba47cc-c6ca-406c-a176-6cc73f95bec5">
+        <text>Part-time (temporary), paid by organisation</text>
+        <shortText>Part-time (temporary)</shortText>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="2871142f-0a2d-4ed9-b587-c349be407c54">
+        <text>Part-time, on grant</text>
+        <shortText>Part-time (grant)</shortText>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="0259b049-eb0a-4f16-b951-ea4b6cfaa0d7">
+        <text>Associate/Volunteer (retired)</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="4e25ad3c-df3b-4038-8aee-3fe38f080a5b">
+        <text>Associate/Volunteer (not retired)</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="480553c4-a8eb-499c-9559-b772e3dfbbb2">
+        <text>Student</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="da0806f8-411a-44e0-ab3e-495eb8b8c29e">
+        <text>Other</text>
+        <answer type="number">
+          <data>
+            <min value="int">0</min>
+            <max value="int">100</max>
+          </data>
+          <label>hrs/wk</label>
+        </answer>
+      </question>
+      <question id="a48b1270-498b-46ae-9625-b22116e82967">
+        <text>If other please specify:</text>
+        <answer dataType="text" type="textarea" requiredIf="../10=*|Other">
+          <data>
+            <rows value="int">3</rows>
+          </data>
+        </answer>
+      </question>
+    </question>
+  </question>
+  <question id="717f12ff-5d07-4cdb-804c-5d82cae1ab76" type="range" heightHint="5">
+    <text>How long have you been working in the field of taxonomy?</text>
+    <shortText>Years in taxonomy</shortText>
+    <aggregate type="countByAnswer" chart="pie" order="desc"/>
+    <answer dataType="numberRange" type="range" required="true">
+      <data>
+        <interval value="int">5</interval>
+        <start value="int">0</start>
+        <end value="int">54</end>
+        <over>and over</over>
+        <unit>years</unit>
+      </data>
+    </answer>
+  </question>
+  <question id="18e8d297-8c6f-4e71-8ac1-32f9f7aac775" heightHint="1">
+    <text>And do you intend to be working in this field in 12 months time?</text>
+    <shortText>Working in taxonomy in 12 months</shortText>
+    <aggregate type="countByAnswer" chart="pie" order="desc"/>
+    <answer type="bool" required="true"/>
+    <onchange>disable('q6_1',this)</onchange>
+  </question>
+  <question dependentOn="Q5=yes" heightHint="6">
+    <text>And thinking about your longer-term future, how likely is it that you will continue your career in taxonomy?</text>
+    <shortText>Likelihood of continuing in taxonomy</shortText>
+    <question id="5a11f1ce-8e29-44cb-94d0-42e09c8105f6" datatype="text" type="pick">
+      <text>Would you say that it is:</text>
+      <aggregations>
+        <aggregate type="countByAnswer" chart="pie" title="Likelihood of continuing with taxonomy" order="desc"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" yAxisLabel="Percentage" result="%Overall" title="Likelihood by Age Group" order="desc" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup" subset="Very likely|Fairly likely" yAxisLabel="Percentage" result="%AgeGroup" title="Percentage Very/Fairly likely to continue with taxonomy within age group" xAxisTitle="Age group"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="20-24" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="25-29" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="30-34" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="35-39" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="40-44" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="45-49" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="50-54" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="55-59" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+        <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="answer" subset="60 and over" yAxisLabel="Percentage of age group" result="%AgeGroup" title="Likelihood of continuing with taxonomy" order="desc" size="small" legend="true" xAxisTitle="Likelihood"/>
+      </aggregations>
+      <shortText/>
+      <answer type="radio" requiredIf="enabled">
+        <data>
+          <item>Very likely</item>
+          <item>Fairly likely</item>
+          <item>It may be likely</item>
+          <item>Probably not</item>
+          <item>Unsure/haven't decided</item>
+        </data>
+      </answer>
+    </question>
+  </question>
+  <question heightHint="5">
+    <text>How many days of taxonomic field-work have you undertaken in the last two calendar years and how were they funded?</text>
+    <shortText>Days of taxonomic field-work</shortText>
+    <validation>minimum-1-answer</validation>
+    <question defaultDataType="number" defaultAnswerType="number" type="matrix">
+      <aggregations>
+        <aggregate type="sumByAnswerByGuid" chart="pie" subLevel="1/col=1" title="Days of taxonomic field-work - ${year1}" order="category"/>
+        <aggregate type="sumByAnswerByGuid" chart="pie" subLevel="1/col=2" title="Days of taxonomic field-work - ${year2}" order="category"/>
+        <aggregate type="sumByAnswerByEmploymentStatus" chart="pie" subLevel="1" title="Percentage field-work days by employment category" groupBy="employment"/>
+      </aggregations>
+      <text>Method of funding</text>
+      <data>
+        <rows>
+          <item>Funded by institution</item>
+          <item>Funded by grant</item>
+          <item>Unfunded</item>
+        </rows>
+        <cols>
+          <item>No. Days in ${year1}</item>
+          <item>No. Days in ${year2}</item>
+        </cols>
+        <guids>bde13aab-04b9-4a80-b339-937e5955dc8b,0bcddba0-947e-4d89-9315-9163d53dafa6,e7ac4059-d55a-4cef-80f3-fadf390009f8,26cf2ad8-7d33-4d31-8ee6-03fd9e7ef20c,f2700227-2e51-40d0-b149-42f3963d0fda,00b32824-42b6-4a11-bc33-574f810f108c</guids>
+      </data>
+    </question>
+  </question>
+  <question defaultDataType="integer" defaultLayoutHint="align-with-level3">
+    <text>Thinking about your job over the last twelve months, could you estimate what percentage of your full time work was devoted to the following tasks?</text>
+    <shortText>Percentage of full time work</shortText>
+    <validation>percent-total-lessThanOrEqual-100</validation>
+    <validation>percent-total-greaterThan-0</validation>
+    <aggregations>
+      <aggregate type="averageByAnswer" chart="bar" subLevel="all/type=percent" yAxisLabel="Average percentage" title="Average percentage of time spent on specified tasks" order="desc"/>
+      <aggregate type="countByCategory" chart="bar" subLevel="all/type=percent" yAxisLabel="Percentage of respondents" title="Percentage of respondents carrying out tasks" order="desc" result="percentage"/>
+    </aggregations>
+    <question>
+      <text>Acquisition of taxonomic specimens &lt;em&gt;(including collecting, essential preparation, registration and incorporation into the collection)&lt;/em&gt;:</text>
+      <shortText>Acquisition of taxonomic specimens:</shortText>
+      <label>i</label>
+      <question id="1f2eeaee-34db-4eb9-843c-0a535c67ba1d">
+        <text>Field component</text>
+        <aggregationText>Collecting specimens (field)</aggregationText>
+        <answer type="percent"/>
+        <onchange>updateSum</onchange>
+        <label>(a)</label>
+      </question>
+      <question id="276ff568-e272-425b-a5d0-cc98c72e6bf3">
+        <text>"In-House" component</text>
+        <aggregationText>Collecting specimens (in house)</aggregationText>
+        <answer type="percent"/>
+        <onchange>updateSum</onchange>
+        <label>(a)</label>
+      </question>
+    </question>
+    <question id="a240e798-8cd6-4711-9e1e-3718b22db1ac">
+      <text>Specialist identification services</text>
+      <aggregationText>Identification services</aggregationText>
+      <answer type="percent"/>
+      <onchange>updateSum</onchange>
+      <label>i</label>
+    </question>
+    <question>
+      <text>Research:</text>
+      <label>i</label>
+      <question id="67ff0a17-df18-4a51-b557-6ae508c5d271">
+        <text>For own institution &lt;em&gt;(including borrowing material, final preparation of specimens and "writing up"&lt;/em&gt;)</text>
+        <shortText>For own institution</shortText>
+        <aggregationText>Research (for institution)</aggregationText>
+        <answer type="percent"/>
+        <onchange>updateSum</onchange>
+        <label>(a)</label>
+      </question>
+      <question id="d1e7e88e-6c62-477f-9f1f-daccfc5a22d0">
+        <text>Conducted for others &lt;em&gt;(e.g. other government depts., environmental agencies, including work on and writing of reports not for publication)&lt;/em&gt;</text>
+        <shortText>Conducted for others</shortText>
+        <aggregationText>Research (for others)</aggregationText>
+        <answer type="percent"/>
+        <onchange>updateSum</onchange>
+        <label>(a)</label>
+      </question>
+    </question>
+    <question id="b4468cf4-2dc6-43f4-a6ab-82ff9cff0e8a">
+      <text>Writing descriptive publications</text>
+      <aggregationText>Writing publications</aggregationText>
+      <answer type="percent"/>
+      <onchange>updateSum</onchange>
+      <label>i</label>
+    </question>
+    <question id="cdd22923-26b3-4603-bf10-cf7ef6a648ee">
+      <text>Theoretical taxonomic work &lt;em&gt;(e.g. phylogenetic, cladistic)&lt;/em&gt;</text>
+      <shortText>Theoretical taxonomic work</shortText>
+      <aggregationText>Theoretical taxonomy</aggregationText>
+      <answer type="percent"/>
+      <onchange>updateSum</onchange>
+      <label>i</label>
+    </question>
+    <question id="c777cace-a8d1-4b1b-a308-fc9f6fba3afd">
+      <text>Constructing electronic ID tools</text>
+      <aggregationText>Construct electronic ID tools</aggregationText>
+      <answer type="percent"/>
+      <onchange>updateSum</onchange>
+      <label>i</label>
+    </question>
+    <question id="2ebd34b9-bbe2-494c-a53f-352dd65733c3">
+      <text>Building databases, websites</text>
+      <aggregationText>Database/websites</aggregationText>
+      <answer type="percent"/>
+      <onchange>updateSum</onchange>
+      <label>i</label>
+    </question>
+    <question id="90b32871-f3fd-4fdc-a41f-097866532828">
+      <text>Teaching and lecturing &lt;em&gt;(as part of official work)&lt;/em&gt;</text>
+      <shortText>Teaching and lecturing</shortText>
+      <aggregationText>Teaching/lecturing</aggregationText>
+      <answer type="percent"/>
+      <onchange>updateSum</onchange>
+      <label>i</label>
+    </question>
+    <question id="717f59c5-787b-41a8-8abd-10f2ec7df088">
+      <text>Official editorial work, work for learned societies etc</text>
+      <aggregationText>Editorial work</aggregationText>
+      <answer type="percent"/>
+      <onchange>updateSum</onchange>
+      <label>i</label>
+    </question>
+    <question id="cbbb3794-bb9e-406f-9743-952b0f28e70b">
+      <text>Administration &lt;em&gt;(including staff supervision, meetings policy and program management)&lt;/em&gt;</text>
+      <shortText>Administration</shortText>
+      <aggregationText>Administration</aggregationText>
+      <answer type="percent"/>
+      <onchange>updateSum</onchange>
+      <label>i</label>
+    </question>
+    <question>
+      <text>Curatorial duties:</text>
+      <label>i</label>
+      <question id="93b50d81-b9d2-422e-98be-ad5bc0b05b03">
+        <text>Maintaining the condition and order of the collection</text>
+        <aggregationText>Curating (maintenance)</aggregationText>
+        <answer type="percent"/>
+        <onchange>updateSum</onchange>
+        <label>(a)</label>
+      </question>
+      <question id="7354fe50-f7fa-49a2-90a1-02654dba0303">
+        <text>Processing outgoing and returned loans of material</text>
+        <aggregationText>Curating (loans)</aggregationText>
+        <answer type="percent"/>
+        <onchange>updateSum</onchange>
+        <label>(a)</label>
+      </question>
+    </question>
+    <question>
+      <text>Answering queries received from:</text>
+      <label>i</label>
+      <question id="92c9cea9-4bb0-4ff6-9675-51f90509e5e4">
+        <text>General public</text>
+        <aggregationText>Answering queries (gen. public)</aggregationText>
+        <answer type="percent"/>
+        <onchange>updateSum</onchange>
+        <label>(a)</label>
+      </question>
+      <question id="d2560a4f-7583-4447-ae9b-20c010c5d277">
+        <text>Public/private sector organisations</text>
+        <aggregationText>Answering queries (organisations)</aggregationText>
+        <answer type="percent"/>
+        <onchange>updateSum</onchange>
+        <label>(a)</label>
+      </question>
+    </question>
+    <question>
+      <text>Other (please specify)</text>
+      <label>i</label>
+      <question id="c018144c-dbcb-4970-8e99-0785ed99f675">
+        <aggregationText>Other</aggregationText>
+        <answer type="percent"/>
+        <onchange>updateSum</onchange>
+      </question>
+      <question id="bdbef96e-1b06-474d-a6e1-3575f25c4241">
+        <answer dataType="text" type="text" requiredIf="../1=*|Other"/>
+      </question>
+    </question>
+    <question id="388729e3-eb21-47ab-92aa-546fa3caef65">
+      <text>Total</text>
+      <answer dataType="number" type="calculate">
+        <data>
+          <action>updateSum</action>
+        </data>
+        <label>%</label>
+      </answer>
+    </question>
+  </question>
+  <question heightHint="27">
+    <text>To assist ABRS to identify research and skills gaps please indicate on which taxa of Australian living or fossil organisms you currently conduct taxonomic research.</text>
+    <shortText>Taxa of Australian living or fossil organisms</shortText>
+    <validation>minimum-1-answer</validation>
+    <aggregations>
+      <aggregate type="countByCategory" chart="column" subLevel="2/range=1..4" yAxisLabel="Number of researchers" title="Number of researchers for all groups" order="desc" xAxisLabelOrientation="vertical" answer="qtext" allCategories="true"/>
+      <aggregate type="countByCategory" chart="column" subLevel="2/range=1..2" yAxisLabel="Number of researchers" title="Number of researchers for animal groups" order="desc" xAxisLabelOrientation="vertical" answer="qtext" allCategories="true"/>
+      <aggregate type="countByCategory" chart="column" subLevel="2/range=3..4" yAxisLabel="Number of researchers" title="Number of researchers for plant groups" order="desc" xAxisLabelOrientation="vertical" answer="qtext" allCategories="true"/>
+    </aggregations>
+    <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
+      <question id="b818a1ad-5799-4404-a341-098ba58147fd">
+        <layoutHint>subgroup:Mammals</layoutHint>
+        <text>Eutherians</text>
+      </question>
+      <question id="798bd16a-b446-4cca-a84c-861ecd14d30d">
+        <layoutHint>subgroup:Mammals</layoutHint>
+        <text>Marsupials</text>
+      </question>
+      <question id="c2beae53-a9ba-4a94-9e09-0012d2767660">
+        <layoutHint>subgroup:Mammals</layoutHint>
+        <text>Monotremes</text>
+      </question>
+      <question id="a679f468-4b18-4417-937b-ec4502ecfd08">
+        <text>Birds</text>
+      </question>
+      <question id="b9b1efd5-44ed-47fc-959b-86ab1deab209">
+        <text>Reptiles</text>
+      </question>
+      <question id="4c990361-38e6-4820-bda6-d0314d015e38">
+        <text>Amphibians</text>
+      </question>
+      <question id="a8f6719b-d39b-4ae6-988a-c025caa1d8a0">
+        <text>Fishes</text>
+      </question>
+      <question id="16dde29e-4910-4b1a-938a-e5cd09c0ec1e">
+        <text>Cephalochordates</text>
+      </question>
+      <question id="ebb3b2da-981c-48cc-b24b-59441ec6095b">
+        <text>Tunicates</text>
+      </question>
+      <question id="84d3c215-0c94-4548-9deb-9f9d9dd538f7">
+        <text>Hemichordates</text>
+      </question>
+      <question id="4e58a08d-fb04-47ef-91cf-086c37200523">
+        <text>Echinoderms</text>
+      </question>
+      <question id="1b62aed2-b433-40d5-90d1-fa6576ac9294">
+        <text>Minor Coelomate Phyla</text>
+      </question>
+    </question>
+    <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
+      <question id="6bcb3df1-a6a7-4709-99ab-4f9b7743ecc6">
+        <text>Insects</text>
+      </question>
+      <question id="e7f3f1a4-a039-4ed2-8da2-e7631280f84c">
+        <text>Crustaceans</text>
+      </question>
+      <question id="9c8509e2-f568-45c0-b51c-f7fa3ebf4e05">
+        <text>Other arthropods</text>
+      </question>
+      <question id="f605e4e0-ca81-4756-987e-3219cea63d54">
+        <text>Molluscs</text>
+      </question>
+      <question id="c582ca71-d21e-4612-94a9-3d3e8629c1cb">
+        <text>Annelid worms</text>
+      </question>
+      <question id="88dad91c-860a-413c-9a91-74f8977c0792">
+        <text>Aschelminths</text>
+      </question>
+      <question id="fa0ca020-0a93-4167-8b19-992aed82a5b9">
+        <text>Nematodes</text>
+      </question>
+      <question id="4e7e3404-5e89-432b-a37a-6d617d09fdba">
+        <text>Platyhelminths</text>
+      </question>
+      <question id="39c73321-fe8f-4fb1-9d2f-ed33a0a18fa6">
+        <text>Minor Acoelomate Phyla</text>
+      </question>
+      <question id="0322f568-0336-4282-96fa-68cf8008f801">
+        <text>Cnidarians</text>
+      </question>
+      <question id="a2587cb8-53ed-45fc-9175-a0c7d6595876">
+        <text>Poriferans</text>
+      </question>
+      <question id="413b4227-8ee5-4d33-9bcd-0065b3f9e40a">
+        <text>Protozoans</text>
+      </question>
+      <question id="c131dc9f-8ecd-4fed-bc1c-a9de4e23ca7f">
+        <text>Other animal groups</text>
+      </question>
+    </question>
+    <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
+      <question id="2430e2f4-c327-40d1-8ee6-bfa1146a2674">
+        <layoutHint>subgroup:Angiosperms</layoutHint>
+        <text>Dicotyledons</text>
+      </question>
+      <question id="fea30b77-2e20-49fc-8064-b4baaa1dbc8c">
+        <layoutHint>subgroup:Angiosperms</layoutHint>
+        <text>Monocotyledons</text>
+      </question>
+      <question id="87829324-66ec-4db8-876f-a3dc73ec6331">
+        <text>Gymnosperms</text>
+      </question>
+      <question id="be5a5b3e-0625-4fea-aae3-0e72423f7c95">
+        <text>Pteridophytes</text>
+      </question>
+    </question>
+    <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
+      <question id="cef4d2f9-d0a3-44bd-880c-e2debf661a44">
+        <text>Mosses</text>
+      </question>
+      <question id="f8c5f389-3fa5-493d-a7a2-d93f6b52b96a">
+        <text>Liverworts</text>
+      </question>
+      <question id="7c705aa1-0bd8-4c17-829f-ca66cbcb6fba">
+        <text>Lichens</text>
+      </question>
+      <question id="bcae1b71-dc4d-4efc-9fbd-921714f73c80">
+        <text>Fungi</text>
+      </question>
+      <question id="0031d7cb-9c6e-4146-a1b7-c40a2357a99d">
+        <text>Algae</text>
+      </question>
+      <question id="13f41d09-2cb7-49dc-9548-751b21268813">
+        <text>Other plant groups</text>
+      </question>
+    </question>
+    <question defaultDataType="bool" defaultAnswerType="bool" defaultDisplayHint="checkbox" type="group">
+      <question id="9cc94468-e8b8-41fd-98f8-afbc046fe964">
+        <text>Cyanobacteria</text>
+      </question>
+      <question id="64aff652-2784-428a-9d58-94ef29e52b42">
+        <text>Bacteria</text>
+      </question>
+      <question id="b180d976-4b32-4ad7-b637-e82842640e89">
+        <text>Viruses</text>
+      </question>
+      <question id="d2f8b987-5456-49ae-81b5-b4aef0fccf17">
+        <text>Other microbial groups</text>
+      </question>
+    </question>
+  </question>
+  <question heightHint="3">
+    <text>If appropriate, please identify the groups you work on, if possible at Family level, if not then at Order level.</text>
+    <shortText>Taxonomic groups</shortText>
+    <question id="d55bf420-0c20-4f42-b7dc-e90bd908ecb5">
+      <text>Family</text>
+      <answer dataType="text" type="textarea">
+        <data>
+          <rows value="int">5</rows>
+        </data>
+      </answer>
+    </question>
+    <question id="0963123a-e58f-42a2-ba03-270daf915347">
+      <text>Order</text>
+      <answer dataType="text" type="textarea">
+        <data>
+          <rows value="int">5</rows>
+        </data>
+      </answer>
+    </question>
+  </question>
+  <question heightHint="10">
+    <text>Below is a list of things that previous survey respondents have identified as being important to increasing their taxonomic productivity. Thinking about your current position please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase your productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
+    <shortText>Importance for personal taxonomic productivity</shortText>
+    <question defaultDataType="rank" defaultAnswerType="rank" type="rank">
+      <aggregations>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Category rated as most important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Categories rated as not important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
+      </aggregations>
+      <data>
+        <max value="int">5</max>
+        <maxRequired value="int">5</maxRequired>
+      </data>
+      <question id="c222ffd9-7cfb-4bae-9565-1c399233b3b5">
+        <text>More technical support staff</text>
+        <aggregations>
+          <aggregate type="countByAnswer" chart="column" title="More Technical Staff" xAxisTitle="Importance" yAxisLabel="No of respondents" dataType="importance" size="medium"/>
+          <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup/importance" yAxisLabel="Percentage" result="%AgeGroup" title="Support for more technical staff by age group" xAxisTitle="Age group" legend="true"/>
+        </aggregations>
+      </question>
+      <question id="8f1ec8d1-d76f-439f-b082-0df6500a8595">
+        <text>More field work</text>
+        <aggregations>
+          <aggregate type="countByAnswer" chart="column" title="More Field Work" xAxisTitle="Importance" yAxisLabel="No of respondents" dataType="importance" size="medium"/>
+          <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup/importance" yAxisLabel="Percentage" result="%AgeGroup" title="Support for more field work by age group" xAxisTitle="Age group" legend="true"/>
+        </aggregations>
+      </question>
+      <question id="66e425a8-6d5c-4696-9302-8edc51a33f97">
+        <text>More travel to other institutions or conferences</text>
+      </question>
+      <question id="eb009dcb-7cb4-4375-b8ad-4b72953df288">
+        <text>More funding for publications</text>
+      </question>
+      <question id="fc6cbdcb-0b25-45c0-8e06-16ffd9508895">
+        <text>More post-doctoral research fellowships</text>
+        <aggregations>
+          <aggregate type="countByAnswer" chart="column" title="More Research Fellowships" xAxisTitle="Importance" yAxisLabel="No of respondents" dataType="importance" size="medium"/>
+          <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup/importance" yAxisLabel="Percentage" result="%AgeGroup" title="Support for more research fellowships by age group" xAxisTitle="Age group" legend="true"/>
+        </aggregations>
+      </question>
+      <question id="6d8fe19f-25e3-4343-b103-42847d0726a5">
+        <text>Upgrading existing technology</text>
+      </question>
+      <question id="45d27ba3-f55a-4c1e-a9f5-1e89be544ea3">
+        <text>Upgrading technical library</text>
+      </question>
+      <question id="2977c390-26dd-47b3-91ce-a0527a095893">
+        <text>Other (please specify)</text>
+      </question>
+    </question>
+    <question id="985bde7e-860f-4f4c-8971-3ae4b7c7283c">
+      <text>If other please specify</text>
+      <answer dataType="text" type="textarea" requiredIf="../1/8=*|Other"/>
+    </question>
+  </question>
+  <question heightHint="10">
+    <text>As for the previous question, but this time please consider the answer in terms of the needs for taxonomy in Australia (rather than for you personally). Please indicate, in order of importance, which &lt;strong&gt;five&lt;/strong&gt; of the following would increase Australia's taxonomic productivity if funding were available. &lt;br/&gt;&lt;strong&gt;Number 1 to 5&lt;/strong&gt; where &lt;strong&gt;1 equals the highest&lt;/strong&gt; and &lt;strong&gt;5 equals the lowest&lt;/strong&gt; in importance.</text>
+    <shortText>Importance for Australian taxonomic productivity</shortText>
+    <question defaultDataType="rank" defaultAnswerType="rank" type="rank">
+      <aggregations>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Category rated as most important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Categories rated as not important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
+      </aggregations>
+      <data>
+        <max value="int">5</max>
+        <maxRequired value="int">5</maxRequired>
+      </data>
+      <question id="7798febf-c4ba-4492-b87d-f91a29a5107d">
+        <text>More technical support staff</text>
+        <aggregations>
+          <aggregate type="countByAnswer" chart="column" title="More Technical Staff" xAxisTitle="Importance" yAxisLabel="No of respondents" dataType="importance" size="medium"/>
+          <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup/importance" yAxisLabel="Percentage" result="%AgeGroup" title="Support for more technical staff by age group" xAxisTitle="Age group" legend="true"/>
+        </aggregations>
+      </question>
+      <question id="8677d0e2-d967-4047-8dc2-a576de0f6424">
+        <text>More field work</text>
+        <aggregations>
+          <aggregate type="countByAnswer" chart="column" title="More Field Work" xAxisTitle="Importance" yAxisLabel="No of respondents" dataType="importance" size="medium"/>
+          <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup/importance" yAxisLabel="Percentage" result="%AgeGroup" title="Support for more field work by age group" xAxisTitle="Age group" legend="true"/>
+        </aggregations>
+      </question>
+      <question id="46f51656-edfb-460b-bd6e-7c73a2cc590b">
+        <text>More travel to other institutions or conferences</text>
+      </question>
+      <question id="987d13fa-b701-4c08-95ae-d6fb1fe16b40">
+        <text>More funding for publications</text>
+      </question>
+      <question id="22b550ef-616d-4730-8566-8a0c852f3bf0">
+        <text>More post-doctoral research fellowships</text>
+        <aggregations>
+          <aggregate type="countByAnswer" chart="column" title="More Research Fellowships" xAxisTitle="Importance" yAxisLabel="No of respondents" dataType="importance" size="medium"/>
+          <aggregate type="countByAnswerByAgeGroup" chart="column" groupBy="ageGroup/importance" yAxisLabel="Percentage" result="%AgeGroup" title="Support for more research fellowships by age group" xAxisTitle="Age group" legend="true"/>
+        </aggregations>
+      </question>
+      <question id="de69cd54-97e2-478d-ba96-18f8bbb86a52">
+        <text>Upgrading existing technology</text>
+      </question>
+      <question id="3beecb85-9ace-4bc5-b52b-eecfb034ed2d">
+        <text>Upgrading technical library</text>
+      </question>
+      <question id="fa2fd091-2b96-438d-87fb-d9fdf64ffdff">
+        <text>Other (please specify)</text>
+      </question>
+    </question>
+    <question id="85f2d7a3-f524-4bea-b3f9-24f3aca27470">
+      <text>If other please specify</text>
+      <answer dataType="text" type="textarea" requiredIf="../1/8=*|Other"/>
+    </question>
+  </question>
+  <question heightHint="12">
+    <text>Below is a list of things related to the costs and opportunities in Taxonomy. Please indicate how much you think these issues impact on the taxonomic workforce.&lt;br/&gt;Do they impact &lt;strong&gt;a lot&lt;/strong&gt;, &lt;strong&gt;a little&lt;/strong&gt; or &lt;strong&gt;not at all&lt;/strong&gt;?</text>
+    <shortText>Impact on the taxonomic workforce</shortText>
+    <question id="2d3512d4-4d9a-46d2-816b-ed1b208f9736" type="matrix">
+      <aggregate type="countByAnswerByGuid" chart="column" subLevel="1" result="percentage" yAxisLabel="Percentage" title="Impact of costs and opportunities on taxonomic workforce" order="" legend="true" allCategories="true"/>
+      <data>
+        <rows>
+          <item>Lack of career opportunities</item>
+          <item>Lack of security of tenure</item>
+          <item>The overall image of taxonomy</item>
+          <item>The need to strengthen inter-institutional links</item>
+          <item>Ability to attract funding</item>
+          <item>Succession planning</item>
+          <item>Limited opportunities for young people</item>
+          <item>Loss of expertise to overseas institutions</item>
+          <item>Other (please specify)</item>
+        </rows>
+        <cols>
+          <item>A lot</item>
+          <item>A little</item>
+          <item>Not at all</item>
+        </cols>
+        <guids>7cbb48e7-6399-49ea-a60a-d6507392bdcc,d02da2b4-e478-46e6-99f8-4d98b8a2a6f5,39285587-54d1-4d21-b204-8271a4953658,bb1e0b76-93c6-4434-bc5c-c671eadf7b03,52c1483b-6f32-4c79-b4c7-8915cf90f414,158278e6-5864-422c-9729-c79c89b549ee,208b3cb6-3a86-4eef-bfcf-1bfa7670cb95,b3c1d95f-1197-4d35-9cfa-437f1b0ba98e,2bee2933-a106-4832-a942-db21b768bfb5</guids>
+      </data>
+      <answer dataType="text" type="radio"/>
+    </question>
+    <question id="3082cfe6-20bb-459f-be35-dfb9d16b82cc">
+      <text>If other please specify</text>
+      <answer type="textarea" requiredIf="../1/9=*|Other"/>
+      <data>
+        <align>right</align>
+      </data>
+    </question>
+  </question>
+  <question heightHint="9">
+    <text>What was the highest level you achieved in your formal education?</text>
+    <shortText>Highest level of formal education</shortText>
+    <question id="0b4c36ce-f7d9-44ae-8fe3-ef7b7af9a131" type="pick">
+      <text>Please select one:</text>
+      <shortText>Level of education</shortText>
+      <aggregate type="countByAnswer" chart="pie" order="desc"/>
+      <data>
+        <align>right</align>
+      </data>
+      <answer datatype="text" type="radio" required="true">
+        <data>
+          <item>Diploma</item>
+          <item>Undergraduate Degree</item>
+          <item>Honours</item>
+          <item>Masters</item>
+          <item>Doctorate</item>
+          <item>Other (please specify)</item>
+        </data>
+      </answer>
+    </question>
+    <question id="00d7dfdd-3d0a-40bd-bb94-0645610604d7">
+      <text>If other please specify</text>
+      <shortText>Other</shortText>
+      <answer type="textarea" requiredIf="../1=~Other"/>
+      <data>
+        <align>right</align>
+      </data>
+    </question>
+    <question id="05c7a5a3-a984-4ef9-bd31-0ebc06f790ff">
+      <text>In what subject areas did you major?</text>
+      <shortText>Subject area(s)</shortText>
+      <aggregate type="countByAnswer" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Education subject" order="desc"/>
+      <answer type="textarea"/>
+    </question>
+  </question>
+  <question id="f6f77726-9b9b-4d9d-a8d0-ef8574873d70" heightHint="1">
+    <text>Are you male or female?</text>
+    <shortText>Gender</shortText>
+    <aggregate type="countByAnswer" chart="pie" order="desc"/>
+    <answer type="radio" required="true">
+      <data>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Prefer not to answer</item>
+      </data>
+    </answer>
+  </question>
+  <question id="9d8a246d-9957-4df9-b55d-72a075359c19" heightHint="5" type="range">
+    <text>Which of the following age categories are you in?</text>
+    <shortText>Age range</shortText>
+    <aggregations>
+      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age of taxonomic workforce including honorary staff" order="desc"/>
+      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age of taxonomic workforce excluding honorary staff" filter="notHonorary" order="desc"/>
+      <aggregate type="countByAnswerByGender" chart="column" yAxisLabel="Numbers" xAxisTitle="Age group" title="Age groups by gender" legend="true" legendAlignment="right" order="desc"/>
+      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age range of just full-time permanent staff" filter="fullTimePermanent" order="desc"/>
+    </aggregations>
+    <answer dataType="numberRange" type="range" required="true">
+      <data>
+        <interval value="int">5</interval>
+        <start value="int">20</start>
+        <end value="int">59</end>
+        <over>and over</over>
+        <unit/>
+        <alt>Prefer not to answer</alt>
+      </data>
+    </answer>
+  </question>
+  <question id="973b99f7-7f15-48cf-8585-f0b34d2de085" heightHint="9" type="range">
+    <text>Which of the following best describes your approximate annual income before tax?</text>
+    <shortText>Income range</shortText>
+    <aggregate type="countByAnswerByEmploymentStatus" title="Annual income" chart="column" stacked="true" result="percentage" yAxisLabel="Percentage" xAxisTitle="Income range (thousands)" legend="true" legendAlignment="right" order="desc"/>
+    <answer dataType="numberRange" type="range" required="true">
+      <data>
+        <interval value="int">5000</interval>
+        <start value="int">0</start>
+        <end value="int">79999</end>
+        <over>and over</over>
+        <unit>$</unit>
+        <unitPlacement>beforeEach</unitPlacement>
+        <alt>Prefer not to answer</alt>
+      </data>
+    </answer>
+  </question>
+</questionSet>
