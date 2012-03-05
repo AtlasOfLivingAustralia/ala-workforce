@@ -95,7 +95,7 @@ class QuestionController {
 
         // load the question metadata for each question on the page
         def setId = params.qset.setId
-        def year = DateUtil.getYear(params.year)
+        def year = params.year ?: ConfigData.getSurveyYear()
         def answers = Answer.getAnswers(setId, userId(), year)
         def questionList = (pg.from..pg.to).collect { modelLoaderService.loadQuestionWithAnswer(setId, it, answers) }
 
@@ -204,7 +204,7 @@ class QuestionController {
     def showComplete = {
         /* validate all pages and display any problems */
         QuestionSet qset = params.qset
-        def year = DateUtil.getYear(params.year)
+        def year = params.year ?: ConfigData.getSurveyYear()
         def answers = Answer.getAnswers(qset.setId, userId(), year)
 
         boolean noErrors = true
@@ -221,7 +221,7 @@ class QuestionController {
                 errors += it.validate()
             }
 
-            // redirect to page if any errors
+            // redirect to 1st page with any errors
             if (errors) {
                 noErrors = false
                 // redisplay the same page with errors highlighted
@@ -230,6 +230,7 @@ class QuestionController {
                         pagination: [from: page.from, to: page.to, pageNumber: page.pageNumber, totalPages: qset.totalPages],
                         questions: questionList,
                         errors:errors])
+                break
             }
         }
 
