@@ -4,7 +4,6 @@ import au.org.ala.cas.util.AuthenticationCookieUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import java.text.NumberFormat
 import org.jasig.cas.client.authentication.AttributePrincipal
-import grails.converters.JSON
 
 /**
  * Notes:
@@ -160,7 +159,7 @@ class WorkforceTagLib {
             QuestionModel q = secondLevel[secondLevelIndex]
 
             if (areAnswers(q)) {
-                contents << generateContentForReport(q)
+                contents << generateContentForReport(q, user)
             }
         }
 
@@ -183,9 +182,9 @@ class WorkforceTagLib {
                 out << "<tr>"
                     out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset, user)}</td>"
                     if (firstCellRowSpan > 1) {
-                        out << "<td colspan='2'>${getQuestionTextForReport(model)}</td>"
+                        out << "<td colspan='2'>${getQuestionTextForReport(model, user)}</td>"
                     } else {
-                        out << "<td>${getQuestionTextForReport(model)}</td><td/>"
+                        out << "<td>${getQuestionTextForReport(model, user)}</td><td/>"
                     }
                 out << "</tr>"
 
@@ -196,7 +195,7 @@ class WorkforceTagLib {
                 if (secondLevel) {
                     QuestionModel q = secondLevel[0]
                     if (contents) {contents.remove(0)}
-                    out << "<td>${getQuestionTextForReport(q)}</td>"
+                    out << "<td>${getQuestionTextForReport(q, user)}</td>"
                     out << "<td>" + layoutAnswer(q) + "</td>"
                 } else {
                     out << "<td></td><td></td>"
@@ -210,7 +209,7 @@ class WorkforceTagLib {
                 firstCellRowSpan++
                 out << "<tr>"
                     out << "<td rowspan='${firstCellRowSpan}'>${getQuestionLink(model, qset, user)}</td>"
-                    out << "<td>${getQuestionTextForReport(model)}</td>"
+                    out << "<td>${getQuestionTextForReport(model, user)}</td>"
                     out << "<td>" + layoutAnswer(model) + "</td>"
                 out << "</tr>"
 
@@ -221,92 +220,6 @@ class WorkforceTagLib {
                     out << "<td colspan=2>" + layoutAnswer(model) + "</td>"
                 out << "</tr>"
             }
-        }
-
-        contents.each {
-            out << "<tr>"
-
-//            QuestionModel q = it.question
-
-            // add cell with optional label unless the very first cell is spanning all rows
-//            if (firstCellRowSpan == 1) {
-//                out << "<td>${makeLabel(q)}</td>"
-//            }
-
-            // add cells 2 and 3
-            if (it.spanColumns2and3) {
-                out << "<td colspan=2>" + it.secondColumnHtml + "</td>"
-            } else {
-                //println "secondColumnHtml = ${contents.secondColumnHtml}"
-                def style = '' //q.qdata?.align ? " style='text-align:${q.qdata.align};'" : ''
-                out << "<td${style}>" + it.secondColumnHtml + "</td><td>" + it.thirdColumnHtml + "</td>"
-            }
-
-            out << "</tr>"
-        }
-    }
-
-    /**
-     * Return html for the aggregated totals report for a single question.
-     *
-     * @attr question the actual question model
-     */
-    def totals = { attrs ->
-        QuestionModel model = attrs.question
-
-        List secondLevel = model.questions
-        int secondLevelIndex = 0
-
-        // second and third level questions
-        /**
-         * Sub-questions may be repeating.
-         *
-         * A single sub-question can:
-         *  span the entire 2 column space; or
-         *  have text in the left column and a widget in the right; or
-         *
-         */
-        def contents = []
-        for (secondLevelIndex; secondLevelIndex < secondLevel.size(); secondLevelIndex++) {
-
-            QuestionModel q = secondLevel[secondLevelIndex]
-
-            if (q.aggregations) {
-                contents << generateContentForTotals(q)
-            }
-        }
-
-        // calculate row span for 1st column
-        int firstCellRowSpan = contents.size();
-
-        /*
-         * The top level may:
-         *  - just be a container for subquestions (no qtext and no answer)
-         *  - just be the carrier for the question text (qtext but no answer)
-         *  - be a real question (both qtext and answer)
-         *  - (?) take an answer but have no question text (no qtext but answer)
-         * This determines top-level layout.
-         */
-        if (contents) {
-            // go straight to first sub-question
-            out << "<tr>"
-                out << "<td rowspan='${firstCellRowSpan}'>Q${model.questionNumber}</td>"
-            if (secondLevel) {
-                QuestionModel q = secondLevel[0]
-                if (contents) {contents.remove(0)}
-                out << "<td>${getQuestionTextForReport(q)}</td>"
-                out << "<td>" + layoutTotals(q) + "</td>"
-            } else {
-                out << "<td></td><td></td>"
-            }
-            out << "</tr>"
-
-        } else if (model.aggregations) {
-            out << "<tr>"
-            out << "<td>Q${model.questionNumber}</td>"
-            out << "<td>${getQuestionTextForReport(model)}</td>"
-            out << "<td>${layoutTotals(model)}</td>"
-            out << "</tr>"
         }
 
         contents.each {
@@ -388,7 +301,7 @@ class WorkforceTagLib {
         return result
     }
 
-    private Map generateContentForReport(QuestionModel q) {
+    private Map generateContentForReport(QuestionModel q, String userId) {
         Map result = [secondColumnHtml: "", thirdColumnHtml: "", spanColumns2and3: false, question: q]
         /*
          * Calculate the content of second and third columns
@@ -406,11 +319,11 @@ class WorkforceTagLib {
          * || question text & answer widget (order determined by type || 3rd level questions and widgets ||
          */
         if (q.qtype == QuestionType.matrix) {
-            result = q.atype == AnswerType.radio ? layoutRadioMatrixForReport(q) : layoutMatrixForReport(q)
+            result = q.atype == AnswerType.radio ? layoutRadioMatrixForReport(q) : layoutMatrixForReport(q, userId)
         }
 
         else if (q.qtype == QuestionType.group) {
-            result = layoutGroupForReport(q)
+            result = layoutGroupForReport(q, userId)
         }
 
         else if (q.qtype == QuestionType.rank) {
@@ -421,38 +334,26 @@ class WorkforceTagLib {
             // all level 2 in column 2; level 3 in column 3
             if (q.displayHint == 'checkbox') {
                 // widget first
-                result.secondColumnHtml = "${getQuestionTextForReport(q)}"
+                result.secondColumnHtml = "${getQuestionTextForReport(q, userId)}"
             } else {
                 // text first
-                def questionText = getQuestionTextForReport(q)
+                def questionText = getQuestionTextForReport(q, userId)
                 def answerText = layoutAnswer(q)
                 result.secondColumnHtml = "${questionText} ${answerText}"
             }
 
             // 3rd level questions
-            result.thirdColumnHtml = layoutLevel3ForReport(q)
+            result.thirdColumnHtml = layoutLevel3ForReport(q, userId)
         }
 
         else {
             // no 3rd level questions - put widgets in 3rd column unless there is no content for the 2nd
             if (q.qtext) {
-                result.secondColumnHtml = getQuestionTextForReport(q)
+                result.secondColumnHtml = getQuestionTextForReport(q, userId)
                 result.thirdColumnHtml = layoutAnswer(q)
             } else {
                 result.thirdColumnHtml = layoutAnswer(q)
             }
-        }
-        return result
-    }
-
-    private Map generateContentForTotals(QuestionModel q) {
-        Map result = [secondColumnHtml: "", thirdColumnHtml: "", spanColumns2and3: false, question: q]
-
-        if (q.qtext) {
-            result.secondColumnHtml = getQuestionTextForReport(q)
-            result.thirdColumnHtml = layoutTotals(q)
-        } else {
-            result.thirdColumnHtml = layoutTotals(q)
         }
         return result
     }
@@ -821,171 +722,6 @@ class WorkforceTagLib {
         }
     }
 
-    private String layoutTotals(QuestionModel q) {
-        if (q.aggregations) {
-            String content = ''
-
-            q.aggregations.each {
-                switch (it.type) {
-                    case 'countByAnswer':
-                        def guids = it.subLevel ? getQuestionGuids(q, it.subLevel) : [q.guid]
-                        Map counts = Answer.getAnswerCounts(guids, DateUtil.getCurrentYear(), it.answer == 'qtext')
-                        switch (it.result) {
-                            case 'percentage':
-                                def total = 0
-                                counts.each { key, value ->
-                                    total += value
-                                }
-                                content += "<table class='shy'>"
-                                counts.each { key, value ->
-                                    content += "<tr><td>${key}</td><td><span class='answer'>${percentage(value,total)} %</span></td></tr>"
-                                }
-                                content += "</table>"
-
-                                break
-
-                            default:
-                                content += "<table class='shy'>"
-                                counts.each {
-                                    content += "<tr><td>${it.key}</td><td><span class='answer'>${it.value}</span></td></tr>"
-                                }
-                                content += "</table>"
-                                break
-                        }
-                        break
-
-                    case 'sumByAnswer':
-                        def guids = it.subLevel ? getQuestionGuids(q, it.subLevel) : [q.guid]
-                        List totals = Answer.getAnswerTotalsByUser(guids, DateUtil.getCurrentYear(), it.answer == 'qtext')
-                        if (it.groupBy) {
-                            Map options = getGroupByOptions(it.groupBy)
-                            switch (options['type']) {
-                                case 'decile':
-                                    def range = options['range'] as int
-                                    def unit = options['unit']
-                                    def total = totals.size()
-                                    List deciles = []
-                                    for (def i = 0; i < range; i++) { deciles << 0 }
-                                    if (it.result && it.result == 'percentageInDecile') {
-                                        totals.each {
-                                            int decile = min(((it - 1)/10) as int, range - 1)
-                                            deciles[decile]++
-                                        }
-                                    } else {
-                                        // count occurrences of % in corresponding decile
-                                        totals.each {
-                                            deciles[((it - 1)/10) as int]++
-                                        }
-                                    }
-
-                                    content += "<table class='shy'>"
-                                    deciles.eachWithIndex { it2, i ->
-                                        def decile
-                                        if (i == 0) {
-                                            decile = '0-10 ' + unit
-                                        } else if (i == range - 1 && range < 10) {
-                                            decile = ">${(range - 1) * 10} ${unit}"
-                                        } else {
-                                            decile = "${i * 10 + 1}-${(i + 1) * 10} ${unit}"
-                                        }
-                                        def value = it2
-                                        if (it.result && it.result == 'percentageInDecile') {
-                                            value = percentage(value, total) + ' %'
-                                        }
-                                        content += "<tr><td>${decile}</td><td><span class='answer'>${value}</span></td></tr>"
-                                    }
-                                    content += "</table>"
-                                    break
-                            }
-                        }
-                        break
-
-                    case 'sumByAnswerByGuid':
-                        def guids = it.subLevel ? getQuestionGuids(q, it.subLevel) : [q.guid]
-                        Map totals = Answer.getAnswerTotalsByGuid(guids, DateUtil.getCurrentYear(), it.answer == 'qtext')
-                        switch (it.result) {
-                            case 'sumAndPercentage':
-                                def total = 0
-                                totals.each { key, value ->
-                                    total += value
-                                }
-                                content += "<table class='shy'>"
-                                totals.each { key, value ->
-                                    def question = Question.findByGuid(key)
-                                    def json = JSON.parse(question.adata)
-                                    def qtext = json.row
-                                    content += "<tr><td>${qtext}</td><td><span class='answer'>${value}</span></td><td><span class='answer'>${percentage(value,total)} %</span></td></tr>"
-                                }
-                                content += "</table>"
-
-                                break
-                        }
-                        break
-
-                    case 'averageByAnswer':
-                        def guids = it.subLevel ? getQuestionGuids(q, it.subLevel) : [q.guid]
-                        Map answers = Answer.getAllAnswers(guids, DateUtil.getCurrentYear(), it.answer == 'qtext')
-                        def noOfUsers = answers.size()
-
-                        // total up values grouped by guid
-                        def totals = [:]
-                        answers.each { answer ->
-                            answer.value.each { guid, value ->
-                                if (value['answer']) {
-                                    def answerVal = value['qtext'] ?: value['answer']
-                                    if (totals[guid]) {
-                                        totals[guid] += answerVal as int
-                                    } else {
-                                        totals[guid] = answerVal as int
-                                    }
-                                }
-                            }
-                        }
-
-                        content += "<table class='shy'>"
-                        totals.each { key, value ->
-                            def question = Question.findByGuid(key)
-                            def average = String.format('%.1f', value/noOfUsers)
-                            content += "<tr><td>${question.aggregationText}</td><td><span class='answer'>${average} %</span></td></tr>"
-                        }
-                        content += "</table>"
-
-                        // count occurrences of each guid
-                        def counts = [:]
-                        answers.each { answer ->
-                            answer.value.each { guid, value ->
-                                if (value['answer']) {
-                                    if (counts[guid]) {
-                                        counts[guid]++
-                                    } else {
-                                        counts[guid] = 1
-                                    }
-                                }
-                            }
-                        }
-
-                        content += "<table class='shy'>"
-                        counts.each { key, value ->
-                            def question = Question.findByGuid(key)
-                            def percentage = percentage(value, noOfUsers)
-                            content += "<tr><td>${question.aggregationText}</td><td><span class='answer'>${percentage} %</span></td></tr>"
-                        }
-                        content += "</table>"
-
-                        break
-
-                    default:
-                        content += ''
-                }
-
-            }
-            return content
-        } else {
-            return ''
-        }
-
-    }
-
     /*
      * A matrix question is really a set of (rows x cols) questions. These questions are
      * generated during model-loading and numbered as sub-questions like this:
@@ -1047,8 +783,8 @@ class WorkforceTagLib {
         return [secondColumnHtml: content, thirdColumnHtml: "", spanColumns2and3: true]
     }
 
-    private Map layoutMatrixForReport(QuestionModel q) {
-        def text = getQuestionTextForReport(q) ?: ""
+    private Map layoutMatrixForReport(QuestionModel q, String userId) {
+        def text = getQuestionTextForReport(q, userId) ?: ""
 
         def rows = q.qdata.rows
         def cols = q.qdata.cols
@@ -1200,11 +936,11 @@ class WorkforceTagLib {
         return [secondColumnHtml: layoutListOfItems(items, 6), thirdColumnHtml: "", spanColumns2and3: true]
     }
 
-    private Map layoutGroupForReport(QuestionModel q) {
+    private Map layoutGroupForReport(QuestionModel q, String userId) {
         def items = []
         q.questions.each {
             if (it.answerValueStr) {
-                items << "<span class='answer'>${getQuestionTextForReport(it)}</span>"
+                items << "<span class='answer'>${getQuestionTextForReport(it, userId)}</span>"
             }
         }
 
@@ -1258,14 +994,14 @@ class WorkforceTagLib {
         return result
     }
 
-    private String layoutLevel3ForReport(QuestionModel q) {
+    private String layoutLevel3ForReport(QuestionModel q, String userId) {
          String result = ''
          // layout 3rd level questions
          if (q.questions) {
              String content = ''
              q.questions.each {
                  if (it.answerValueStr) {
-                     def text = getQuestionTextForReport(it) ?: ""
+                     def text = getQuestionTextForReport(it, userId) ?: ""
                      def label = makeLabel(it)
                      if (label) {
                          label += " "
@@ -1539,7 +1275,7 @@ class WorkforceTagLib {
 
     def surveyStatus = { attrs ->
         int userid = ((AttributePrincipal) request.userPrincipal).attributes['userid'] as int
-        def currentYear = DateUtil.getCurrentYear()
+        def currentYear = ConfigData.getSurveyYear()
         def lastUpdate = Answer.lastUpdate(attrs.setid as int, userid, currentYear)
         if (lastUpdate) {
             lastUpdate = DateUtil.getNiceDateFromSqlDate(lastUpdate)
@@ -1557,7 +1293,7 @@ class WorkforceTagLib {
 
     def summaryStatus = { attrs ->
         int userid = attrs.user.userid
-        def currentYear = DateUtil.getCurrentYear()
+        def currentYear = ConfigData.getSurveyYear()
         def lastUpdate = DateUtil.getNiceDateFromSqlDate(Answer.lastUpdate(params.set as int, userid, currentYear))
         def complete = Event.isComplete(params.set as int, userid, currentYear)
         if (complete) {
@@ -1568,30 +1304,30 @@ class WorkforceTagLib {
     }
 
     private boolean areAnswers(QuestionModel q) {
+        if (q.answerValueStr && !q.answerValueStr.equalsIgnoreCase('null')) {
+            return true
+        }
         for (it in q.questions) {
             if (it.answerValueStr && !it.answerValueStr.equalsIgnoreCase('null')) {
                 return true
             }
         }
-        if (q.answerValueStr && !q.answerValueStr.equalsIgnoreCase('null')) {
-            return true
-        }
         return false
     }
 
     private boolean isAggregation(QuestionModel q) {
-        for (it in q.questions) {
-            if (it.aggregations) {
-                return true
-            }
-        }
         if (q.aggregations) {
             return true
+        }
+        for (it in q.questions) {
+            if (isAggregation(it)) {
+                return true
+            }
         }
         return false
     }
 
-    private String getQuestionTextForReport(QuestionModel q) {
+    private String getQuestionTextForReport(QuestionModel q, String userId) {
         def answer
         if (q.shorttext) {
             answer = q.shorttext
@@ -1604,6 +1340,11 @@ class WorkforceTagLib {
                 answer += " (${q.adata.unit})"
             }
         }
+
+        if (isAggregation(q) && isAdmin()) {
+            answer += getChartLink(q, userId)
+        }
+
         return answer
     }
 
@@ -1633,7 +1374,7 @@ class WorkforceTagLib {
         int targetQuestionNumber = cond.path[1..-1].toInteger()
 
         // load the question
-        def answers = Answer.getAnswers(q.qset, 21, DateUtil.getCurrentYear())
+        def answers = Answer.getAnswers(q.qset, 21, ConfigData.getSurveyYear())
         QuestionModel contingent =  modelLoaderService.loadQuestionWithAnswer(q.qset, targetQuestionNumber, answers)
 
         // check the answer
@@ -1663,12 +1404,20 @@ class WorkforceTagLib {
         def loggedInUserId = request.userPrincipal.attributes.userid
         if (userId) {
             if (userId == loggedInUserId) {
-                return "<a class='' href='/workforce/set/${q.qset}/page/${page.pageNumber}#Q${q.questionNumber}'>Q${q.questionNumber}</a>"
+                return "<a href='/workforce/set/${q.qset}/page/${page.pageNumber}#Q${q.questionNumber}' id='Q${q.questionNumber}'>Q${q.questionNumber}</a>"
             } else {
-                return "Q${q.questionNumber}"
+                return "<a id='Q${q.questionNumber}'>Q${q.questionNumber}</a>"
             }
         } else {
-            return "Q${q.questionNumber}"
+            return "<a id='Q${q.questionNumber}'>Q${q.questionNumber}</a>"
+        }
+    }
+
+    private String getChartLink(QuestionModel q, String userId) {
+        if (q.level == 1 || q.level == 2 && !q.owner.qtext && q.questionNumber == 1) {
+            return " <a href='/workforce/report/charts?set=${q.qset}&qid=${q.questionNumber}&uid=${userId}'><img src='/workforce/images/chart.gif'></a>"
+        } else {
+            return ''
         }
     }
 
