@@ -9,7 +9,7 @@ class AdminController {
 
         def setId = params.set.toInteger() ?: Survey.getCurrentQSetId(SurveyType.personal)
         def qset = QuestionSet.findBySetId(setId)
-        def currentYear = new GregorianCalendar().get(Calendar.YEAR).toString()
+        def currentYear = ConfigData.getSurveyYear().toString()
         def numberStarted = Answer.numberStartedForYear(setId, currentYear)
         def numberCompleted = Event.numberCompletedForYear(setId, currentYear)
         def total
