@@ -48,7 +48,7 @@
                             <g:each in="${users}" var="u">
                                 <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:u.userid]}">${u.name}</g:link>
                                 <g:if test="${!Event.isComplete(qset.setId, u.userid, year as int)}">
-                                    <span style="color: green">(incomplete)</span>
+                                    <span style="color: red">(incomplete)</span>
                                 </g:if>
                                 </li>
                             </g:each>
@@ -64,7 +64,7 @@
                                     <g:if test="${userid}">
                                         <li><g:link controller="report" action="answers" params="${[set:qset.setId,id:userid]}">${i.name}</g:link>
                                         <g:if test="${!Event.isComplete(qset.setId, userid, year as int)}">
-                                            <span style="color: green">(incomplete)</span>
+                                            <span style="color: red">(incomplete)</span>
                                         </g:if>
                                         </li>
                                     </g:if>
@@ -83,8 +83,8 @@
                         <g:else>
                             <p><g:link controller="report" action="answers" params="${[set:qset.setId]}"><strong>Browse all answers</strong></g:link></p>
                             <p><g:link controller="download" action="download" params="${[set:qset.setId]}"><strong>CSV Download</strong></g:link></p>
+                            <chart:jsonCharts survey="${qset.shortName}"/>
                         </g:else>
-                        <p class="dull">Generate Charts</p>
                     </td>
                 </tr>
             </table>
