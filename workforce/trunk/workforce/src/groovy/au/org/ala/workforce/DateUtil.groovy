@@ -9,13 +9,6 @@ package au.org.ala.workforce
  */
 class DateUtil {
 
-    static int getYear(String year) {
-        if (year) {
-            return year as int
-        } else {
-            return getCurrentYear()
-        }
-    }
 
     static int getCurrentYear() {
         def c = Calendar.instance
