@@ -111,9 +111,7 @@ class Answer {
         // count each answer instance
         def counts = [:]
         answers.each { it ->
-            println('it.key=' + it.key)
             it.value.each { it2 ->
-                println('it2.key=' + it2.key)
                 if (it2.value['answer']) {
                     def answer = getQText ? it2.value['qtext'] : it2.value['answer']
                     if (counts[answer]) {
@@ -138,12 +136,43 @@ class Answer {
             it.value.each { it2 ->
                 if (it2.value['answer']) {
                     def answer = getQText ? it2.value['qtext'] : it2.value['answer']
-                    total += it2.value['answer'] as int
+                    total += answer as int
                 }
             }
             totals << total
         }
         return totals
+    }
+
+    static List getAnswerTotalsByUserByEmploymentStatus(List guids, List employmentStatusGuids, int year, boolean getQText) {
+        // get most recent answer for each question for each user
+        def answers = getAllAnswers(guids + employmentStatusGuids, year, getQText)
+
+        // total up values for each user and marshal employment status hours
+        def totals = []
+        answers.each { it ->
+            def total = 0
+            def empStatus = [:]
+            it.value.each { guid, value ->
+                if (employmentStatusGuids.contains(guid)) {
+                    empStatus[guid] = value['answer']
+                } else {
+                    if (value['answer']) {
+                        def answer = getQText ? value['qtext'] : value['answer']
+                        total += answer as int
+                    }
+                }
+            }
+            totals << [ total, empStatus ]
+        }
+        // returns List of lists (with embedded map) -> [ [ total, [empStatusGuid : value, ...], ... ]
+        return totals
+    }
+
+    static Map getAnswersByUserByAgeGroup(List guids, String ageGuid, int year, boolean getQText) {
+        // get most recent answer for each question (plus age group) for each user
+        def answers = getAllAnswers(guids + ageGuid, year, getQText)
+        return answers
     }
 
     static Map getAnswerTotalsByGuid(List guids, int year, boolean getQText) {
@@ -167,4 +196,24 @@ class Answer {
         return totals
     }
 
+    static Map getCountsByValue(List guids, int year, boolean getQText) {
+        // get most recent answer for each question for each user
+        def answers = getAllAnswers(guids, year, getQText)
+
+        // total up values grouped by guid
+        def totals = [:]
+        answers.each { it ->
+            it.value.each { guid, value ->
+                if (value['answer']) {
+                    def answer = getQText ? value['qtext'] : value['answer']
+                    if (totals[answer]) {
+                        totals[answer]++
+                    } else {
+                        totals[answer] = 1
+                    }
+                }
+            }
+        }
+        return totals
+    }
 }
