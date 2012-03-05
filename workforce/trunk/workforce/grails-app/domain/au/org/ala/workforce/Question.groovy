@@ -58,7 +58,7 @@ class Question {
         dependentOn(nullable:true, maxSize:1024)
         validation(nullable:true, maxSize: 1024)
         onchangeAction(nullable: true, maxSize: 1024)
-        aggregation(nullable: true, maxSize: 2048)
+        aggregation(nullable: true, maxSize: 10240)
     }
 
     // make the hash an index
