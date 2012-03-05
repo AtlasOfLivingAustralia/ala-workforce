@@ -199,8 +199,15 @@ class DataLoaderService implements ApplicationContextAware {
                 }
             }
         }
+        def knownQuestions = [:]
+        if (qset.knownQuestions.text()) {
+            qset.knownQuestions.children().each {
+                knownQuestions << [(it.name()): (it.text())]
+            }
+        }
         def qs = new QuestionSet(setId:set, title:title, shortName: shortName,
-                requiredRole: role, pageSequence:(pageSequence as JSON).toString())
+                requiredRole: role, pageSequence:(pageSequence as JSON).toString(),
+                knownQuestions: (knownQuestions as JSON).toString())
         if (!qs.save()) {
             qs.errors.each { println it }
         }
@@ -271,7 +278,7 @@ class DataLoaderService implements ApplicationContextAware {
             q.adata = extractJsonString(it.answer?.data, metadata) as grails.converters.JSON
             q.alabel = it.answer?.label?.text()
 
-            q.aggregation = getAggregationList(it) as grails.converters.JSON
+            q.aggregation = getAggregationList(it, metadata) as grails.converters.JSON
 
             q.save()
             if (q.hasErrors()) {
@@ -427,7 +434,7 @@ class DataLoaderService implements ApplicationContextAware {
         return result
     }
 
-    def getAggregationList(node) {
+    def getAggregationList(node, metadata) {
 
         List aggNodes = []
 
@@ -461,8 +468,50 @@ class DataLoaderService implements ApplicationContextAware {
             if (it.@subLevel != '') {
                 agg['subLevel'] = it.@subLevel as String
             }
+            if (it.@subset != '') {
+                agg['subset'] = it.@subset as String
+            }
             if (it.@answer != '') {
                 agg['answer'] = it.@answer as String
+            }
+            if (it.@value != '') {
+                agg['value'] = it.@value as String
+            }
+            if (it.@chart != '') {
+                agg['chart'] = it.@chart as String
+            }
+            if (it.@title != '') {
+                agg['title'] = substitutePlaceholders(it.@title as String, metadata)
+            }
+            if (it.@allCategories != '') {
+                agg['allCategories'] = it.@allCategories as String
+            }
+            if (it.@xAxisTitle != '') {
+                agg['xAxisTitle'] = it.@xAxisTitle as String
+            }
+            if (it.@yAxisLabel != '') {
+                agg['yAxisLabel'] = it.@yAxisLabel as String
+            }
+            if (it.@xAxisLabelOrientation != '') {
+                agg['xAxisLabelOrientation'] = it.@xAxisLabelOrientation as String
+            }
+            if (it.@size != '') {
+                agg['size'] = it.@size as String
+            }
+            if (it.@legend != '') {
+                agg['legend'] = it.@legend as String
+            }
+            if (it.@legendAlignment != '') {
+                agg['legendAlignment'] = it.@legendAlignment as String
+            }
+            if (it.@filter != '') {
+                agg['filter'] = it.@filter as String
+            }
+            if (it.@stacked != '') {
+                agg['stacked'] = it.@stacked as String
+            }
+            if (it.@dataType != '') {
+                agg['dataType'] = it.@dataType as String
             }
             aggList << agg
         }
