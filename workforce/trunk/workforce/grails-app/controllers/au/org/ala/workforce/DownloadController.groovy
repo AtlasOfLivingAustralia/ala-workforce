@@ -11,7 +11,7 @@ class DownloadController {
         cache false
         def setId = params.set as int ?: Survey.getCurrentQSetId(SurveyType.personal)
         def qset = QuestionSet.findBySetId(setId)
-        def year = DateUtil.getYear(params.year)
+        def year = params.year ?: ConfigData.getSurveyYear()
 
         String csvResultFile = "ABRS ${qset.shortName} ${year}.csv";
         response.setHeader("Cache-Control", "must-revalidate");
