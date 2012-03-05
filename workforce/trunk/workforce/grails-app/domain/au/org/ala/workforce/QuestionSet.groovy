@@ -10,12 +10,14 @@ class QuestionSet {
     String shortName                // short display name for reports, breadcrumb trails, etc
     String pageSequence             // pagination of questions eg [{from:1,to:1},{from:2,to:6}]
     String requiredRole             // the role that the user must have to access this survey - blank = everyone
+    String knownQuestions           // question numbers cross-referenced for charting eg [{"gender":15},{"ageGroup":16}]
 
     static constraints = {
         setId(unique:true)
         pageSequence(nullable:true)
         shortName(nullable:true)
         requiredRole(nullable:true)
+        knownQuestions(nullable:true)
     }
 
     static transients = ['paginationData','page','totalPages']
@@ -107,5 +109,13 @@ class QuestionSet {
     def getTotalPages() {
         return getPaginationData()?.size() ?: 0
     }
-    
+
+    String getKnownQuestionNumber(String question) {
+        if (knownQuestions) {
+            Map knownQs = JSON.parse(knownQuestions)
+            return knownQs[question]
+        } else {
+            return null
+        }
+    }
 }
