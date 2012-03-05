@@ -17,9 +17,10 @@ class Survey {
     static void init() {
         def surveys = Survey.findAll()
         if (surveys.size() == 0) {
-            Survey survey = new Survey(year: 2011, priorYear1: 2009, priorYear2: 2010, type: 'personal')
+            def year = DateUtil.currentYear()
+            Survey survey = new Survey(year: year, priorYear1: year-2, priorYear2: year-1, type: 'personal')
             survey.save()
-            survey = new Survey(year: 2011, priorYear1: 2009, priorYear2: 2010, type: 'institutional')
+            survey = new Survey(year: year, priorYear1: year-2, priorYear2: year-1, type: 'institutional')
             survey.save()
         }
     }
