@@ -83,20 +83,24 @@ grails.spring.bean.packages = []
 // set per-environment serverURL stem for creating absolute links
 environments {
     production {
-        grails.serverURL = "http://abrs.ala.org.au/${appName}"
-        security.cas.appServerName = "http://abrs.ala.org.au"
+        domain = 'abrs.ala.org.au'
+        grails.serverURL = "http://${domain}/${appName}"
+        security.cas.appServerName = "http://${domain}"
     }
     development {
-        grails.serverURL = "http://localhost:8090/${appName}"
-        security.cas.appServerName = "http://localhost:8090"
+        domain = 'localhost:8090'
+        grails.serverURL = "http://${domain}/${appName}"
+        security.cas.appServerName = "http://${domain}"
     }
     testserver {
-        grails.serverURL = "http://testweb1.ala.org.au:8080/${appName}"
-        security.cas.appServerName = "http://testweb1.ala.org.au:8080"
+        domain = 'testweb1.ala.org.au:8080'
+        grails.serverURL = "http://${domain}/${appName}"
+        security.cas.appServerName = "http://${domain}"
     }
     test {
-        grails.serverURL = "http://localhost:8090/${appName}"
-        security.cas.appServerName = "http://localhost:8090"
+        domain = 'localhost:8090'
+        grails.serverURL = "http://${domain}/${appName}"
+        security.cas.appServerName = "http://${domain}"
     }
 }
 
@@ -107,6 +111,11 @@ log4j = {
     //
     appenders {
         console name:'stdout', layout:pattern(conversionPattern: '%d{HH:mm:ss.SSS} %-5p %c{6} %m%n')
+        environments {
+            production {
+                rollingFile name: "stacktrace", maxFileSize: 1024, file: "/var/log/tomcat6/abrs-workforce-stacktrace.log"
+            }
+        }
     }
 
     root {
