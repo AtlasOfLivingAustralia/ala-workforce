@@ -92,16 +92,17 @@ class Answer {
 
         // get most recent answer for each question for each user
         def answers = [:]
-        def currentUser = result[0][0]
-        answers[(currentUser)] = [:]
-        result.each { it ->
-            if (it[0] != currentUser) {
-                currentUser = it[0]
-                answers[(currentUser)] = [:]
+        if (result) {
+            def currentUser = result[0][0]
+            answers[(currentUser)] = [:]
+            result.each { it ->
+                if (it[0] != currentUser) {
+                    currentUser = it[0]
+                    answers[(currentUser)] = [:]
+                }
+                answers[(currentUser)][it[1]] = getQText ? ['answer' : it[2], 'qtext' : it[3]] : ['answer' : it[2]]
             }
-            answers[(currentUser)][it[1]] = getQText ? ['answer' : it[2], 'qtext' : it[3]] : ['answer' : it[2]]
         }
-
         return answers
     }
 
