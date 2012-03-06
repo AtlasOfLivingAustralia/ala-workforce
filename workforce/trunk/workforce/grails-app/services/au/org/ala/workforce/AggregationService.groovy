@@ -448,7 +448,8 @@ class AggregationService {
                                 } else {
                                     // count occurrences of % in corresponding decile
                                     totals.each {
-                                        deciles[min(((it - 1)/10) as int), range - 1]++
+                                        int decile = min(((it - 1)/10) as int, range - 1)
+                                        deciles[decile]++
                                     }
                                 }
 
