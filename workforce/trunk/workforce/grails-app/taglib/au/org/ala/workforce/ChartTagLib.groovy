@@ -30,7 +30,7 @@ class ChartTagLib {
         out << """
         <script type="text/javascript">
             \$(document).ready(function() {
-                pieChart${attrs.index} = new Highcharts.Chart({
+                var pieChart${attrs.index} = new Highcharts.Chart({
                     chart: {
                         renderTo: 'pieChart${attrs.index}',
                         type: 'pie',
@@ -153,7 +153,7 @@ class ChartTagLib {
 <script type="text/javascript">
     var columnChart;
     \$(document).ready(function() {
-        columnChart${attrs.index} = new Highcharts.Chart({
+        var columnChart${attrs.index} = new Highcharts.Chart({
             chart: {
                 renderTo: 'columnChart${attrs.index}',
                 type: 'column'
@@ -240,7 +240,7 @@ class ChartTagLib {
 <script type="text/javascript">
     var barChart;
     \$(document).ready(function() {
-        barChart${attrs.index} = new Highcharts.Chart({
+        var barChart${attrs.index} = new Highcharts.Chart({
             chart: {
                 renderTo: 'barChart${attrs.index}',
                 type: 'bar'
