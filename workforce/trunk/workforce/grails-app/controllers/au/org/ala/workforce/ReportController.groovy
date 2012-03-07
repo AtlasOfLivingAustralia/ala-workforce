@@ -90,6 +90,7 @@ class ReportController {
         def setId
         def survey
         def questionId
+        def questionText
         def year
         def userId
         def fromFile = false
@@ -102,6 +103,7 @@ class ReportController {
             title = json.title
             setId = json.setId
             questionId = json.qId
+            questionText = json.qText
             userId = json.userId
             year = json.year
             fromFile = true
@@ -115,10 +117,11 @@ class ReportController {
             year = params.year ?: ConfigData.getSurveyYear()
 
             def question = modelLoaderService.loadQuestion(setId, questionId)
+            questionText = question.shorttext
             aggregationService.getAggregatedData(question, qset, chartData)
         }
 
-        def model = [chartData: chartData, title: title, setId: setId, survey: survey, qId: questionId, year: year, userId: userId]
+        def model = [chartData: chartData, title: title, setId: setId, survey: survey, qId: questionId, qText: questionText, year: year, userId: userId]
 
         // Create chart model as encoded JSON string
         def jsonData = model as JSON
