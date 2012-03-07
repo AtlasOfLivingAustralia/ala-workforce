@@ -1,11 +1,11 @@
 #summary Describes the XML structure of a survey question set.
 
-= Introduction =
+== Introduction ==
 
 Add your content here.
 
 
-= Question set structure =
+== Question set structure ==
 
 A survey is defined as metadata in XML.  This metadata consists of a set of question definitions and other survey related data. An overview of the syntax of a question set is shown below. More detailed descriptions of metadata elements come after that. Optional elements are surrounds by square brackets.
 
@@ -18,6 +18,9 @@ A survey is defined as metadata in XML.  This metadata consists of a set of ques
   <pageSequence>
     ...
   </pageSequence>
+  [<knownQuestions>
+    ...
+  </knownQuestions>]
   [<accounts>
       ...
   </accounts>]
@@ -27,3 +30,14 @@ A survey is defined as metadata in XML.  This metadata consists of a set of ques
   ...
 </questionSet>
 }}}
+
+==== Title, Short Name ====
+
+The title and shortName text elements define the title and short title of the survey.  For example,
+
+{{{
+  <title>Survey of Australian Taxonomic Workforce - Personal Survey</title>
+  <shortName>Personal Survey</shortName>
+}}}
+
+==== Required Role ====
