@@ -1,4 +1,4 @@
-# Administrative tasks for ABRS Workforce surveys.
+#summary Administrative tasks for ABRS Workforce surveys.
 
 = Introduction =
 
