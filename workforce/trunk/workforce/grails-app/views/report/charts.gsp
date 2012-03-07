@@ -20,7 +20,7 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <h1>Question ${qId}</h1>
+            <h1>Question ${qId} - ${qText}</h1>
             <a style="cursor: pointer; color: #666; font-weight: bold;" onclick="saveCharts();">Save Charts</a>
             <div style='clear: both;'>
                 <g:set var="index" value="0"/>
