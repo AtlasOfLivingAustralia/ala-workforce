@@ -1,13 +1,29 @@
-#summary One-sentence summary of this page.
+#summary Describes the XML structure of a survey question set.
 
 = Introduction =
 
 Add your content here.
 
 
-= Details =
+= Question set structure =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+A survey is defined as metadata in XML.  This metadata consists of a set of question definitions and other survey related data. An overview of the syntax of a question set is shown below. More detailed descriptions of metadata elements come after that. Optional elements are surrounds by square brackets.
+
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+<questionSet>
+  <title>...</title>
+  <shortName>...</shortName>
+  [<requiredRole>...</requiredRole>]
+  <pageSequence>
+    ...
+  </pageSequence>
+  [<accounts>
+      ...
+  </accounts>]
+  <question>
+    ...
+  </question>
+  ...
+</questionSet>
+}}}
