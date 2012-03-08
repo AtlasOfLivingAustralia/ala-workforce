@@ -36,8 +36,28 @@ A survey is defined as metadata in XML.  This metadata consists of a set of ques
 The title and shortName text elements define the title and short title of the survey.  For example,
 
 {{{
-  <title>Survey of Australian Taxonomic Workforce - Personal Survey</title>
-  <shortName>Personal Survey</shortName>
+<title>Survey of Australian Taxonomic Workforce - Personal Survey</title>
+<shortName>Personal Survey</shortName>
 }}}
 
 ==== Required Role ====
+
+The required role element defines the ALA authorisation that a user requires to carry out the survey.  For example the ABRS Institutional survey requires a user to have ROLE_ABRS_INSTITUTION. A when a user logs into the ABRS Survey web application if they have this authorisation then the ABRS Institutional survey is displayed, otherwise the ABRS Personal survey is displayed.
+
+{{{
+<requiredRole>ROLE_ABRS_INSTITUTION</requiredRole>
+}}}
+
+==== Page Sequence ====
+
+The pageSequence element defines the pagination of a survey.  Each page sub-element defines which questions appear on that page.
+
+{{{
+<pageSequence>
+  <page>1-2</page>
+  <page>3-3</page>
+  <page>4-5</page>
+  <page>6-6</page>
+    ...
+</pageSequence>
+}}}
