@@ -61,3 +61,33 @@ The pageSequence element defines the pagination of a survey.  Each page sub-elem
     ...
 </pageSequence>
 }}}
+
+==== Known Questions ====
+
+The knownQuestions element defines the question number of particular survey questions that are referenced by the aggregation and charting components of the application.  Currently only the Personal Survey uses these.
+
+{{{
+<knownQuestions>
+  <employmentStatus>3</employmentStatus>
+  <gender>15</gender>
+  <ageGroup>16</ageGroup>
+</knownQuestions>
+}}}
+
+==== Accounts ====
+
+The accounts element is used by the ABRS Institutional survey to link an ALA user id to an institution and also to link an institutional survey to a natural history collection.  The user element identifies the ALA user associated with the institution and the uid element is the ALA Collections identifier.
+
+{{{
+<accounts>
+  <account>
+    <user>survey@dpi.qld.gov.au</user>
+    <institution>Queensland Plant Pathology Herbarium</institution>
+    <code>BRIP</code>
+    <uid>co53</uid>
+  </account>
+  ...
+</accounts>
+}}}
+
+==== Question(s) ====
