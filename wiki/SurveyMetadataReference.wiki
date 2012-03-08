@@ -91,3 +91,11 @@ The accounts element is used by the ABRS Institutional survey to link an ALA use
 }}}
 
 ==== Question(s) ====
+
+There must be one or more question elements in a question set. Question elements can contain question elements (to a depth of 3 levels).
+
+{{{
+<question>
+
+</question>
+}}}
