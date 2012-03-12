@@ -92,7 +92,23 @@ The accounts element is used by the ABRS Institutional survey to link an ALA use
 
 ==== Question(s) ====
 
-There must be one or more question elements in a question set. Question elements can contain question elements (to a depth of 3 levels).
+There must be one or more question elements in a question set. Question elements can nested (to a depth of 3 levels).
+
+The question element can have a number of optional attributes to specify the properties of the question.
+
+|| *Attribute* || *Description* ||
+|| instruction || Defines instruction text that is displayed with a question ||
+|| instructionPosition || Position of instructions. e.g. 'top', default is 'bottom' ||
+|| type || Question type - can be 'rank', 'pick', 'range', 'matrix', 'group' or 'none' ||
+|| heightHint || ??? not used ||
+|| dependentOn || Question can be dependent on the answer to another question - holds the path and the condition. e.g. 'Q5=yes' ||
+|| datatype || Data type of the answer - 'bool', 'number', 'text', 'numberRange', 'rank' or 'integer' ||
+|| defaultDataType || Data type applied to child questions ||
+|| defaultAnswerType || Answer type applied to child questions - 'bool', 'none', 'number', 'text', 'textarea', 'percent', 'rank', 'externalRef', 'radio', 'range', 'preload', 'calculate' or 'summable' ||
+|| defaultLayoutHint ||  ||
+|| defaultDisplayHint || 'checkbox', 'combobox', '45', ||
+
+
 
 {{{
 <question>
