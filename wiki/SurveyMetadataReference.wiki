@@ -105,13 +105,17 @@ The question element can have a number of optional attributes to specify the pro
 || datatype || Data type of the answer - 'bool', 'number', 'text', 'numberRange', 'rank' or 'integer' ||
 || defaultDataType || Data type applied to child questions ||
 || defaultAnswerType || Answer type applied to child questions - 'bool', 'none', 'number', 'text', 'textarea', 'percent', 'rank', 'externalRef', 'radio', 'range', 'preload', 'calculate' or 'summable' ||
-|| defaultLayoutHint ||  ||
-|| defaultDisplayHint || 'checkbox', 'combobox', '45', ||
+|| defaultLayoutHint || Layout hint for child questions - 'align-with-level3', 'subgroup:Label', 'm/n' ||
+|| defaultDisplayHint || Form of display for child questions - 'checkbox', 'combobox', 'noColumnHeadings' or 'n' where n = fieldwidth ||
 
 
 
 {{{
 <question>
-
+  <text>...</text>
+  [<shortText>...</shortText>]
+  [<data>...</data>]
+  <answer/> | <question>...</question>
+  [<aggregate/>]
 </question>
 }}}
