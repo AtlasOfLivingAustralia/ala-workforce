@@ -124,3 +124,35 @@ The question element can have a number of optional attributes to specify the pro
 || text || Question text ||
 || shortText || Optional abbreviated version of question text.  Used in the tabular summary display of a survey's answers ||
 || data || Question data ||
+|| answer || ||
+|| aggregate || ||
+
+===== data element =====
+
+The data element describes the question data and the format depends on the question type.
+
+For a matrix question type, the data element defines the row and column labels.
+
+{{{
+<data>
+  <rows>
+    <item>Row 1</item>
+    <item>Row 2</item>
+    <item>Row 3</item>
+     ...
+  </rows>
+  <cols>
+    <item>Column 1</item>
+    <item>Column 2</item>
+    <item>Column 3</item>
+     ...
+  </cols>
+</data>
+}}}
+
+
+
+===== answer element =====
+
+===== aggregate element =====
+
