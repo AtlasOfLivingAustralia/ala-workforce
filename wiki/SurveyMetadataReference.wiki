@@ -14,14 +14,14 @@ A survey is defined as metadata in XML.  This metadata consists of a set of ques
 <questionSet>
   <title>...</title>
   <shortName>...</shortName>
-  [<requiredRole>...</requiredRole>]
+ [<requiredRole>...</requiredRole>]
   <pageSequence>
     ...
   </pageSequence>
-  [<knownQuestions>
+ [<knownQuestions>
     ...
   </knownQuestions>]
-  [<accounts>
+ [<accounts>
       ...
   </accounts>]
   <question>
@@ -108,15 +108,15 @@ The question element can have a number of optional attributes to specify the pro
 || defaultLayoutHint || Layout hint for child questions - 'align-with-level3', 'subgroup:Label', 'm/n' ||
 || defaultDisplayHint || Form of display for child questions - 'checkbox', 'combobox', 'noColumnHeadings' or 'n' where n = fieldwidth ||
 
-===== question element =====
+===== Question element =====
 
 {{{
 <question>
   <text>...</text>
-  [<shortText>...</shortText>]
-  [<data>...</data>]
+ [<shortText>...</shortText>]
+ [<data>...</data>]
   <answer/> | <question>...</question>
-  [<aggregate/>]
+ [<aggregate/>]
 </question>
 }}}
 
@@ -127,7 +127,7 @@ The question element can have a number of optional attributes to specify the pro
 || answer || ||
 || aggregate || ||
 
-===== data element =====
+===== Data element =====
 
 The data element describes the question data and the format depends on the question type.
 
@@ -167,6 +167,26 @@ For the Rank question type, the data element defines the number of values in the
 </data>
 }}}
 
-===== answer element =====
+To align the question text of a question there is the align option.
 
-===== aggregate element =====
+{{{
+<question>
+  <text>Please select one:</text>
+  <data>
+    <align>right</align>
+  </data>
+    ...
+</question>
+}}}
+
+===== Answer element =====
+
+|| *Attribute* || *Description* ||
+|| dataType || ||
+|| type || ||
+|| label || ||
+|| required || ||
+|| requiredIf || ||
+
+
+===== Aggregate element =====
