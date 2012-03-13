@@ -131,7 +131,7 @@ The question element can have a number of optional attributes to specify the pro
 
 The data element describes the question data and the format depends on the question type.
 
-For a matrix question type, the data element defines the row and column labels.
+For a Matrix question type, the data element defines the row and column labels.  A matrix question can also define validation rules for values in the matrix.  Validation is defined by validation and validationRange elements. 
 
 {{{
 <data>
@@ -147,12 +147,26 @@ For a matrix question type, the data element defines the row and column labels.
     <item>Column 3</item>
      ...
   </cols>
+ [<validation>
+    <validate>greaterThanOrEqual[1,2]</validate>
+    <validate>greaterThanOrEqual[1,3]</validate>
+  </validation>
+  <validationRange>
+    <start>1</start>
+    <finish>3</finish>
+  </validationRange>]
 </data>
 }}}
 
+For the Rank question type, the data element defines the number of values in the ranking range and the number of required answers. The values of the rank options are defined in sub-questions.
 
+{{{
+<data>
+  <max value="int">5</max>
+  <maxRequired value="int">5</maxRequired>
+</data>
+}}}
 
 ===== answer element =====
 
 ===== aggregate element =====
-
