@@ -108,7 +108,7 @@ The question element can have a number of optional attributes to specify the pro
 || defaultLayoutHint || Layout hint for child questions - 'align-with-level3', 'subgroup:Label', 'm/n' ||
 || defaultDisplayHint || Form of display for child questions - 'checkbox', 'combobox', 'noColumnHeadings' or 'n' where n = fieldwidth ||
 
-
+===== question element =====
 
 {{{
 <question>
@@ -119,3 +119,8 @@ The question element can have a number of optional attributes to specify the pro
   [<aggregate/>]
 </question>
 }}}
+
+|| *Element* || *Description* ||
+|| text || Question text ||
+|| shortText || Optional abbreviated version of question text.  Used in the tabular summary display of a survey's answers ||
+|| data || Question data ||
