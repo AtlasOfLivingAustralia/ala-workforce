@@ -305,13 +305,13 @@ Example data elements for various answer types are shown below.
 The Aggregate element defines how the answers for a question should be aggregated and displayed. The attributes of the Aggregate element are as follows.
 
 || *Attribute* || *Description* ||
-|| type || The type of aggregation to apply to the answers ||
+|| type || The type of aggregation to apply to the answers - see list below ||
 || chart || The type of chart to display showing the aggregation result - 'pie', 'column' or 'bar' ||
 || title || The title for the generated chart ||
-|| order || ||
-|| subLevel || ||
-|| groupBy || ||
-|| result || ||
+|| order || The order of the categories of the chart - 'desc' for descending order - default is ascending ||
+|| subLevel || Sub-question level from which data is to be aggregated - see more detail below ||
+|| groupBy || How categories are grouped for aggregation and display - see more detail below ||
+|| result || How aggregated result is presented - 'percentage', '%InDecile', '%Overall' or '%AgeGroup' ||
 || dataType || ||
 || answer || ||
 || value || ||
@@ -324,5 +324,3 @@ The Aggregate element defines how the answers for a question should be aggregate
 || legendAlignment || ||
 || stacked || ||
 || size || ||
-
-
