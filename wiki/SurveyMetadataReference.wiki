@@ -182,11 +182,12 @@ To align the question text of a question there is the align option.
 ===== Answer element =====
 
 || *Attribute* || *Description* ||
-|| dataType || ||
-|| type || ||
-|| label || ||
-|| required || ||
-|| requiredIf || ||
+|| dataType || Answer data type - 'bool', 'number', 'text', 'numberRange', 'rank' or 'integer' ||
+|| type || Answer type - 'bool', 'none', 'number', 'text', 'textarea', 'percent', 'rank', 'externalRef', 'radio', 'range', 'preload', 'calculate' or 'summable' ||
+|| required || Answer must not be blank if required='true' ||
+|| requiredIf ||Answer must not be blank if condition is met ||
 
+{{{
+}}}
 
 ===== Aggregate element =====
