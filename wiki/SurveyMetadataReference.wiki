@@ -181,6 +181,8 @@ To align the question text of a question there is the align option.
 
 ===== Answer element =====
 
+The Answer element of a question defines the type and form of a question's answer(s). There are a number of attributes for the answer element. Also there may be a Data sub-element to define the properties of certain answer types.  There may also be a Label sub-element to define the unit label.
+
 || *Attribute* || *Description* ||
 || dataType || Answer data type - 'bool', 'number', 'text', 'numberRange', 'rank' or 'integer' ||
 || type || Answer type - 'bool', 'none', 'number', 'text', 'textarea', 'percent', 'rank', 'externalRef', 'radio', 'range', 'preload', 'calculate' or 'summable' ||
@@ -188,6 +190,114 @@ To align the question text of a question there is the align option.
 || requiredIf ||Answer must not be blank if condition is met ||
 
 {{{
+<question>
+  ...
+  <answer dataType="integer" type="percent"/>
+</question>
+}}}
+
+Example data elements for various answer types are shown below.
+
+====== Textarea ======
+
+{{{
+<answer dataType="text" type="textarea">
+  <data>
+    <rows value="int">3</rows>
+  </data>
+</answer>
+}}}
+
+====== External Reference ======
+
+{{{
+<answer type="externalRef">
+  <data>state</data>
+</answer>
+}}}
+
+====== Number ======
+
+{{{
+<answer type="number">
+  <data>
+    <min value="int">0</min>
+    <max vaue="int">100</max>
+  </data>
+  <label>hrs/wk</label>
+</answer>
+}}}
+
+====== Range ======
+
+{{{
+<answer type="range" dataType="numberRange">
+  <data>
+    <interval value="int">5</interval>
+    <start value="int">0</start>
+    <end value="int">54</end>
+    <over>and over</over>
+    <unit>years</unit>
+   [<unitPlacement>beforeEach</unitPlacement>]
+   [<alt>Prefer not to answer</alt>]
+  </data>
+</answer>
+}}}
+
+====== Radio ======
+
+{{{
+<answer type="radio">
+  <data>
+    <item>Very likely</item>
+    <item>Fairly likely</item>
+    <item>It may be likely</item>
+    <item>Probably not</item>
+    <item>Unsure/haven't decided</item>
+  </data>
+</answer>
+}}}
+
+====== Calculate ======
+
+{{{
+<answer type="calculate">
+  <data>
+    <action>updateSum</action>
+  </data>
+</answer>
+}}}
+
+====== Preload ======
+
+{{{
+<answer type="preload" required="true">
+  <data>
+      <domain>Institution</domain>
+      <property>name</property>
+      <questionSetProperty>setId</questionSetProperty>
+      <matchProperty>account</matchProperty>
+      <match>username</match>
+  </data>
+</answer>
+}}}
+
+====== Summable ======
+
+{{{
+<answer type="summable">
+   <data>
+      <colRange>
+         <start>1</start>
+         <finish>4</finish>
+      </colRange>
+      <rowRange>
+        <start>1</start>
+        <finish>23</finish>
+      </rowRange>
+      <sumRow>24</sumRow>
+  </data>
+</answer>
 }}}
 
 ===== Aggregate element =====
