@@ -301,3 +301,28 @@ Example data elements for various answer types are shown below.
 }}}
 
 ===== Aggregate element =====
+
+The Aggregate element defines how the answers for a question should be aggregated and displayed. The attributes of the Aggregate element are as follows.
+
+|| *Attribute* || *Description* ||
+|| type || The type of aggregation to apply to the answers ||
+|| chart || The type of chart to display showing the aggregation result - 'pie', 'column' or 'bar' ||
+|| title || The title for the generated chart ||
+|| order || ||
+|| subLevel || ||
+|| groupBy || ||
+|| result || ||
+|| dataType || ||
+|| answer || ||
+|| value || ||
+|| subset || ||
+|| allCategories || ||
+|| xAxisTitle || ||
+|| xAxisLabelOrientation || ||
+|| yAxisLabel || ||
+|| legend || ||
+|| legendAlignment || ||
+|| stacked || ||
+|| size || ||
+
+
