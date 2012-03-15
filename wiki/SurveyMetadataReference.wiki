@@ -312,15 +312,18 @@ The Aggregate element defines how the answers for a question should be aggregate
 || subLevel || Sub-question level from which data is to be aggregated - see more detail below ||
 || groupBy || How categories are grouped for aggregation and display - see more detail below ||
 || result || How aggregated result is presented - 'percentage', '%InDecile', '%Overall' or '%AgeGroup' ||
-|| dataType || ||
-|| answer || ||
-|| value || ||
-|| subset || ||
-|| allCategories || ||
-|| xAxisTitle || ||
-|| xAxisLabelOrientation || ||
-|| yAxisLabel || ||
-|| legend || ||
-|| legendAlignment || ||
-|| stacked || ||
-|| size || ||
+|| dataType || Indicates the data type being aggregated - 'importance' ||
+|| answer || Indicates that the answer to aggregate is the question text - 'qtext' ||
+|| subset || Indicates the subset of answers that make up the aggregation - see more detail below ||
+|| allCategories || Indicates that all categories of an aggregation are displayed even if there are zero occurrences ||
+|| xAxisTitle || Title text of the the x-Axis of a chart - applies to chart types 'column' and 'bar' ||
+|| xAxisLabelOrientation || Orientation of x-Axis labels - 'vertical' (default 'horizontal') ||
+|| yAxisLabel || y-Axis label text ||
+|| legend || Display legend in column chart - 'true'  (default 'false') ||
+|| legendAlignment || Placement of legend - 'right' (default 'left') ||
+|| stacked || Enable stacked column chart - 'true' (default 'false') ||
+|| size || Size of generated chart - 'small', 'medium' or 'large' (default 'large') ||
+
+====== subLevel attribute ======
+====== groupBy attribute ======
+====== subsetl attribute ======
