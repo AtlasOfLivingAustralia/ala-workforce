@@ -339,5 +339,24 @@ The Aggregate element defines how the answers for a question should be aggregate
 || size || Size of generated chart - 'small', 'medium' or 'large' (default 'large') ||
 
 ===== subLevel attribute =====
+
+The subLevel attribute defines which sub-question(s) are used to aggregate data.  It can contain 2 parts separated by /. The first (or only) part describes the question sub-level of the target questions. A value of 1 means the immediate child question(s) level, 2 means the grandchildren questions and a value of 'all' means all child questions of any depth.
+
+The second part of the subLevel attribute defines a filter to select questions that match the filter.  Examples of subLevel attributes are as follows.
+
+{{{
+1
+1/type=number
+1/col=1
+2/qtext=state
+2/range=1..4
+all/type=percent
+}}}
+ 
 ===== groupBy attribute =====
+
+The groupBy attribute
+
 ===== subset attribute =====
+
+The subset attribute
