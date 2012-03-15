@@ -2,13 +2,17 @@
 
 == Introduction ==
 
-Creating a survey question set from scratch would be a tedious, difficult and error prone task. It is recommended that a new survey be copied from a previous survey and then modified as required.
+Question set metadata is stored in the server directory /data/workforce/metadata.  Question set definition files are named question-set-personal-YYYY.xml and question-set-institutional-YYYY.xml where YYYY is the year of the survey.
+
+Creating a survey question set from scratch would be a tedious, difficult and error prone task. It is recommended that a new survey be created by copying the previous survey and then modifying as required.
 
 ==== Creating a new survey ====
 
+From the Admin Dashboard page click Surveys.  Select New Personal Survey or New Institutional Survey. Select the "Base survey on" option that is appropriate.
+
 ==== Question GUIDs ====
 
-Questions are automatically assigned a 'Globally Unique Identifier' or GUID.
+Questions are automatically assigned a 'Globally Unique Identifier' or GUID as the identifying key of a question.  The GUIDs are assigned where necessary on application startup and written back to the question set definition file.  Therefore after GUIDs have been assigned to new questions and written to the metadata file, that file should be copied from the server and saved in the Google project subversion repository.
 
 
 == Question set structure ==
