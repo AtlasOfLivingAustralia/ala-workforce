@@ -2,7 +2,13 @@
 
 == Introduction ==
 
-Add your content here.
+Creating a survey question set from scratch would be a tedious, difficult and error prone task. It is recommended that a new survey be copied from a previous survey and then modified as required.
+
+==== Creating a new survey ====
+
+==== Question GUIDs ====
+
+Questions are automatically assigned a 'Globally Unique Identifier' or GUID.
 
 
 == Question set structure ==
@@ -92,7 +98,7 @@ The accounts element is used by the ABRS Institutional survey to link an ALA use
 
 ==== Question(s) ====
 
-There must be one or more question elements in a question set. Question elements can nested (to a depth of 3 levels).
+There must be one or more question elements in a question set.
 
 The question element can have a number of optional attributes to specify the properties of the question.
 
@@ -110,6 +116,8 @@ The question element can have a number of optional attributes to specify the pro
 
 ===== Question element =====
 
+A question is defined by the Question element. Questions can be nested to a depth of 3 levels. The following fragment shows the structure of the question element.
+
 {{{
 <question>
   <text>...</text>
@@ -120,12 +128,14 @@ The question element can have a number of optional attributes to specify the pro
 </question>
 }}}
 
+What follows is a description of the sub-elements that make up the question element.
+
 || *Element* || *Description* ||
 || text || Question text ||
 || shortText || Optional abbreviated version of question text.  Used in the tabular summary display of a survey's answers ||
-|| data || Question data ||
-|| answer || ||
-|| aggregate || ||
+|| data || Question data - see details below ||
+|| answer || Defines the answer form and type - see details below ||
+|| aggregate || Defines the aggregation and chart properties for the question - see details below||
 
 ===== Data element =====
 
@@ -198,7 +208,7 @@ The Answer element of a question defines the type and form of a question's answe
 
 Example data elements for various answer types are shown below.
 
-====== Textarea ======
+===== Textarea =====
 
 {{{
 <answer dataType="text" type="textarea">
@@ -208,7 +218,7 @@ Example data elements for various answer types are shown below.
 </answer>
 }}}
 
-====== External Reference ======
+===== External Reference =====
 
 {{{
 <answer type="externalRef">
@@ -216,7 +226,7 @@ Example data elements for various answer types are shown below.
 </answer>
 }}}
 
-====== Number ======
+===== Number =====
 
 {{{
 <answer type="number">
@@ -228,7 +238,7 @@ Example data elements for various answer types are shown below.
 </answer>
 }}}
 
-====== Range ======
+===== Range =====
 
 {{{
 <answer type="range" dataType="numberRange">
@@ -244,7 +254,7 @@ Example data elements for various answer types are shown below.
 </answer>
 }}}
 
-====== Radio ======
+===== Radio =====
 
 {{{
 <answer type="radio">
@@ -258,7 +268,7 @@ Example data elements for various answer types are shown below.
 </answer>
 }}}
 
-====== Calculate ======
+===== Calculate =====
 
 {{{
 <answer type="calculate">
@@ -268,7 +278,7 @@ Example data elements for various answer types are shown below.
 </answer>
 }}}
 
-====== Preload ======
+===== Preload =====
 
 {{{
 <answer type="preload" required="true">
@@ -282,7 +292,7 @@ Example data elements for various answer types are shown below.
 </answer>
 }}}
 
-====== Summable ======
+===== Summable =====
 
 {{{
 <answer type="summable">
@@ -324,6 +334,6 @@ The Aggregate element defines how the answers for a question should be aggregate
 || stacked || Enable stacked column chart - 'true' (default 'false') ||
 || size || Size of generated chart - 'small', 'medium' or 'large' (default 'large') ||
 
-====== subLevel attribute ======
-====== groupBy attribute ======
-====== subsetl attribute ======
+===== subLevel attribute =====
+===== groupBy attribute =====
+===== subset attribute =====
