@@ -366,8 +366,29 @@ all/type=percent
  
 ===== groupBy attribute =====
 
-The groupBy attribute 
+The groupBy attribute indicates how aggregated data is grouped.  Examples of groupBy attributes are as follows.
+
+For the aggregation type sumByAnswer the results can be grouped by decile.  The second part of the attribute indicates how many deciles to display and the third part indicates the unit.
+
+{{{
+decile/10/%
+decile/7/hours
+}}}
+
+|| *Attribute value* || *Description* ||
+|| employment || ||
+|| ageGroup || ||
+|| ageGroup/importance || ||
+|| answer || ||
 
 ===== subset attribute =====
 
 The subset attribute
+
+{{{
+Very likely|Fairly likely
+20-24
+60 and over
+notHonorary
+fullTimePermanent
+}}}
