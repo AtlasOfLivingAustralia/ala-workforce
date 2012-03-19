@@ -474,9 +474,6 @@ class DataLoaderService implements ApplicationContextAware {
             if (it.@answer != '') {
                 agg['answer'] = it.@answer as String
             }
-            if (it.@value != '') {
-                agg['value'] = it.@value as String
-            }
             if (it.@chart != '') {
                 agg['chart'] = it.@chart as String
             }
