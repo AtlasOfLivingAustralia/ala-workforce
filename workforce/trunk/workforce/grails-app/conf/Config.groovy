@@ -9,6 +9,7 @@
 // if(System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
+grails.config.locations = [ "file:/data/workforce/config/workforce.properties" ]
 
 /******************************************************************************\
  *  SECURITY
@@ -88,7 +89,7 @@ environments {
         security.cas.appServerName = "http://${domain}"
     }
     development {
-        domain = 'localhost:8090'
+        domain = 'flemmo.ala.org.au:8090'
         grails.serverURL = "http://${domain}/${appName}"
         security.cas.appServerName = "http://${domain}"
     }
@@ -98,7 +99,7 @@ environments {
         security.cas.appServerName = "http://${domain}"
     }
     test {
-        domain = 'localhost:8090'
+        domain = 'flemmo.ala.org.au:8090'
         grails.serverURL = "http://${domain}/${appName}"
         security.cas.appServerName = "http://${domain}"
     }
