@@ -301,10 +301,10 @@ class AggregationService {
                         }
                         if (answer) {
                             def emp = getMaxEmploymentStatus(empStatus)
-                            if (it.filter) {
-                                if (it.filter.equalsIgnoreCase('notHonorary') && !emp.startsWith('Associate')) {
+                            if (it.subset) {
+                                if (it.subset.equalsIgnoreCase('notHonorary') && !emp.startsWith('Associate')) {
                                     incrementCount(counts, answer, emp)
-                                } else if (it.filter.equalsIgnoreCase('fullTimePermanent') && emp.startsWith('Full-time (permanent')) {
+                                } else if (it.subset.equalsIgnoreCase('fullTimePermanent') && emp.startsWith('Full-time (permanent')) {
                                     incrementCount(counts, answer, emp)
                                 }
                             } else {
@@ -440,7 +440,7 @@ class AggregationService {
                                 def total = totals.size()
                                 List deciles = []
                                 for (def i = 0; i < range; i++) { deciles << 0 }
-                                if (it.result && it.result == 'percentageInDecile') {
+                                if (it.result && it.result == '%InDecile') {
                                     totals.each {
                                         int decile = min(((it - 1)/10) as int, range - 1)
                                         deciles[decile]++
@@ -464,7 +464,7 @@ class AggregationService {
                                     }
                                     categories << decile
                                     def value = it2
-                                    if (it.result && it.result == 'percentageInDecile') {
+                                    if (it.result && it.result == '%InDecile') {
                                         value = percentage(value, total)
                                     }
                                     values << value
@@ -680,8 +680,8 @@ class AggregationService {
                     answers.each { answer ->
                         answer.value.each { guid, value ->
                             if (value['answer']) {
-                                if (it.value) {
-                                    if (it.value.equals(value['answer'])) {
+                                if (it.subset) {
+                                    if (it.subset.equals(value['answer'])) {
                                         incrementCount(counts, guid)
                                     }
                                 } else {
