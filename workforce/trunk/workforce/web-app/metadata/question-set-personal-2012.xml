@@ -23,7 +23,6 @@
     <question id="1b591a08-6d45-404a-b483-3a80f64d0139">
       <text>Is curatorial and/or taxonomic work your major responsibility in your organisation?</text>
       <shortText>Curatorial and/or taxonomic work your major responsibility</shortText>
-      <data>YES/NO</data>
       <answer dataType="bool" type="bool" required="true"/>
       <aggregate type="countByAnswer" chart="pie" order="desc"/>
     </question>
@@ -31,38 +30,38 @@
       <text>Your role in the organisation. Please indicate percentage time spent in this role on curatorial and/or taxonomic duties.</text>
       <shortText>Time spent on curatorial and/or taxonomic duties</shortText>
       <validation>percent-total-lessThanOrEqual-100</validation>
-      <aggregate type="sumByAnswer" chart="column" subLevel="1" groupBy="decile/10/%" result="percentageInDecile" yAxisLabel="Percentage of Employees"/>
+      <aggregate type="sumByAnswer" chart="column" subLevel="1" groupBy="decile/10/%" result="%InDecile" yAxisLabel="Percentage of Employees"/>
       <question id="fdefd907-6690-4633-99d6-5f3497c379e3">
         <text>Scientist/Taxonomist (permanent)</text>
-        <answer dataType="integer" label="%" type="percent"/>
+        <answer dataType="integer" type="percent"/>
       </question>
       <question id="0cd5ec90-f7c8-45a4-bb68-18355239f76f">
         <text>Scientist/Taxonomist (not permanent)</text>
-        <answer dataType="integer" label="%" type="percent"/>
+        <answer dataType="integer" type="percent"/>
       </question>
       <question id="af26a8de-ae11-435f-8abe-dbc9e36f1635">
         <text>Technical (taxonomy) (permanent)</text>
-        <answer dataType="integer" label="%" type="percent"/>
+        <answer dataType="integer" type="percent"/>
       </question>
       <question id="953c86db-eff8-46c7-a351-fb9c6d53b4b2">
         <text>Technical (taxonomy) (not permanent)</text>
-        <answer dataType="integer" label="%" type="percent"/>
+        <answer dataType="integer" type="percent"/>
       </question>
       <question id="76a660b1-db8e-4370-b8cf-cc09ba34d0c0">
         <text>Administrator/Manager</text>
-        <answer dataType="integer" label="%" type="percent"/>
+        <answer dataType="integer" type="percent"/>
       </question>
       <question id="79ba056d-2525-42f4-b547-bec692d8f74e">
         <text>Volunteer/Associate (retired)</text>
-        <answer dataType="integer" label="%" type="percent"/>
+        <answer dataType="integer" type="percent"/>
       </question>
       <question id="926a929b-ae5c-4f53-8694-969f709d8c92">
         <text>Volunteer/Associate (not retired)</text>
-        <answer dataType="integer" label="%" type="percent"/>
+        <answer dataType="integer" type="percent"/>
       </question>
       <question id="9bbb4a78-4904-4f4f-8fbb-285d73917333">
         <text>Other</text>
-        <answer dataType="integer" label="%" type="percent"/>
+        <answer dataType="integer" type="percent"/>
       </question>
     </question>
     <question id="59fc3786-5dc9-4630-a01b-ca63a7bd8553">
@@ -761,8 +760,8 @@
     <shortText>Importance for personal taxonomic productivity</shortText>
     <question defaultDataType="rank" defaultAnswerType="rank" type="rank">
       <aggregations>
-        <aggregate type="countByCategory" chart="column" subLevel="1" title="Category rated as most important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
-        <aggregate type="countByCategory" chart="column" subLevel="1" title="Categories rated as not important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Category rated as most important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" subset="1" allCategories="true"/>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Categories rated as not important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" allCategories="true"/>
       </aggregations>
       <data>
         <max value="int">5</max>
@@ -815,8 +814,8 @@
     <shortText>Importance for Australian taxonomic productivity</shortText>
     <question defaultDataType="rank" defaultAnswerType="rank" type="rank">
       <aggregations>
-        <aggregate type="countByCategory" chart="column" subLevel="1" title="Category rated as most important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
-        <aggregate type="countByCategory" chart="column" subLevel="1" title="Categories rated as not important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" value="1" allCategories="true"/>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Category rated as most important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" subset="1" allCategories="true"/>
+        <aggregate type="countByCategory" chart="column" subLevel="1" title="Categories rated as not important" xAxisTitle="Category" yAxisLabel="No of respondents" order="desc" answer="qtext" allCategories="true"/>
       </aggregations>
       <data>
         <max value="int">5</max>
@@ -951,9 +950,9 @@
     <shortText>Age range</shortText>
     <aggregations>
       <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age of taxonomic workforce including honorary staff" order="desc"/>
-      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age of taxonomic workforce excluding honorary staff" filter="notHonorary" order="desc"/>
+      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age of taxonomic workforce excluding honorary staff" subset="notHonorary" order="desc"/>
       <aggregate type="countByAnswerByGender" chart="column" yAxisLabel="Numbers" xAxisTitle="Age group" title="Age groups by gender" legend="true" legendAlignment="right" order="desc"/>
-      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age range of just full-time permanent staff" filter="fullTimePermanent" order="desc"/>
+      <aggregate type="countByAnswerByEmploymentStatus" chart="column" result="percentage" yAxisLabel="Percentage" xAxisTitle="Age group" title="Age range of just full-time permanent staff" subset="fullTimePermanent" order="desc"/>
     </aggregations>
     <answer dataType="numberRange" type="range" required="true">
       <data>
