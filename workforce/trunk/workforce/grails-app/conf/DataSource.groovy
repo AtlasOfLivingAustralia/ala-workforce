@@ -1,7 +1,7 @@
 dataSource {
     pooled = true
     driverClassName = "com.mysql.jdbc.Driver"
-    username = ""
+    username = ""   // values in /data/workforce/config/workforce.properties
     password = ""
 }
 hibernate {
