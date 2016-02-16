@@ -1,0 +1,398 @@
+## Introduction ##
+
+Question set metadata is stored in the server directory /data/workforce/metadata.  Question set definition files are named question-set-personal-YYYY.xml and question-set-institutional-YYYY.xml where YYYY is the year of the survey.
+
+Creating a survey question set from scratch would be a tedious, difficult and error prone task. It is recommended that a new survey be created by copying the previous survey and then modifying as required.
+
+#### Creating a new survey ####
+
+From the Admin Dashboard page click Surveys.  Select New Personal Survey or New Institutional Survey. Select the "Base survey on" option that is appropriate.
+
+#### Question GUIDs ####
+
+Questions are automatically assigned a 'Globally Unique Identifier' or GUID as the identifying key of a question.  The GUIDs are assigned where necessary on application startup and written back to the question set definition file.  Therefore after GUIDs have been assigned to new questions and written to the metadata file, that file should be copied from the server and saved in the Google project subversion repository.
+
+
+## Question set structure ##
+
+A survey is defined as metadata in XML.  This metadata consists of a set of question definitions and other survey related data. An overview of the syntax of a question set is shown below. More detailed descriptions of metadata elements come after that. Optional elements are surrounds by square brackets.
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<questionSet>
+  <title>...</title>
+  <shortName>...</shortName>
+ [<requiredRole>...</requiredRole>]
+  <pageSequence>
+    ...
+  </pageSequence>
+ [<knownQuestions>
+    ...
+  </knownQuestions>]
+ [<accounts>
+      ...
+  </accounts>]
+  <question>
+    ...
+  </question>
+  ...
+</questionSet>
+```
+
+#### Title, Short Name ####
+
+The title and shortName text elements define the title and short title of the survey.  For example,
+
+```
+<title>Survey of Australian Taxonomic Workforce - Personal Survey</title>
+<shortName>Personal Survey</shortName>
+```
+
+#### Required Role ####
+
+The required role element defines the ALA authorisation that a user requires to carry out the survey.  For example the ABRS Institutional survey requires a user to have ROLE\_ABRS\_INSTITUTION. A when a user logs into the ABRS Survey web application if they have this authorisation then the ABRS Institutional survey is displayed, otherwise the ABRS Personal survey is displayed.
+
+```
+<requiredRole>ROLE_ABRS_INSTITUTION</requiredRole>
+```
+
+#### Page Sequence ####
+
+The pageSequence element defines the pagination of a survey.  Each page sub-element defines which questions appear on that page.
+
+```
+<pageSequence>
+  <page>1-2</page>
+  <page>3-3</page>
+  <page>4-5</page>
+  <page>6-6</page>
+    ...
+</pageSequence>
+```
+
+#### Known Questions ####
+
+The knownQuestions element defines the question number of particular survey questions that are referenced by the aggregation and charting components of the application.  Currently only the Personal Survey uses these.
+
+```
+<knownQuestions>
+  <employmentStatus>3</employmentStatus>
+  <gender>15</gender>
+  <ageGroup>16</ageGroup>
+</knownQuestions>
+```
+
+#### Accounts ####
+
+The accounts element is used by the ABRS Institutional survey to link an ALA user id to an institution and also to link an institutional survey to a natural history collection.  The user element identifies the ALA user associated with the institution and the uid element is the ALA Collections identifier.
+
+```
+<accounts>
+  <account>
+    <user>survey@dpi.qld.gov.au</user>
+    <institution>Queensland Plant Pathology Herbarium</institution>
+    <code>BRIP</code>
+    <uid>co53</uid>
+  </account>
+  ...
+</accounts>
+```
+
+#### Question(s) ####
+
+There must be one or more question elements in a question set.
+
+The question element can have a number of optional attributes to specify the properties of the question.
+
+| **Attribute** | **Description** |
+|:--------------|:----------------|
+| instruction   | Defines instruction text that is displayed with a question |
+| instructionPosition | Position of instructions. e.g. 'top', default is 'bottom' |
+| type          | Question type - can be 'rank', 'pick', 'range', 'matrix', 'group' or 'none' |
+| heightHint    | ??? not used    |
+| dependentOn   | Question can be dependent on the answer to another question - holds the path and the condition. e.g. 'Q5=yes' |
+| datatype      | Data type of the answer - 'bool', 'number', 'text', 'numberRange', 'rank' or 'integer' |
+| defaultDataType | Data type applied to child questions |
+| defaultAnswerType | Answer type applied to child questions - 'bool', 'none', 'number', 'text', 'textarea', 'percent', 'rank', 'externalRef', 'radio', 'range', 'preload', 'calculate' or 'summable' |
+| defaultLayoutHint | Layout hint for child questions - 'align-with-level3', 'subgroup:Label', 'm/n' |
+| defaultDisplayHint | Form of display for child questions - 'checkbox', 'combobox', 'noColumnHeadings' or 'n' where n = fieldwidth |
+
+##### Question element #####
+
+A question is defined by the Question element. Questions can be nested to a depth of 3 levels. The following fragment shows the structure of the question element.
+
+```
+<question>
+  <text>...</text>
+ [<shortText>...</shortText>]
+ [<data>...</data>]
+  <answer/> | <question>...</question>
+ [<aggregate/>]
+</question>
+```
+
+What follows is a description of the sub-elements that make up the question element.
+
+| **Element** | **Description** |
+|:------------|:----------------|
+| text        | Question text   |
+| shortText   | Optional abbreviated version of question text.  Used in the tabular summary display of a survey's answers |
+| data        | Question data - see details below |
+| answer      | Defines the answer form and type - see details below |
+| aggregate   | Defines the aggregation and chart properties for the question - see details below|
+
+##### Data element #####
+
+The data element describes the question data and the format depends on the question type.
+
+For a Matrix question type, the data element defines the row and column labels.  A matrix question can also define validation rules for values in the matrix.  Validation is defined by validation and validationRange elements.
+
+```
+<data>
+  <rows>
+    <item>Row 1</item>
+    <item>Row 2</item>
+    <item>Row 3</item>
+     ...
+  </rows>
+  <cols>
+    <item>Column 1</item>
+    <item>Column 2</item>
+    <item>Column 3</item>
+     ...
+  </cols>
+ [<validation>
+    <validate>greaterThanOrEqual[1,2]</validate>
+    <validate>greaterThanOrEqual[1,3]</validate>
+  </validation>
+  <validationRange>
+    <start>1</start>
+    <finish>3</finish>
+  </validationRange>]
+</data>
+```
+
+For the Rank question type, the data element defines the number of values in the ranking range and the number of required answers. The values of the rank options are defined in sub-questions.
+
+```
+<data>
+  <max value="int">5</max>
+  <maxRequired value="int">5</maxRequired>
+</data>
+```
+
+To align the question text of a question there is the align option.
+
+```
+<question>
+  <text>Please select one:</text>
+  <data>
+    <align>right</align>
+  </data>
+    ...
+</question>
+```
+
+##### Answer element #####
+
+The Answer element of a question defines the type and form of a question's answer(s). There are a number of attributes for the answer element. Also there may be a Data sub-element to define the properties of certain answer types.  There may also be a Label sub-element to define the unit label.
+
+| **Attribute** | **Description** |
+|:--------------|:----------------|
+| dataType      | Answer data type - 'bool', 'number', 'text', 'numberRange', 'rank' or 'integer' |
+| type          | Answer type - 'bool', 'none', 'number', 'text', 'textarea', 'percent', 'rank', 'externalRef', 'radio', 'range', 'preload', 'calculate' or 'summable' |
+| required      | Answer must not be blank if required='true' |
+| requiredIf    |Answer must not be blank if condition is met |
+
+```
+<question>
+  ...
+  <answer dataType="integer" type="percent"/>
+</question>
+```
+
+Example data elements for various answer types are shown below.
+
+##### Textarea #####
+
+```
+<answer dataType="text" type="textarea">
+  <data>
+    <rows value="int">3</rows>
+  </data>
+</answer>
+```
+
+##### External Reference #####
+
+```
+<answer type="externalRef">
+  <data>state</data>
+</answer>
+```
+
+##### Number #####
+
+```
+<answer type="number">
+  <data>
+    <min value="int">0</min>
+    <max vaue="int">100</max>
+  </data>
+  <label>hrs/wk</label>
+</answer>
+```
+
+##### Range #####
+
+```
+<answer type="range" dataType="numberRange">
+  <data>
+    <interval value="int">5</interval>
+    <start value="int">0</start>
+    <end value="int">54</end>
+    <over>and over</over>
+    <unit>years</unit>
+   [<unitPlacement>beforeEach</unitPlacement>]
+   [<alt>Prefer not to answer</alt>]
+  </data>
+</answer>
+```
+
+##### Radio #####
+
+```
+<answer type="radio">
+  <data>
+    <item>Very likely</item>
+    <item>Fairly likely</item>
+    <item>It may be likely</item>
+    <item>Probably not</item>
+    <item>Unsure/haven't decided</item>
+  </data>
+</answer>
+```
+
+##### Calculate #####
+
+```
+<answer type="calculate">
+  <data>
+    <action>updateSum</action>
+  </data>
+</answer>
+```
+
+##### Preload #####
+
+```
+<answer type="preload" required="true">
+  <data>
+      <domain>Institution</domain>
+      <property>name</property>
+      <questionSetProperty>setId</questionSetProperty>
+      <matchProperty>account</matchProperty>
+      <match>username</match>
+  </data>
+</answer>
+```
+
+##### Summable #####
+
+```
+<answer type="summable">
+   <data>
+      <colRange>
+         <start>1</start>
+         <finish>4</finish>
+      </colRange>
+      <rowRange>
+        <start>1</start>
+        <finish>23</finish>
+      </rowRange>
+      <sumRow>24</sumRow>
+  </data>
+</answer>
+```
+
+##### Aggregate element #####
+
+The Aggregate element defines how the answers for a question should be aggregated and displayed. The attributes of the Aggregate element are as follows.
+
+| **Attribute** | **Description** |
+|:--------------|:----------------|
+| type          | The type of aggregation to apply to the answers - see list below |
+| chart         | The type of chart to display showing the aggregation result - 'pie', 'column' or 'bar' |
+| title         | The title for the generated chart |
+| order         | The order of the categories of the chart - 'desc' for descending order - default is ascending |
+| subLevel      | Sub-question level from which data is to be aggregated - see more detail below |
+| groupBy       | How categories are grouped for aggregation and display - see more detail below |
+| result        | How aggregated result is presented - 'percentage', '%InDecile', '%Overall' or '%AgeGroup' |
+| dataType      | Indicates the data type being aggregated - 'importance' |
+| answer        | Indicates that the answer to aggregate is the question text - 'qtext' |
+| subset        | Indicates the subset of answers that make up the aggregation - see more detail below |
+| allCategories | Indicates that all categories of an aggregation are displayed even if there are zero occurrences |
+| xAxisTitle    | Title text of the the x-Axis of a chart - applies to chart types 'column' and 'bar' |
+| xAxisLabelOrientation | Orientation of x-Axis labels - 'vertical' (default 'horizontal') |
+| yAxisLabel    | y-Axis label text |
+| legend        | Display legend in column chart - 'true'  (default 'false') |
+| legendAlignment | Placement of legend - 'right' (default 'left') |
+| stacked       | Enable stacked column chart - 'true' (default 'false') |
+| size          | Size of generated chart - 'small', 'medium' or 'large' (default 'large') |
+
+##### aggregation type #####
+
+| **Type** | **Description** |
+|:---------|:----------------|
+| countByAnswer |                 |
+| countByAnswerByAgeGroup |                 |
+| sumByAnswer |                 |
+| countByAnswerByGuid |                 |
+| sumByAnswerByGuid |                 |
+| averageByAnswer |                 |
+| countByCategory |                 |
+
+##### subLevel attribute #####
+
+The subLevel attribute defines which sub-question(s) are used to aggregate data.  It can contain 2 parts separated by /. The first (or only) part describes the question sub-level of the target questions. A value of 1 means the immediate child question(s) level, 2 means the grandchildren questions and a value of 'all' means all child questions of any depth.
+
+The second part of the subLevel attribute defines a filter to select questions whose properties match the filter.  Examples of subLevel attributes are as follows.
+
+```
+1
+1/type=number
+1/col=1
+2/qtext=state
+2/range=1..4
+all/type=percent
+```
+
+##### groupBy attribute #####
+
+The groupBy attribute indicates how aggregated data is grouped.  Examples of groupBy attributes are as follows.
+
+For the aggregation type sumByAnswer the results can be grouped by decile.  The second part of the attribute indicates how many deciles to display and the third part indicates the unit.
+
+```
+decile/10/%
+decile/7/hours
+```
+
+| **Attribute value** | **Description** |
+|:--------------------|:----------------|
+| employment          |                 |
+| ageGroup            |                 |
+| ageGroup/importance |                 |
+| answer              |                 |
+
+##### subset attribute #####
+
+The subset attribute
+
+```
+Very likely|Fairly likely
+20-24
+60 and over
+notHonorary
+fullTimePermanent
+```
